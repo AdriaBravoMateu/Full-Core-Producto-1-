@@ -1,7 +1,7 @@
 import java.util.Date;
 
 public class Inscripcion {
-    // Atributos privados de la clase Inscripcion
+    // Atributos privados de la clase Inscripcion PRUEBA DAN
     private int numeroInscripcion;   // Número único que identifica la inscripción
     private Date fechaInscripcion;   // Fecha en la que se realizó la inscripción
     private Socio socio;             // Socio que realiza la inscripción
