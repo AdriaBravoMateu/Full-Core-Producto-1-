@@ -2,7 +2,7 @@ import java.util.Date;
 
 public class Excursion {
     // Atributos de la clase Excursion
-    // Estos representan la información básica que debe almacenarse sobre cada excursión.
+    // Estos representan la información básica que debe almacenarse sobre cada excursión.sdfsdfsdf
     private String codigo;         // Código alfanumérico único de la excursión
     private String descripcion;    // Breve descripción de la excursión
     private Date fecha;            // Fecha de inicio de la excursión
