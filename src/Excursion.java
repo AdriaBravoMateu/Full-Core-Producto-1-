@@ -1,9 +1,8 @@
 import java.util.Date;
 
 public class Excursion {
-    // PRUEBA EVA
     // Atributos de la clase Excursion
-    // Estos representan la información básica que debe almacenarse sobre cada excursión.44553535353
+    // Estos representan la información básica que debe almacenarse sobre cada excursión.
     private String codigo;         // Código alfanumérico único de la excursión
     private String descripcion;    // Breve descripción de la excursión
     private Date fecha;            // Fecha de inicio de la excursión
