@@ -32,4 +32,13 @@ public class Federacion {
     public void setNombre(String nombre) {
         this.nombre = nombre;  // Permite modificar el nombre de la federación
     }
+
+    @Override
+    public String toString() {
+        return "Federacion{" +
+                "codigo='" + codigo + '\'' +
+                ", nombre='" + nombre + '\'' +
+                '}';
+    }
+
 }
