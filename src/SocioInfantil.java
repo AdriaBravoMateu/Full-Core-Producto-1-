@@ -30,4 +30,15 @@ public class SocioInfantil extends Socio {
     public double calcularFacturaMensual() {
         return 10 * 0.5; // Cuota base de 10€ con un 50% de descuento (0.5)
     }
+
+    // Método toString
+    // Este método devuelve una representación en forma de cadena del socio infantil
+    // incluyendo su número de socio, nombre y el número de socio de 1 progenitor.
+    @Override
+    public String toString() {
+        return super.toString() +
+                ", Tipo de socio: Infantil" + '\'' +
+                ", Número de Socio del progenitor = '" + getNumeroSocioPadreOMadre() +
+                '}';
+    }
 }

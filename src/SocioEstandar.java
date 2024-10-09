@@ -54,11 +54,10 @@ public class SocioEstandar extends Socio {
     // incluyendo su número de socio, nombre, NIF y detalles del seguro.
     @Override
     public String toString() {
-        return "Socio Estándar {" +
-                "Número de Socio = " + getNumeroSocio() +
-                ", Nombre = '" + getNombre() + '\'' +
+        return super.toString() +
+                ", Tipo de socio: Estándar" + '\'' +
                 ", NIF = '" + nif + '\'' +
-                ", Seguro = " + seguro.getTipo() +
+                ", Seguro = " + seguro.getTipo() + '\'' +
                 ", Precio Seguro = " + seguro.getPrecio() +
                 '}';
     }
