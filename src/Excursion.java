@@ -73,6 +73,6 @@ public class Excursion {
     }
 
     public String toString(){
-        return "Excursión { Código = " + codigo + "\n Descripción = " + descripcion + "\n Fecha = " + fecha + "\n Número de Dias = " + numeroDias + "\n Precio Inscripción =" + precioInscripcion + "}";
+        return "Excursión { \n Código = " + codigo + "\n Descripción = " + descripcion + "\n Fecha = " + fecha + "\n Número de Dias = " + numeroDias + "\n Precio Inscripción =" + precioInscripcion + "}";
     }
 }
