@@ -58,4 +58,8 @@ public class Inscripcion {
     public void setExcursion(Excursion excursion) {
         this.excursion = excursion;  // Permite modificar la excursión a la que se inscribe el socio
     }
+
+    public String toString(){
+        return "Inscripción { \n Número = " + numeroInscripcion + "\n Fecha = " + fechaInscripcion + "\n Socio = " + socio + "\n Excursión = " + excursion + "}";
+    }
 }
