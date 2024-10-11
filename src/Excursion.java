@@ -71,4 +71,8 @@ public class Excursion {
     public void setPrecioInscripcion(double precioInscripcion) {
         this.precioInscripcion = precioInscripcion; // Permite modificar el precio de la inscripción
     }
+
+    public String toString(){
+        return "Excursión { Código = " + codigo + "\n Descripción = " + descripcion + "\n Fecha = " + fecha + "\n Número de Dias = " + numeroDias + "\n Precio Inscripción =" + precioInscripcion + "}";
+    }
 }
