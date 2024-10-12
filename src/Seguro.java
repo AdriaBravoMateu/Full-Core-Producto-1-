@@ -4,7 +4,7 @@ public class Seguro {
     private double precio;    // Precio del seguro
 
     // Constructor de la clase Seguro
-    public Seguro(TipoSeguro tipo, double precio) {
+    public Seguro(String tipo, double precio) {
         this.tipo = tipo;      // Asigna el tipo de seguro (BASICO o COMPLETO)
         this.precio = precio;  // Asigna el precio del seguro
     }
