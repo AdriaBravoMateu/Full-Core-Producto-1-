@@ -37,8 +37,8 @@ public class SocioInfantil extends Socio {
     @Override
     public String toString() {
         return super.toString() +
-                ", Tipo de socio: Infantil" + '\'' +
-                ", Número de Socio del progenitor = '" + getNumeroSocioPadreOMadre() +
-                '}';
+                "Tipo de socio: Infantil" + '\'' +
+                "Número de Socio del progenitor = '" + getNumeroSocioPadreOMadre() +
+                 '}';
     }
 }

@@ -31,7 +31,7 @@ public class Seguro {
     public String toString() {
         return "Seguro {" +
                 "Tipo = " + tipo +
-                ", Precio = " + precio +
-                '}';
+                "Precio = " + precio +
+                 '}';
     }
 }

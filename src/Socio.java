@@ -46,7 +46,7 @@ public abstract class Socio {
     public String toString() {
         return "Socio {" +
                 "Número de Socio = " + getNumeroSocio() + '\'' +
-                ", Nombre = '" + getNombre() + '\''
+                "Nombre = '" + getNombre() + '\''
                 ;
     }
 }

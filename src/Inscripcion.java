@@ -60,6 +60,10 @@ public class Inscripcion {
     }
 
     public String toString(){
-        return "Inscripción { \n Número = " + numeroInscripcion + "\n Fecha = " + fechaInscripcion + "\n Socio = " + socio + "\n Excursión = " + excursion + "}";
+        return "Inscripción {Número de inscripción = " + numeroInscripcion + "\n " +
+                "Fecha de la excursión = " + fechaInscripcion + "\n " +
+                "Número de socio = " + socio + "\n " +
+                "Excursión = " + excursion +
+                 "}";
     }
 }

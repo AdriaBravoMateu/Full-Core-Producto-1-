@@ -36,9 +36,9 @@ public class SocioFederado extends Socio {
     @Override
     public String toString() {
         return super.toString() +
-                ", Tipo de socio: Federado" + '\'' +
-                ", NIF='" + nif + '\'' +
-                ", Federacion=" + federacion.getNombre() +
-                '}';
+                "Tipo de socio: Federado" + '\'' +
+                "NIF='" + nif + '\'' +
+                "Federacion=" + federacion.getNombre() +
+                 '}';
     }
 }
