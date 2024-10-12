@@ -1,4 +1,4 @@
 public enum TipoSeguro {
-    BASICO,    // Seguro básico
-    COMPLETO   // Seguro completo
+    Basico,    // Seguro básico
+    Completo   // Seguro completo
 }

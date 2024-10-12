@@ -4,8 +4,8 @@ public class Main {
     public static void main(String[] args) {
 
         // 1. Se crean dos tipos de seguro, uno basico y otro completo, que los socios estandar pueden contratar.
-        Seguro seguroBasico = new Seguro("Básico", 5.0);
-        Seguro seguroCompleto = new Seguro("Completo", 10.0);
+        Seguro seguroBasico = new Seguro(TipoSeguro.Basico, 5.0);
+        Seguro seguroCompleto = new Seguro(TipoSeguro.Completo, 10.0);
 
         // 2. Se crean algunas federaciones para los socios federados. Cada federacion tiene un codigo y un nombre.
         Federacion federacionMontana = new Federacion("FED01", "Federación de Montaña");
