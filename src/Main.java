@@ -19,7 +19,7 @@ public class Main {
         SocioFederado socioFederado = new SocioFederado(2, "Ana Gómez", "87654321B", federacionMontana);
 
         // Los socios infantiles no tienen seguro propio, están cubiertos por el seguro de sus padres. Se guarda el número de socio de uno de sus padres (Juan Pérez).
-        SocioInfantil socioInfantil = new SocioInfantil(3, "Pedro Martínez", 1);  // Hijo de Juan Pérez
+        SocioInfantil socioInfantil = new SocioInfantil(3,"Pedro", socioEstandar);  // Hijo de Juan Pérez
 
         // 4. Se calcula y se muestra la factura mensual llamando al metodo 'calcularFacturaMensual()' de cada tipo de socio.
         // Esto incluye la cuota base de 10€ y cualquier descuento o cargo adicional.

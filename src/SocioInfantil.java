@@ -1,19 +1,21 @@
 public class SocioInfantil extends Socio {
     // Atributo privado específico de la clase SocioInfantil
-    private int numeroSocioPadreOMadre;  // Número de socio del padre o madre que cubre al socio infantil
+    private Socio progenitor;
+    private int numeroSocioProgenitor;  // Número de socio del padre o madre que cubre al socio infantil
 
     // Constructor de la clase SocioInfantil
     // Llama al constructor de la clase padre (Socio) para inicializar los atributos comunes (numeroSocio y nombre)
     // y luego asigna el valor para el atributo propio de la clase SocioInfantil (numeroSocioPadreOMadre).
-    public SocioInfantil(int numeroSocio, String nombre, int numeroSocioPadreOMadre) {
-        super(numeroSocio, nombre);  // Llama al constructor de la clase Socio
-        this.numeroSocioPadreOMadre = numeroSocioPadreOMadre;  // Asigna el número de socio del padre o madre
+    public SocioInfantil(int numeroSocio, String nombre, Socio progenitor) {
+        super(numeroSocio, nombre);
+        this.progenitor = progenitor;
+        int numeroSocioProgenitor = progenitor.getNumeroSocio();
     }
 
     //Getters
-    public int getNumeroSocioPadreOMadre() {return numeroSocioPadreOMadre;}
+    public Socio getProgenitor() {return progenitor;}
     //Setters
-    public void setNumeroSocioPadreOMadre(int numeroSocioPadreOMadre) {this.numeroSocioPadreOMadre = numeroSocioPadreOMadre;}
+    public void setNumeroSocioProgenitor(int numeroSocioProgenitor) {this.numeroSocioProgenitor = numeroSocioProgenitor;}
 
 
     // Implementación del método abstracto 'calcularFacturaMensual'
@@ -31,7 +33,7 @@ public class SocioInfantil extends Socio {
     public String toString() {
         return super.toString() +
                 "Tipo de socio: Infantil" + '\'' +
-                "Número de Socio del progenitor = '" + getNumeroSocioPadreOMadre() +
+                "Número de Socio del progenitor = '" + numeroSocioProgenitor +
                  '}';
     }
 }
