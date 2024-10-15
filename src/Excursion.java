@@ -19,7 +19,7 @@ public class Excursion {
     }
 
     //Getters
-    public String getCodigo() {return codigo;} // Devuelve el código de la excursión
+    public String getCodigo() {return codigo;}
     public String getDescripcion() {return descripcion;}
     public Date getFecha() {return fecha;}
     public int getNumeroDias() {return numeroDias;}

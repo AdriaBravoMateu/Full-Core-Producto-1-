@@ -14,9 +14,7 @@ public class Seguro {
     public double getPrecio() {return precio;}
     //Setters
     public void setTipo(TipoSeguro tipo) {this.tipo = tipo;}
-    public void setPrecio(double precio) {
-        this.precio = precio;  // Permite modificar el precio del seguro
-    }
+    public void setPrecio(double precio) {this.precio = precio;}
 
     // Método toString para mostrar información sobre el seguro
     @Override
