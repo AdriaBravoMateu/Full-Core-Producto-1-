@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.time.LocalDate;
+import java.util.List;  // Importar List para manejar colecciones genéricas
 
 public class Main {
     public static void main(String[] args) {
@@ -57,7 +58,7 @@ public class Main {
         System.out.println("\nExcursiones en el rango de fechas:");
         LocalDate fechaInicio = LocalDate.now().minusDays(1);
         LocalDate fechaFin = LocalDate.now().plusDays(10);
-        ArrayList<Excursion> excursionesFiltradas = centro.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
+        List<Excursion> excursionesFiltradas = centro.mostrarExcursionesConFiltro(fechaInicio, fechaFin);  // Cambiar ArrayList por List
         for (Excursion ex : excursionesFiltradas) {
             System.out.println(ex.toString());
         }
