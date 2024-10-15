@@ -1,13 +1,18 @@
+package grupofc.modelo;
+
+import grupofc.modelo.Seguro;
+import grupofc.modelo.Socio;
+
 public class SocioEstandar extends Socio {
-    // Atributos privados específicos de la clase SocioEstandar
+    // Atributos privados específicos de la clase grupofc.modelo.SocioEstandar
     private String nif;      // Número de identificación fiscal del socio estándar
     private Seguro seguro;   // El seguro que el socio estándar ha contratado
 
-    // Constructor de la clase SocioEstandar
-    // Llama al constructor de la clase padre (Socio) para inicializar los atributos comunes (numeroSocio y nombre)
-    // y luego asigna los valores para los atributos propios de la clase SocioEstandar (nif y seguro).
+    // Constructor de la clase grupofc.modelo.SocioEstandar
+    // Llama al constructor de la clase padre (grupofc.modelo.Socio) para inicializar los atributos comunes (numeroSocio y nombre)
+    // y luego asigna los valores para los atributos propios de la clase grupofc.modelo.SocioEstandar (nif y seguro).
     public SocioEstandar(int numeroSocio, String nombre, String nif, Seguro seguro) {
-        super(numeroSocio, nombre);  // Llama al constructor de la clase Socio
+        super(numeroSocio, nombre);  // Llama al constructor de la clase grupofc.modelo.Socio
         this.nif = nif;              // Asigna el NIF del socio estándar
         this.seguro = seguro;        // Asigna el seguro contratado por el socio
     }
@@ -20,7 +25,7 @@ public class SocioEstandar extends Socio {
     public void setSeguro(Seguro seguro) {this.seguro = seguro;}
 
     // Método para modificar el seguro del socio
-    // Este método recibe un nuevo objeto Seguro y lo asigna al socio estándar.
+    // Este método recibe un nuevo objeto grupofc.modelo.Seguro y lo asigna al socio estándar.
     public void modificarSeguro(Seguro nuevoSeguro) {
         this.seguro = nuevoSeguro;  // Asigna el nuevo seguro al socio estándar
     }
@@ -41,8 +46,8 @@ public class SocioEstandar extends Socio {
         return super.toString() +
                 "Tipo de socio: Estándar" + '\'' +
                 "NIF = '" + nif + '\'' +
-                "Seguro = " + seguro.getTipo() + '\'' +
-                "Precio Seguro = " + seguro.getPrecio() +
+                "grupofc.modelo.Seguro = " + seguro.getTipo() + '\'' +
+                "Precio grupofc.modelo.Seguro = " + seguro.getPrecio() +
                  '}';
     }
 }

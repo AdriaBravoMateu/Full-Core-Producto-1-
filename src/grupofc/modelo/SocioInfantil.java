@@ -1,11 +1,15 @@
+package grupofc.modelo;
+
+import grupofc.modelo.Socio;
+
 public class SocioInfantil extends Socio {
-    // Atributo privado específico de la clase SocioInfantil
+    // Atributo privado específico de la clase grupofc.modelo.SocioInfantil
     private Socio progenitor;
     private int numeroSocioProgenitor;  // Número de socio del padre o madre que cubre al socio infantil
 
-    // Constructor de la clase SocioInfantil
-    // Llama al constructor de la clase padre (Socio) para inicializar los atributos comunes (numeroSocio y nombre)
-    // y luego asigna el valor para el atributo propio de la clase SocioInfantil (numeroSocioPadreOMadre).
+    // Constructor de la clase grupofc.modelo.SocioInfantil
+    // Llama al constructor de la clase padre (grupofc.modelo.Socio) para inicializar los atributos comunes (numeroSocio y nombre)
+    // y luego asigna el valor para el atributo propio de la clase grupofc.modelo.SocioInfantil (numeroSocioPadreOMadre).
     public SocioInfantil(int numeroSocio, String nombre, Socio progenitor) {
         super(numeroSocio, nombre);
         this.progenitor = progenitor;
@@ -33,7 +37,7 @@ public class SocioInfantil extends Socio {
     public String toString() {
         return super.toString() +
                 "Tipo de socio: Infantil" + '\'' +
-                "Número de Socio del progenitor = '" + numeroSocioProgenitor +
+                "Número de grupofc.modelo.Socio del progenitor = '" + numeroSocioProgenitor +
                  '}';
     }
 }

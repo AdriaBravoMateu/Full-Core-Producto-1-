@@ -1,9 +1,13 @@
+package grupofc.modelo;
+
+import grupofc.modelo.TipoSeguro;
+
 public class Seguro {
-    // Atributos privados de la clase Seguro
+    // Atributos privados de la clase grupofc.modelo.Seguro
     private TipoSeguro tipo;  // Tipo de seguro (Enum: BASICO o COMPLETO)
     private double precio;    // Precio del seguro
 
-    // Constructor de la clase Seguro
+    // Constructor de la clase grupofc.modelo.Seguro
     public Seguro(TipoSeguro tipo, double precio) {
         this.tipo = tipo;      // Asigna el tipo de seguro (BASICO o COMPLETO)
         this.precio = precio;  // Asigna el precio del seguro
@@ -19,7 +23,7 @@ public class Seguro {
     // Método toString para mostrar información sobre el seguro
     @Override
     public String toString() {
-        return "Seguro {" +
+        return "grupofc.modelo.Seguro {" +
                 "Tipo = " + tipo +
                 "Precio = " + precio +
                  '}';

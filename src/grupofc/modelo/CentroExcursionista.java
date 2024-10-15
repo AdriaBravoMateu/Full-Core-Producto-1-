@@ -1,9 +1,12 @@
+package grupofc.modelo;
+
+import grupofc.modelo.SocioFederado;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Clase gestora que maneja la gestión de Excursiones, Socios e Inscripciones
+// Clase que gestiona la lógica del modelo para el centro excursionista
 public class CentroExcursionista {
 
     private ArrayList<Socio> socios;              // Lista de socios
@@ -22,7 +25,6 @@ public class CentroExcursionista {
     // Añadir una excursión al sistema
     public void añadirExcursion(Excursion excursion) {
         excursiones.add(excursion);
-        System.out.println("Excursión añadida: " + excursion.getDescripcion());
     }
 
     // Mostrar excursiones dentro de un rango de fechas
@@ -41,7 +43,6 @@ public class CentroExcursionista {
     // Añadir un nuevo socio estándar
     public void añadirSocioEstandar(SocioEstandar socio) {
         socios.add(socio);
-        System.out.println("Socio estándar añadido: " + socio.getNombre());
     }
 
     // Modificar el seguro de un socio estándar
@@ -49,22 +50,17 @@ public class CentroExcursionista {
         SocioEstandar socio = (SocioEstandar) buscarSocioPorNumero(numeroSocio);
         if (socio != null) {
             socio.modificarSeguro(nuevoSeguro);
-            System.out.println("Seguro del socio estándar " + socio.getNombre() + " modificado.");
-        } else {
-            System.out.println("Socio no encontrado.");
         }
     }
 
     // Añadir un nuevo socio federado
     public void añadirSocioFederado(SocioFederado socio) {
         socios.add(socio);
-        System.out.println("Socio federado añadido: " + socio.getNombre());
     }
 
     // Añadir un nuevo socio infantil
     public void añadirSocioInfantil(SocioInfantil socio) {
         socios.add(socio);
-        System.out.println("Socio infantil añadido: " + socio.getNombre());
     }
 
     // Eliminar un socio si no tiene inscripciones
@@ -76,10 +72,7 @@ public class CentroExcursionista {
                 throw new Exception("No se puede eliminar un socio con inscripciones activas.");
             } else {
                 socios.remove(socio);
-                System.out.println("Socio eliminado: " + socio.getNombre());
             }
-        } else {
-            System.out.println("Socio no encontrado.");
         }
     }
 
@@ -103,14 +96,12 @@ public class CentroExcursionista {
     }
 
     // Mostrar la factura mensual de un socio específico
-    public void mostrarFacturaMensualPorSocio(int numeroSocio) {
+    public double calcularFacturaMensualPorSocio(int numeroSocio) {
         Socio socio = buscarSocioPorNumero(numeroSocio);
         if (socio != null) {
-            double factura = socio.calcularFacturaMensual();
-            System.out.println("Factura mensual del socio " + socio.getNombre() + ": " + factura + "€");
-        } else {
-            System.out.println("Socio no encontrado.");
+            return socio.calcularFacturaMensual();
         }
+        return 0.0;
     }
 
     // ==================== Gestión de Inscripciones ====================
@@ -118,7 +109,6 @@ public class CentroExcursionista {
     // Añadir una nueva inscripción
     public void añadirInscripcion(Inscripcion inscripcion) {
         inscripciones.add(inscripcion);
-        System.out.println("Inscripción añadida para el socio: " + inscripcion.getSocio().getNombre());
     }
 
     // Eliminar una inscripción si la fecha de la excursión es posterior a la fecha actual
@@ -131,12 +121,9 @@ public class CentroExcursionista {
             LocalDate fechaExcursion = inscripcion.getExcursion().getFecha().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
             if (fechaExcursion.isAfter(LocalDate.now())) {
                 inscripciones.remove(inscripcion);
-                System.out.println("Inscripción eliminada: " + inscripcion.getSocio().getNombre());
             } else {
                 throw new Exception("No se puede eliminar una inscripción de una excursión pasada.");
             }
-        } else {
-            System.out.println("Inscripción no encontrada.");
         }
     }
 

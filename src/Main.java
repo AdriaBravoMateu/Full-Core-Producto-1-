@@ -1,7 +1,8 @@
-import java.util.ArrayList;
+import grupofc.modelo.*;
+
 import java.util.Date;
 import java.time.LocalDate;
-import java.util.List;  // Importar List para manejar colecciones genéricas
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -31,13 +32,13 @@ public class Main {
         SocioInfantil socioInfantil = new SocioInfantil(3, "Pedro Martínez", socioEstandar);  // Hijo de Juan Pérez
         centro.añadirSocioInfantil(socioInfantil); // Se añade el socio infantil al centro
 
-        // 4. Se calcula y se muestra la factura mensual llamando al metodo 'mostrarFacturaMensualPorSocio' del centro.
+        // 4. Se calcula y se muestra la factura mensual llamando al método 'calcularFacturaMensualPorSocio' del centro.
         // Esto incluye la cuota base de 10€ y cualquier descuento o cargo adicional.
-        centro.mostrarFacturaMensualPorSocio(1); // Factura de Juan Pérez
-        centro.mostrarFacturaMensualPorSocio(2); // Factura de Ana Gómez
-        centro.mostrarFacturaMensualPorSocio(3); // Factura de Pedro Martínez
+        System.out.println("Factura de Juan Pérez: " + centro.calcularFacturaMensualPorSocio(1) + "€"); // Factura de Juan Pérez
+        System.out.println("Factura de Ana Gómez: " + centro.calcularFacturaMensualPorSocio(2) + "€"); // Factura de Ana Gómez
+        System.out.println("Factura de Pedro Martínez: " + centro.calcularFacturaMensualPorSocio(3) + "€"); // Factura de Pedro Martínez
 
-        // 5. Crear una excursión: Se crea una instancia de la clase 'Excursion'.
+        // 5. Crear una excursión: Se crea una instancia de la clase 'grupofc.modelo.Excursion'.
         // Esta excursión tiene un código, una descripción, una fecha, una duración en días y un precio de inscripción.
         // Se utiliza 'new Date()' para asignar la fecha actual.
         Excursion excursionMontaña = new Excursion("EX01", "Excursión a la Montaña", new Date(), 2, 50.0);
@@ -48,7 +49,6 @@ public class Main {
         centro.añadirInscripcion(inscripcionJuan); // Se añade la inscripción al centro
 
         // 7. Se muestran los detalles en consola de la inscripción realizada.
-        // Se accede a los datos del socio y la excursión mediante los métodos 'getSocio()' y 'getExcursion()'.
         System.out.println("Detalles de la inscripción de Juan Pérez a la excursión:");
         System.out.println("Socio: " + inscripcionJuan.getSocio().getNombre());  // Muestra el nombre del socio inscrito
         System.out.println("Excursión: " + inscripcionJuan.getExcursion().getDescripcion());  // Muestra la descripción de la excursión

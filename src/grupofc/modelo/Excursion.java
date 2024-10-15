@@ -1,7 +1,9 @@
+package grupofc.modelo;
+
 import java.util.Date;
 
 public class Excursion {
-    // Atributos de la clase Excursion
+    // Atributos de la clase grupofc.modelo.Excursion
     // Estos representan la información básica que debe almacenarse sobre cada excursión.
     private String codigo;         // Código alfanumérico único de la excursión
     private String descripcion;    // Breve descripción de la excursión
@@ -9,7 +11,7 @@ public class Excursion {
     private int numeroDias;        // Número de días que dura la excursión
     private double precioInscripcion; // Precio que debe pagar un socio para inscribirse en la excursión
 
-    // Constructor de la clase Excursion
+    // Constructor de la clase grupofc.modelo.Excursion
     public Excursion(String codigo, String descripcion, Date fecha, int numeroDias, double precioInscripcion) {
         this.codigo = codigo;                     // Asigna el código de la excursión
         this.descripcion = descripcion;           // Asigna la descripción de la excursión

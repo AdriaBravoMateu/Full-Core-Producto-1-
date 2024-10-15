@@ -1,10 +1,12 @@
+package grupofc.modelo;
+
 public class SocioFederado extends Socio {
 
     private String nif;
     private Federacion federacion;
 
     public SocioFederado(int numeroSocio, String nombre, String nif, Federacion federacion) {
-        super(numeroSocio, nombre);    // Llama al constructor de la clase Socio
+        super(numeroSocio, nombre);    // Llama al constructor de la clase grupofc.modelo.Socio
         this.nif = nif;                // Asigna el NIF del socio federado
         this.federacion = federacion;  // Asigna la federación a la que pertenece el socio federado
     }
@@ -33,7 +35,7 @@ public class SocioFederado extends Socio {
         return super.toString() +
                 "Tipo de socio: Federado" + '\'' +
                 "NIF='" + nif + '\'' +
-                "Federacion=" + federacion.getNombre() +
+                "grupofc.modelo.Federacion=" + federacion.getNombre() +
                  '}';
     }
 }
