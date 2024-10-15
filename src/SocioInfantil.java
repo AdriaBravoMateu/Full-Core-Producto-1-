@@ -10,18 +10,12 @@ public class SocioInfantil extends Socio {
         this.numeroSocioPadreOMadre = numeroSocioPadreOMadre;  // Asigna el número de socio del padre o madre
     }
 
-    // Métodos Getters y Setters
-    // Estos métodos permiten acceder y modificar el atributo 'numeroSocioPadreOMadre'.
+    //Getters
+    public int getNumeroSocioPadreOMadre() {return numeroSocioPadreOMadre;}
 
-    // Getter para el número de socio del padre o madre
-    public int getNumeroSocioPadreOMadre() {
-        return numeroSocioPadreOMadre; // Devuelve el número de socio del padre o madre
-    }
+    //Setters
+    public void setNumeroSocioPadreOMadre(int numeroSocioPadreOMadre) {this.numeroSocioPadreOMadre = numeroSocioPadreOMadre;}
 
-    // Setter para el número de socio del padre o madre
-    public void setNumeroSocioPadreOMadre(int numeroSocioPadreOMadre) {
-        this.numeroSocioPadreOMadre = numeroSocioPadreOMadre; // Permite modificar el número de socio del padre o madre
-    }
 
     // Implementación del método abstracto 'calcularFacturaMensual'
     // Este método calcula el total a pagar por el socio infantil en su factura mensual.

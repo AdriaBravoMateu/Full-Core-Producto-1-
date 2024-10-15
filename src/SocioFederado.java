@@ -9,16 +9,12 @@ public class SocioFederado extends Socio {
         this.federacion = federacion;  // Asigna la federación a la que pertenece el socio federado
     }
 
-    // Getter para devolver el NIF del socio federado
+    //Getters
     public String getNif() {return nif;}
-
-    // Setter para poder modificar el NIF del socio federado
-    public void setNif(String nif) {this.nif = nif;}
-
-    // Getter para devolver la federación del socio federado
     public Federacion getFederacion() {return federacion;}
 
-    // Setter para poder modificar la federación a la que pertenece el socio federado
+    //Setters
+    public void setNif(String nif) {this.nif = nif;}
     public void setFederacion(Federacion federacion) {this.federacion = federacion;}
 
 // Implementación del metodo abstracto 'calcularFacturaMensual'.

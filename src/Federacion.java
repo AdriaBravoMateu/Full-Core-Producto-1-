@@ -10,28 +10,13 @@ public class Federacion {
         this.nombre = nombre;   // Asigna el nombre de la federación
     }
 
-    // Métodos Getters y Setters
-    // Estos métodos permiten acceder y modificar los atributos 'codigo' y 'nombre'.
+    // Getters
+    public String getCodigo() {return codigo;}
+    public String getNombre() {return nombre;}
 
-    // Getter para el código de la federación
-    public String getCodigo() {
-        return codigo;  // Devuelve el código de la federación
-    }
-
-    // Setter para el código de la federación
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;  // Permite modificar el código de la federación
-    }
-
-    // Getter para el nombre de la federación
-    public String getNombre() {
-        return nombre;  // Devuelve el nombre de la federación
-    }
-
-    // Setter para el nombre de la federación
-    public void setNombre(String nombre) {
-        this.nombre = nombre;  // Permite modificar el nombre de la federación
-    }
+    //Setters
+    public void setCodigo(String codigo) {this.codigo = codigo;}
+    public void setNombre(String nombre) {this.nombre = nombre;}
 
     @Override
     public String toString() {

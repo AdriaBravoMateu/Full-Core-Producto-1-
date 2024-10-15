@@ -12,28 +12,13 @@ public class SocioEstandar extends Socio {
         this.seguro = seguro;        // Asigna el seguro contratado por el socio
     }
 
-    // Métodos Getters y Setters
-    // Estos métodos permiten acceder y modificar los atributos 'nif' y 'seguro'.
+    //Getters
+    public String getNif() {return nif;}
+    public Seguro getSeguro() {return seguro;}
 
-    // Getter para el NIF del socio estándar
-    public String getNif() {
-        return nif; // Devuelve el NIF del socio estándar
-    }
-
-    // Setter para el NIF del socio estándar
-    public void setNif(String nif) {
-        this.nif = nif; // Permite modificar el NIF del socio estándar
-    }
-
-    // Getter para el seguro contratado por el socio estándar
-    public Seguro getSeguro() {
-        return seguro; // Devuelve el seguro contratado por el socio estándar
-    }
-
-    // Setter para el seguro del socio estándar
-    public void setSeguro(Seguro seguro) {
-        this.seguro = seguro; // Permite modificar el seguro del socio estándar
-    }
+    //Setters
+    public void setNif(String nif) {this.nif = nif;}
+    public void setSeguro(Seguro seguro) {this.seguro = seguro;}
 
     // Método para modificar el seguro del socio
     // Este método recibe un nuevo objeto Seguro y lo asigna al socio estándar.

@@ -11,28 +11,13 @@ public abstract class Socio {
         this.nombre = nombre;           // Asigna el nombre del socio
     }
 
-    // Métodos Getters y Setters
-    // Estos métodos permiten acceder y modificar los atributos numeroSocio y nombre.
+    //Getters
+    public int getNumeroSocio() {return numeroSocio;}
+    public String getNombre() {return nombre;}
 
-    // Getter para el número de socio
-    public int getNumeroSocio() {
-        return numeroSocio; // Devuelve el número de socio
-    }
-
-    // Setter para el número de socio
-    public void setNumeroSocio(int numeroSocio) {
-        this.numeroSocio = numeroSocio; // Permite modificar el número de socio
-    }
-
-    // Getter para el nombre del socio
-    public String getNombre() {
-        return nombre; // Devuelve el nombre del socio
-    }
-
-    // Setter para el nombre del socio
-    public void setNombre(String nombre) {
-        this.nombre = nombre; // Permite modificar el nombre del socio
-    }
+    //Setters
+    public void setNumeroSocio(int numeroSocio) {this.numeroSocio = numeroSocio;}
+    public void setNombre(String nombre) {this.nombre = nombre;}
 
     // Método abstracto
     // Este método debe ser implementado por las clases que hereden de 'Socio'.
