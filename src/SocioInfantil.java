@@ -12,7 +12,6 @@ public class SocioInfantil extends Socio {
 
     //Getters
     public int getNumeroSocioPadreOMadre() {return numeroSocioPadreOMadre;}
-
     //Setters
     public void setNumeroSocioPadreOMadre(int numeroSocioPadreOMadre) {this.numeroSocioPadreOMadre = numeroSocioPadreOMadre;}
 

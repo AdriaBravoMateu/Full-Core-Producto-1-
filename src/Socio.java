@@ -14,7 +14,6 @@ public abstract class Socio {
     //Getters
     public int getNumeroSocio() {return numeroSocio;}
     public String getNombre() {return nombre;}
-
     //Setters
     public void setNumeroSocio(int numeroSocio) {this.numeroSocio = numeroSocio;}
     public void setNombre(String nombre) {this.nombre = nombre;}

@@ -21,7 +21,6 @@ public class Inscripcion {
     public Date getFechaInscripcion() {return fechaInscripcion;}
     public Socio getSocio() {return socio;}
     public Excursion getExcursion() {return excursion;}
-
     //Setters
     public void setNumeroInscripcion(int numeroInscripcion) {this.numeroInscripcion = numeroInscripcion;}
     public void setFechaInscripcion(Date fechaInscripcion) {this.fechaInscripcion = fechaInscripcion;}

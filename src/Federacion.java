@@ -13,7 +13,6 @@ public class Federacion {
     // Getters
     public String getCodigo() {return codigo;}
     public String getNombre() {return nombre;}
-
     //Setters
     public void setCodigo(String codigo) {this.codigo = codigo;}
     public void setNombre(String nombre) {this.nombre = nombre;}

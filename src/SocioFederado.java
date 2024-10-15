@@ -12,7 +12,6 @@ public class SocioFederado extends Socio {
     //Getters
     public String getNif() {return nif;}
     public Federacion getFederacion() {return federacion;}
-
     //Setters
     public void setNif(String nif) {this.nif = nif;}
     public void setFederacion(Federacion federacion) {this.federacion = federacion;}

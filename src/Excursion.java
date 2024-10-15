@@ -24,7 +24,6 @@ public class Excursion {
     public Date getFecha() {return fecha;}
     public int getNumeroDias() {return numeroDias;}
     public double getPrecioInscripcion() {return precioInscripcion;}
-
     //Setters
     public void setCodigo(String codigo) {this.codigo = codigo;}
     public void setDescripcion(String descripcion) {this.descripcion = descripcion;}

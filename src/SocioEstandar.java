@@ -15,7 +15,6 @@ public class SocioEstandar extends Socio {
     //Getters
     public String getNif() {return nif;}
     public Seguro getSeguro() {return seguro;}
-
     //Setters
     public void setNif(String nif) {this.nif = nif;}
     public void setSeguro(Seguro seguro) {this.seguro = seguro;}
