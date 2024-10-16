@@ -187,7 +187,7 @@ public class Main {
 
         // Solicitar datos de la excursión al usuario
         System.out.print("Introduce el código de la excursión: ");
-        int codigo = scanner.nextInt();
+        String codigo = scanner.nextLine();
         scanner.nextLine(); // Limpiar el buffer
 
         System.out.print("Introduce la descripción de la excursión: ");
@@ -195,7 +195,10 @@ public class Main {
 
         System.out.print("Introduce la fecha (YYYY-MM-DD): ");
         String fechaStr = scanner.nextLine(); // Se asume que manejas la conversión a LocalDate
-        LocalDate fecha = LocalDate.parse(fechaStr); // Conversión a LocalDate
+        LocalDate fechaLocal = LocalDate.parse(fechaStr); // Conversión a LocalDate
+
+        // Convertir LocalDate a Date
+        Date fecha = java.sql.Date.valueOf(fechaLocal); // Conversión de LocalDate a Date
 
         System.out.print("Introduce el número de días: ");
         int numeroDias = scanner.nextInt();
