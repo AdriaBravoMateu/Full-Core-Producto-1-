@@ -1,5 +1,7 @@
 package Vista;
 import java.util.Scanner;
+import java.util.List;
+import grupofc.modelo.Federacion;
 public class VistaCentroExcursionista {
     private Scanner scanner;
 
@@ -64,6 +66,12 @@ public class VistaCentroExcursionista {
         return scanner.nextInt();
     }
 
+    public void mostrarFederaciones(List<Federacion> federaciones) {
+        System.out.println("Seleccione una federación:");
+        for (int i = 0; i < federaciones.size(); i++) {
+            System.out.printf("%d. %s\n", (i + 1), federaciones.get(i).getNombre());
+        }
+    }
 
     /* -----------------------------------------------------------------------------------------------------------------
     ----------------------------- SUBMENÚ DE INSCRIPCIONES -------------------------------------------------------------

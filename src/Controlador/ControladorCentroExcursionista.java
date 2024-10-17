@@ -249,11 +249,24 @@ public class ControladorCentroExcursionista {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = vista.leerNumeroSocio();
         String nif = vista.leerNif();
-        String nombreFederacion = vista.leerFederacion();
-        Federacion federacion = new Federacion("FED001", nombreFederacion);
-        SocioFederado socio = new SocioFederado(numeroSocio, nombre, nif, federacion);
-        centro.añadirSocioFederado(socio);
-        vista.mostrarResultado("Socio Federado añadido correctamente.");
+
+        //Mostrar las feeraciones disponibles
+        List<Federacion> federaciones = centro.getFederaciones();
+        vista.mostrarFederaciones(federaciones);
+        int opcionFederacion = vista.leerOpcion();
+
+        //Validar la opción seleccionada y obtener la federación
+        if (opcionFederacion >= 1 && opcionFederacion <= federaciones.size()) {
+            Federacion federacionSeleccionada = federaciones.get(opcionFederacion - 1);
+
+            // Crear el socio federado
+            SocioFederado socio = new SocioFederado(numeroSocio, nombre, nif, federacionSeleccionada);
+            centro.añadirSocioFederado(socio);
+            vista.mostrarResultado("Socio Federado añadido correctamente.");
+        } else {
+            vista.mostrarResultado("Opción de federación no válida.");
+        }
+
     }
 
 

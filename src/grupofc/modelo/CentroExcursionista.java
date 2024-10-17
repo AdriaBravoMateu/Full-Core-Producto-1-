@@ -28,9 +28,11 @@ public class CentroExcursionista {
             new Federacion("FED002", "Federación Catalana"),
             new Federacion("FED003", "Federación Madrileña")
         );
-
     }
-
+    // ====================== Método para las Federaciones ======================
+    public List<Federacion> getFederaciones() {
+        return federaciones;
+    }
     // ==================== Gestión de Excursiones ====================
 
     // Añadir una excursión al sistema
