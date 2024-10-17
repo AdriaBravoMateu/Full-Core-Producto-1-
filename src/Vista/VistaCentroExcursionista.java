@@ -7,7 +7,7 @@ public class VistaCentroExcursionista {
         scanner = new Scanner(System.in);
     }
 
-    // Menú principal
+    // MENÚ PRINCIPAL
     public void mostrarMenuPrincipal() {
         System.out.println("\nBienvenido al Centro Excursionista Senderos y Montañas");
         System.out.println("1. Gestión de Excursiones");
@@ -17,7 +17,10 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
-    // Submenú de excursiones
+    /* -----------------------------------------------------------------------------------------------------------------
+    ----------------------------- SUBMENÚ DE EXCURSIONES----------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
+     */
     public void mostrarMenuExcursiones() {
         System.out.println("\nGestión de Excursiones");
         System.out.println("1. Añadir Excursión");
@@ -26,7 +29,10 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
-    // Submenú de socios
+    /* -----------------------------------------------------------------------------------------------------------------
+    ----------------------------- SUBMENÚ DE SOCIOS --------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
+     */
     public void mostrarMenuSocios() {
         System.out.println("\nGestión de Socios");
         System.out.println("1. Añadir Socio");
@@ -37,18 +43,32 @@ public class VistaCentroExcursionista {
         System.out.println("6. Volver al menú principal");
         System.out.print("Elige una opción: ");
     }
+
+
+    // Menú auxiliar SOCIOS
     public void mostrarTipoSocios(){
         System.out.println("1. Añadir Socio Estándar");
         System.out.println("2. Añadir Socio Federado");
         System.out.println("3. Añadir Socio Infantil");
         System.out.print("Elige una opción: ");
     }
+
     public void seleccionarTipoSeguro(){
         System.out.println("1. Básico");
         System.out.println("2. Completo");
     }
 
-    // Submenú de inscripciones
+
+    public int mostrarNumeroSocioProgenitor(){
+        System.out.println("Introduce el número de socio del progenitor seleccionado:");
+        return scanner.nextInt();
+    }
+
+
+    /* -----------------------------------------------------------------------------------------------------------------
+    ----------------------------- SUBMENÚ DE INSCRIPCIONES -------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
+     */
     public void mostrarMenuInscripciones() {
         System.out.println("\nGestión de Inscripciones");
         System.out.println("1. Añadir Inscripción");
@@ -58,14 +78,10 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
-    // Lee la opción elegida por el usuario
-    public int leerOpcion() {
-        int opcion = scanner.nextInt();
-        scanner.nextLine();
-        return opcion;
-    }
 
-    // === Métodos para leer datos de excursiones ===
+
+
+    // =============================== Métodos para leer datos de EXCURSIONES ==========================================
     public String leerCodigoExcursion() {
         System.out.print("Introduce el código de la excursión: ");
         return scanner.nextLine();
@@ -91,7 +107,9 @@ public class VistaCentroExcursionista {
         return scanner.nextDouble();
     }
 
-    // === Métodos para leer datos de socios ===
+
+
+// =============================== Métodos para leer datos de SOCIOS ===================================================
     public String leerNombreSocio() {
         System.out.print("Introduce el nombre del socio: ");
         return scanner.next();
@@ -122,14 +140,24 @@ public class VistaCentroExcursionista {
         return scanner.next();
     }
 
-    // === Métodos para leer datos de inscripciones ===
+
+
+    // =============================== Métodos para leer datos de INSCRIPCIONES ========================================
     public int leerNumeroInscripcion() {
         System.out.print("Introduce el número de inscripción: ");
         return scanner.nextInt();
     }
 
-    // === Métodos para mostrar resultados ===
+
+
+    // =============================== Métodos genéricos para mostrar datos ============================================
     public void mostrarResultado(String resultado) {
         System.out.println(resultado);
+    }
+
+    public int leerOpcion() {
+        int opcion = scanner.nextInt();
+        scanner.nextLine();
+        return opcion;
     }
 }

@@ -1,5 +1,6 @@
 package Controlador;
 
+//IMPORT
 import grupofc.modelo.*;
 import Vista.VistaCentroExcursionista;
 
@@ -12,12 +13,13 @@ public class ControladorCentroExcursionista {
     private CentroExcursionista centro;
     private VistaCentroExcursionista vista;
 
+    //CONSTRUCTOR
     public ControladorCentroExcursionista(CentroExcursionista centro, VistaCentroExcursionista vista) {
         this.centro = centro;
         this.vista = vista;
     }
 
-    // Iniciar la aplicación con el menú principal
+    // Iniciamos la aplicación con el menú principal
     public void iniciar() {
         boolean salir = false;
         while (!salir) {
@@ -41,8 +43,15 @@ public class ControladorCentroExcursionista {
             }
         }
     }
+    //MÉTODOS DE GESTIÓN DE LAS CLASES
 
-    // Gestión de Excursiones
+
+    /* -----------------------------------------------------------------------------------------------------------------
+    ----------------------------- GESTIÓN DE EXCURSIONES----------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
+     */
+
+    //Menú EXCURSIONES
     private void gestionarExcursiones() {
         boolean volver = false;
         while (!volver) {
@@ -64,6 +73,9 @@ public class ControladorCentroExcursionista {
         }
     }
 
+    // Métodos de controlador de EXCURSIONES
+
+    // AGREGAR EXCURSIONES
     private void agregarExcursion() {
         String codigo = vista.leerCodigoExcursion();
         String descripcion = vista.leerDescripcionExcursion();
@@ -78,6 +90,7 @@ public class ControladorCentroExcursionista {
         vista.mostrarResultado("Excursión añadida correctamente.");
     }
 
+    //MOSTRAR EXCURSIONES
     private void mostrarExcursionesConFiltro() {
         vista.mostrarResultado("Introduce las fechas para filtrar las excursiones.");
         String fechaInicioStr = vista.leerFechaExcursion();
@@ -93,7 +106,13 @@ public class ControladorCentroExcursionista {
         vista.mostrarResultado(resultado.toString());
     }
 
-    // Gestión de Socios
+
+
+    /* -----------------------------------------------------------------------------------------------------------------
+----------------------------- GESTIÓN DE SOCIOS ------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+ */
+    // Menú SOCIOS
     private void gestionarSocios() {
         boolean volver = false;
         while (!volver) {
@@ -138,27 +157,94 @@ public class ControladorCentroExcursionista {
         }
     }
 
+    // Métodos de controlador de SOCIOS
+
+    //AGREGAR SOCIO ESTÁNDAR
     private void agregarSocioEstandar() {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = vista.leerNumeroSocio();
         String nif = vista.leerNif();
-        String tipoSeguro = vista.leerTipoSeguro();
-        TipoSeguro seguroEnum = TipoSeguro.valueOf(tipoSeguro.toUpperCase());
-        Seguro seguro = new Seguro(seguroEnum, seguroEnum == TipoSeguro.BASICO ? 50 : 100);
-        SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
+
+        //Mostramos el menu para seleccionar el tipo
+        vista.seleccionarTipoSeguro();
+        int opcionSeguro = vista.leerOpcion();
+
+        TipoSeguro seguroEnum;
+        double precio;
+        switch(opcionSeguro){
+            case 1:
+                seguroEnum = TipoSeguro.BASICO;
+                precio = 50;
+                break;
+            case 2:
+                seguroEnum = TipoSeguro.COMPLETO;
+                precio = 100;
+                break;
+            default:
+                vista.mostrarResultado("Opción de seguro no válida. Se asignará el seguro Básico por defecto");
+                seguroEnum = TipoSeguro.BASICO;
+                precio = 50;
+                break;
+        }
+        // Crear el seguro con el precio adecuado
+        Seguro seguro = new Seguro(seguroEnum, precio);
+
+        //Crear el socio estándar
+        SocioEstandar socio = new SocioEstandar(numeroSocio,nombre,nif,seguro);
+
+        //Añadir el socio al centro
         centro.añadirSocioEstandar(socio);
-        vista.mostrarResultado("Socio Estándar añadido correctamente.");
+
+        //Mostrar el resultado
+        vista.mostrarResultado(("Socio Estándar añadido correctamente."));
     }
 
+
+    // MODIFICAR SEGURO SOCIO ESTÁNDAR
     private void modificarSeguroSocioEstandar() {
+        // Mostrar la lista de socios estándar
+        mostrarSociosEstandar();
+
         int numeroSocio = vista.leerNumeroSocio();
-        String tipoSeguro = vista.leerTipoSeguro();
-        TipoSeguro seguroEnum = TipoSeguro.valueOf(tipoSeguro.toUpperCase());
-        Seguro nuevoSeguro = new Seguro(seguroEnum, seguroEnum == TipoSeguro.BASICO ? 50 : 100);
+
+        //Mostramos mensaje aclarativo
+        vista.mostrarResultado("Seleccione el tipo de seguro al que quiere cambiar:");
+
+        // Mostramos el menú para seleccionar el tipo de seguro (igual que en agregarSocioEstandar)
+        vista.seleccionarTipoSeguro();
+        int opcionSeguro = vista.leerOpcion();
+
+        TipoSeguro seguroEnum;
+        double precio;
+        switch (opcionSeguro) {
+            case 1:
+                seguroEnum = TipoSeguro.BASICO;
+                precio = 50;
+                break;
+            case 2:
+                seguroEnum = TipoSeguro.COMPLETO;
+                precio = 100;
+                break;
+            default:
+                vista.mostrarResultado("Opción de seguro no válida. Se asignará el seguro Básico por defecto.");
+                seguroEnum = TipoSeguro.BASICO;
+                precio = 50;
+                break;
+        }
+
+
+        // Crear el nuevo seguro con el tipo y precio seleccionados
+        Seguro nuevoSeguro = new Seguro(seguroEnum, precio);
+
+        // Modificar el seguro del socio en el centro
         centro.modificarSeguroSocioEstandar(numeroSocio, nuevoSeguro);
+
+        // Mostrar el resultado
         vista.mostrarResultado("Seguro modificado correctamente.");
     }
 
+
+    // AGREGAR SOCIO FEDERADO
     private void agregarSocioFederado() {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = vista.leerNumeroSocio();
@@ -170,22 +256,34 @@ public class ControladorCentroExcursionista {
         vista.mostrarResultado("Socio Federado añadido correctamente.");
     }
 
+
+    //AGREGAR SOCIO INFANTIL
     private void agregarSocioInfantil() {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = vista.leerNumeroSocio();
+
+        // Mostrar la lista de socios estándar y federados
+        mostrarSociosEstandarYFederados();
+
+        // Pedir al usuario que seleccione el número de socio del progenitor
         int numeroSocioProgenitor = vista.leerNumeroSocioProgenitor();
+
+        // Buscar el progenitor en la lista de socios
         Socio progenitor = centro.mostrarSocios().stream()
-                .filter(s -> s.getNumeroSocio() == numeroSocioProgenitor)
+                .filter(s -> (s instanceof SocioEstandar || s instanceof SocioFederado) && s.getNumeroSocio() == numeroSocioProgenitor)
                 .findFirst().orElse(null);
+
         if (progenitor != null) {
-            SocioInfantil socio = new SocioInfantil(numeroSocio, nombre, progenitor);
-            centro.añadirSocioInfantil(socio);
-            vista.mostrarResultado("Socio Infantil añadido correctamente.");
+            SocioInfantil socioInfantil = new SocioInfantil(numeroSocio, nombre, progenitor);
+            centro.añadirSocioInfantil(socioInfantil);
+            vista.mostrarResultado("Socio Infantil añadido correctamente. Progenitor: " + progenitor.getNombre());
         } else {
-            vista.mostrarResultado("Progenitor no encontrado.");
+            vista.mostrarResultado("Progenitor no encontrado. No se puede añadir el socio infantil.");
         }
     }
 
+
+    // ELIMINAR SOCIO
     private void eliminarSocio() {
         int numeroSocio = vista.leerNumeroSocio();
         try {
@@ -196,6 +294,8 @@ public class ControladorCentroExcursionista {
         }
     }
 
+
+    //MOSTRAR SOCIOS
     private void mostrarSocios() {
         List<Socio> socios = centro.mostrarSocios();
         StringBuilder resultado = new StringBuilder("Lista de socios:\n");
@@ -205,13 +305,64 @@ public class ControladorCentroExcursionista {
         vista.mostrarResultado(resultado.toString());
     }
 
+
+    // MOSTRAR FACTURA MENSUAL
     private void mostrarFacturaMensualPorSocio() {
         int numeroSocio = vista.leerNumeroSocio();
         double factura = centro.calcularFacturaMensualPorSocio(numeroSocio);
         vista.mostrarResultado("Factura mensual: " + factura);
     }
 
-    // Gestión de Inscripciones
+    //Métodos Auxiliares SOCIOS
+
+    // MOSTRAR SOCIOS ESTÁNDAR Y FEDERADOS
+    private void mostrarSociosEstandarYFederados() {
+        List<Socio> socios = centro.mostrarSocios();  // Obtener la lista de todos los socios
+
+        // Cabecera de la tabla
+        String formato = "| %-12s | %-20s | %-10s |\n";
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+        vista.mostrarResultado(String.format("| Número Socio | Nombre               | Tipo       |"));
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+
+        // Mostrar cada socio estándar o federado con línea de separación
+        for (Socio socio : socios) {
+            if (socio instanceof SocioEstandar || socio instanceof SocioFederado) {
+                String tipoSocio = socio instanceof SocioEstandar ? "Estándar" : "Federado";
+                vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio));
+                // Añadir una línea de separación entre cada fila de socio
+                vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+            }
+        }
+    }
+
+
+    // MOSTRAR SOCIOS ESTANDAR
+    private void mostrarSociosEstandar() {
+        List<Socio> socios = centro.mostrarSocios();  // Obtener la lista de todos los socios
+
+        // Cabecera de la tabla
+        String formato = "| %-12s | %-20s | %-10s |\n";
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+        vista.mostrarResultado(String.format("| Número Socio | Nombre               | Tipo       |"));
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+
+        // Mostrar cada socio estándar con línea de separación
+        for (Socio socio : socios) {
+            if (socio instanceof SocioEstandar) {  // Filtrar solo los socios estándar
+                String tipoSocio = "Estándar";
+                vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio));
+                // Añadir una línea de separación entre cada fila de socio
+                vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+            }
+        }
+    }
+
+    /* -----------------------------------------------------------------------------------------------------------------
+----------------------------- GESTIÓN DE INSCRIPCIONES -----------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+*/
+    // Menú INSCRIPCIONES
     private void gestionarInscripciones() {
         boolean volver = false;
         while (!volver) {
@@ -236,6 +387,9 @@ public class ControladorCentroExcursionista {
         }
     }
 
+    // Métodos de controlador de INSCRIPCIONES
+
+    // AGREGAR INSCRIPCIÓN
     private void agregarInscripcion() {
         int numeroSocio = vista.leerNumeroSocio();
         String codigoExcursion = vista.leerCodigoExcursion();
@@ -257,6 +411,8 @@ public class ControladorCentroExcursionista {
         }
     }
 
+
+    // ELIMINAR INSCRIPCIÓN
     private void eliminarInscripcion() {
         int numeroInscripcion = vista.leerNumeroInscripcion();
         try {
@@ -267,6 +423,8 @@ public class ControladorCentroExcursionista {
         }
     }
 
+
+    // MOSTRAR INSCRIPCIONES
     private void mostrarInscripciones() {
         List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
         StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
