@@ -139,24 +139,6 @@ public class VistaCentroExcursionista {
         return scanner.nextLine();
     }
 
-    public String leerFechaExcursion() {
-        LocalDate fecha = null;
-        boolean entradaValida = false;
-
-        while (!entradaValida) {
-            try {
-                System.out.print("Introduce la fecha de la excursión (YYYY-MM-DD): ");
-                String fechaStr = scanner.next();
-                fecha = LocalDate.parse(fechaStr);  // Validar que sea una fecha válida
-                entradaValida = true;
-            } catch (DateTimeParseException e) {
-                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD.");
-            }
-        }
-
-        return fecha.toString();
-    }
-
     public int leerNumeroDiasExcursion() {
         int numeroDias = -1;
         boolean entradaValida = false;
@@ -281,6 +263,15 @@ public class VistaCentroExcursionista {
         return numeroInscripcion;
     }
 
+    public int mostrarFiltroInscripciones() {
+        mostrarResultado("1. Ver todas las inscripciones");
+        mostrarResultado("2. Filtrar por socio");
+        mostrarResultado("3. Filtrar por fechas");
+        mostrarResultado("Seleccione una opción:");
+
+        return leerOpcion();
+    }
+
 
 
     // =============================== Métodos genéricos para mostrar datos ============================================
@@ -304,5 +295,23 @@ public class VistaCentroExcursionista {
         }
 
         return opcion;
+    }
+
+    public String leerFecha() {
+        LocalDate fecha = null;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce la fecha de la excursión (YYYY-MM-DD): ");
+                String fechaStr = scanner.next();
+                fecha = LocalDate.parse(fechaStr);  // Validar que sea una fecha válida
+                entradaValida = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD.");
+            }
+        }
+
+        return fecha.toString();
     }
 }

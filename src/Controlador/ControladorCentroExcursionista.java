@@ -79,7 +79,7 @@ public class ControladorCentroExcursionista {
     private void agregarExcursion() {
         String codigo = vista.leerCodigoExcursion();
         String descripcion = vista.leerDescripcionExcursion();
-        String fechaStr = vista.leerFechaExcursion();
+        String fechaStr = vista.leerFecha();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaLocal = LocalDate.parse(fechaStr, formatter);
         LocalDate fecha = java.sql.Date.valueOf(fechaLocal).toLocalDate();
@@ -93,8 +93,8 @@ public class ControladorCentroExcursionista {
     //MOSTRAR EXCURSIONES
     private void mostrarExcursionesConFiltro() {
         vista.mostrarResultado("Introduce las fechas para filtrar las excursiones.");
-        String fechaInicioStr = vista.leerFechaExcursion();
-        String fechaFinStr = vista.leerFechaExcursion();
+        String fechaInicioStr = vista.leerFecha();
+        String fechaFinStr = vista.leerFecha();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
         LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
@@ -106,6 +106,21 @@ public class ControladorCentroExcursionista {
         vista.mostrarResultado(resultado.toString());
     }
 
+    private void mostrarExcursiones() {
+        List<Excursion> excursiones = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX);
+
+        // Cabecera de la tabla
+        String formato = "| %-10s | %-20s | %-10s |\n";
+        vista.mostrarResultado(String.format("+------------+----------------------+------------+"));
+        vista.mostrarResultado(String.format("| Código     | Descripción           | Fecha      |"));
+        vista.mostrarResultado(String.format("+------------+----------------------+------------+"));
+
+        // Mostrar cada excursión con línea de separación
+        for (Excursion excursion : excursiones) {
+            vista.mostrarResultado(String.format(formato, excursion.getCodigo(), excursion.getDescripcion(), excursion.getFecha()));
+            vista.mostrarResultado(String.format("+------------+----------------------+------------+"));
+        }
+    }
 
 
     /* -----------------------------------------------------------------------------------------------------------------
@@ -146,11 +161,11 @@ public class ControladorCentroExcursionista {
     // Métodos de controlador de SOCIOS
 
     //MENÚ AÑADIR NOMBRE
-    private Socio agregarSocio(){
+    private Socio agregarSocio() {
         vista.mostrarTipoSocios();
         int tipoSocio = vista.leerOpcion();
         Socio socio = null;
-        switch (tipoSocio){
+        switch (tipoSocio) {
             case 1:
                 agregarSocioEstandar();
                 break;
@@ -179,7 +194,7 @@ public class ControladorCentroExcursionista {
 
         TipoSeguro seguroEnum;
         double precio;
-        switch(opcionSeguro){
+        switch (opcionSeguro) {
             case 1:
                 seguroEnum = TipoSeguro.BASICO;
                 precio = 50;
@@ -198,7 +213,7 @@ public class ControladorCentroExcursionista {
         Seguro seguro = new Seguro(seguroEnum, precio);
 
         //Crear el socio estándar
-        SocioEstandar socio = new SocioEstandar(numeroSocio,nombre,nif,seguro);
+        SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
 
         //Añadir el socio al centro
         centro.añadirSocioEstandar(socio);
@@ -356,17 +371,6 @@ public class ControladorCentroExcursionista {
         }
     }
 
-    // Método para mostrar todos los socios
-    private void mostrarTodosLosSocios() {
-        List<Socio> socios = centro.mostrarSocios();
-        StringBuilder resultado = new StringBuilder("Lista de todos los socios:\n");
-        for (Socio socio : socios) {
-            resultado.append(socio.toString()).append("\n");
-        }
-        vista.mostrarResultado(resultado.toString());
-    }
-
-
     // MOSTRAR FACTURA MENSUAL
     private void mostrarFacturaMensualPorSocio() {
         int numeroSocio = vista.leerNumeroSocio();
@@ -458,6 +462,25 @@ public class ControladorCentroExcursionista {
             }
         }
     }
+
+    private void mostrarTodosLosSocios() {
+        List<Socio> socios = centro.mostrarSocios();  // Obtener la lista de todos los socios
+
+        // Cabecera de la tabla
+        String formato = "| %-12s | %-20s | %-10s |\n";
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+        vista.mostrarResultado(String.format("| Número Socio | Nombre               | Tipo       |"));
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+
+        // Mostrar cada socio con línea de separación
+        for (Socio socio : socios) {
+            String tipoSocio = socio instanceof SocioEstandar ? "Estándar" :
+                    socio instanceof SocioFederado ? "Federado" : "Infantil";
+            vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio));
+            vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+        }
+    }
+
     /* -----------------------------------------------------------------------------------------------------------------
 ----------------------------- GESTIÓN DE INSCRIPCIONES -----------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -491,6 +514,9 @@ public class ControladorCentroExcursionista {
 
     // AGREGAR INSCRIPCIÓN
     private void agregarInscripcion() {
+        // Mostrar la tabla de socios antes de leer el número de socio
+        mostrarSocios();  // Mostrar la tabla de todos los socios
+
         int numeroSocio = vista.leerNumeroSocio();
 
         // Buscar el socio en la lista de socios
@@ -519,6 +545,9 @@ public class ControladorCentroExcursionista {
                     return;
             }
         }
+
+        // Mostrar la tabla de excursiones antes de pedir el código de excursión
+        mostrarExcursiones();  // Mostrar la tabla de excursiones disponibles
 
         String codigoExcursion = vista.leerCodigoExcursion();
         // Buscar la excursión
@@ -552,11 +581,54 @@ public class ControladorCentroExcursionista {
 
     // MOSTRAR INSCRIPCIONES
     private void mostrarInscripciones() {
-        List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
-        StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
-        for (Inscripcion inscripcion : inscripciones) {
-            resultado.append(inscripcion.toString()).append("\n");
+        // Mostrar el menú
+        int opcion = vista.mostrarFiltroInscripciones();
+
+        List<Inscripcion> inscripciones;
+
+        switch (opcion) {
+            case 1:
+                // Mostrar todas las inscripciones
+                inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
+                break;
+            case 2:
+                // Mostrar la tabla de todos los socios
+                mostrarTodosLosSocios(); // Mostrar tabla de socios
+
+                // Pedir al usuario que seleccione el número de socio
+                int numeroSocio = vista.leerNumeroSocio();
+
+                // Filtrar las inscripciones por el socio seleccionado
+                inscripciones = centro.mostrarInscripcionesPorSocio(numeroSocio);
+                break;
+            case 3:
+                // Filtrar por fechas, similar a la función mostrarExcursionesConFiltro
+                vista.mostrarResultado("Introduce las fechas para filtrar las inscripciones.");
+                String fechaInicioStr = vista.leerFecha(); // Leer fecha de inicio como String
+                String fechaFinStr = vista.leerFecha();    // Leer fecha de fin como String
+
+                // Convertir las fechas de String a LocalDate usando un DateTimeFormatter
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
+                LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
+
+                // Filtrar las inscripciones por el rango de fechas
+                inscripciones = centro.mostrarInscripcionesPorFechas(fechaInicio, fechaFin);
+                break;
+            default:
+                vista.mostrarResultado("Opción no válida.");
+                return;
         }
-        vista.mostrarResultado(resultado.toString());
+
+        // Mostrar las inscripciones
+        if (inscripciones.isEmpty()) {
+            vista.mostrarResultado("No se encontraron inscripciones.");
+        } else {
+            StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
+            for (Inscripcion inscripcion : inscripciones) {
+                resultado.append(inscripcion.toString()).append("\n");
+            }
+            vista.mostrarResultado(resultado.toString());
+        }
     }
 }
