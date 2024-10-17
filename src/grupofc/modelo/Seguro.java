@@ -23,9 +23,8 @@ public class Seguro {
     // Método toString para mostrar información sobre el seguro
     @Override
     public String toString() {
-        return "grupofc.modelo.Seguro {" +
-                "Tipo = " + tipo +
-                "Precio = " + precio +
-                 '}';
+        return "\n- INFORMACION DEL SEGURO -" +
+                "\nTipo: " + tipo +
+                "\nPrecio: " + precio;
     }
 }

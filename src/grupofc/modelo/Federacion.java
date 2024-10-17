@@ -21,10 +21,9 @@ public class Federacion {
 
     @Override
     public String toString() {
-        return "grupofc.modelo.Federacion {" +
-                "codigo ='" + codigo + '\'' +
-                ", nombre ='" + nombre + '\'' +
-                 '}';
+        return "\n- INFORMACIÓN DE LA FEDERACIÓN -" +
+                "\nCódigo: " + codigo +
+                "\nNombre: " + nombre;
     }
 
 }

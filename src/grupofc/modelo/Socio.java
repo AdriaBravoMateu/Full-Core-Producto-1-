@@ -30,7 +30,7 @@ public abstract class Socio {
     // incluyendo su número de socio y nombre.
     @Override
     public String toString() {
-        return "Información del Socio:" +
+        return "\n- INFORMACION DEL SOCIO -" +
                 "\nNúmero de Socio: " + getNumeroSocio() +
                 "\nNombre de Socio: " + getNombre() +
                 "\n";
