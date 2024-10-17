@@ -254,8 +254,8 @@ public class ControladorCentroExcursionista {
 
         //Mostrar las feeraciones disponibles
         List<Federacion> federaciones = centro.getFederaciones();
-        vista.mostrarFederaciones(federaciones);
-        int opcionFederacion = vista.leerOpcion();
+
+        int opcionFederacion = vista.mostrarFederaciones(federaciones);
 
         SocioFederado socio = null;
         //Validar la opción seleccionada y obtener la federación
@@ -317,8 +317,41 @@ public class ControladorCentroExcursionista {
 
     //MOSTRAR SOCIOS
     private void mostrarSocios() {
+        vista.mostrarOpcionMostrarSocios();  // Muestra el menú "Todos los Socios o Filtrar por tipo"
+        int opcion = vista.leerOpcion();
+
+        switch (opcion) {
+            case 1:
+                mostrarTodosLosSocios();  // Llama al método para mostrar todos los socios
+                break;
+            case 2:
+                vista.mostrarOpcionesFiltrarSocios();  // Muestra el submenú para seleccionar el tipo de socio
+                int tipoSocio = vista.leerOpcion();
+                switch (tipoSocio) {
+                    case 1:
+                        mostrarSociosEstandar();  // Muestra solo los socios estándar
+                        break;
+                    case 2:
+                        mostrarSociosFederados();  // Muestra solo los socios federados
+                        break;
+                    case 3:
+                        mostrarSociosInfantiles();  // Muestra solo los socios infantiles
+                        break;
+                    default:
+                        vista.mostrarResultado("Opción no válida.");
+                        break;
+                }
+                break;
+            default:
+                vista.mostrarResultado("Opción no válida.");
+                break;
+        }
+    }
+
+    // Método para mostrar todos los socios
+    private void mostrarTodosLosSocios() {
         List<Socio> socios = centro.mostrarSocios();
-        StringBuilder resultado = new StringBuilder("Lista de socios:\n");
+        StringBuilder resultado = new StringBuilder("Lista de todos los socios:\n");
         for (Socio socio : socios) {
             resultado.append(socio.toString()).append("\n");
         }
@@ -378,6 +411,45 @@ public class ControladorCentroExcursionista {
         }
     }
 
+    private void mostrarSociosFederados() {
+        List<Socio> socios = centro.mostrarSocios();  // Obtener la lista de todos los socios
+
+        // Cabecera de la tabla
+        String formato = "| %-12s | %-20s | %-10s |\n";
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+        vista.mostrarResultado(String.format("| Número Socio | Nombre               | Tipo       |"));
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+
+        // Mostrar cada socio estándar con línea de separación
+        for (Socio socio : socios) {
+            if (socio instanceof SocioFederado) {  // Filtrar solo los socios federados
+                String tipoSocio = "Federado";
+                vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio));
+                // Añadir una línea de separación entre cada fila de socio
+                vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+            }
+        }
+    }
+
+    private void mostrarSociosInfantiles() {
+        List<Socio> socios = centro.mostrarSocios();  // Obtener la lista de todos los socios
+
+        // Cabecera de la tabla
+        String formato = "| %-12s | %-20s |";
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+        vista.mostrarResultado(String.format("| Número Socio | Nombre               | Tipo       |"));
+        vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+
+        // Mostrar cada socio estándar con línea de separación
+        for (Socio socio : socios) {
+            if (socio instanceof SocioInfantil) {  // Filtrar solo los socios infantiles
+                String tipoSocio = "Infantil";
+                vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio));
+                // Añadir una línea de separación entre cada fila de socio
+                vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
+            }
+        }
+    }
     /* -----------------------------------------------------------------------------------------------------------------
 ----------------------------- GESTIÓN DE INSCRIPCIONES -----------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -412,7 +484,6 @@ public class ControladorCentroExcursionista {
     // AGREGAR INSCRIPCIÓN
     private void agregarInscripcion() {
         int numeroSocio = vista.leerNumeroSocio();
-        String codigoExcursion = vista.leerCodigoExcursion();
 
         // Buscar el socio en la lista de socios
         Socio socio = centro.mostrarSocios().stream()
@@ -441,6 +512,7 @@ public class ControladorCentroExcursionista {
             }
         }
 
+        String codigoExcursion = vista.leerCodigoExcursion();
         // Buscar la excursión
         Excursion excursion = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX).stream()
                 .filter(e -> e.getCodigo().equals(codigoExcursion))

@@ -80,9 +80,9 @@ public class VistaCentroExcursionista {
                 System.out.printf("%d. %s\n", (i + 1), federaciones.get(i).getNombre());
             }
             System.out.print("Elige una opción: ");
-
+            opcion = scanner.nextInt();
+            scanner.nextLine();
             try {
-                opcion = scanner.nextInt();
                 if (opcion >= 1 && opcion <= federaciones.size()) {
                     entradaValida = true;
                 } else {
@@ -95,6 +95,21 @@ public class VistaCentroExcursionista {
         }
 
         return opcion;
+    }
+
+    // Menú para elegir entre todos los socios o filtrar por tipo
+    public void mostrarOpcionMostrarSocios() {
+        System.out.println("1. Mostrar todos los socios");
+        System.out.println("2. Filtrar por tipo de socio");
+        System.out.print("Elige una opción: ");
+    }
+
+    // Menú para filtrar por tipo de socio
+    public void mostrarOpcionesFiltrarSocios() {
+        System.out.println("1. Socios Estándar");
+        System.out.println("2. Socios Federados");
+        System.out.println("3. Socios Infantiles");
+        System.out.print("Elige una opción: ");
     }
 
     /* -----------------------------------------------------------------------------------------------------------------
