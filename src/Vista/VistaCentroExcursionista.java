@@ -60,12 +60,6 @@ public class VistaCentroExcursionista {
         System.out.println("2. Completo");
     }
 
-
-    public int mostrarNumeroSocioProgenitor(){
-        System.out.println("Introduce el número de socio del progenitor seleccionado:");
-        return scanner.nextInt();
-    }
-
     public void mostrarFederaciones(List<Federacion> federaciones) {
         System.out.println("Seleccione una federación:");
         for (int i = 0; i < federaciones.size(); i++) {
@@ -142,12 +136,6 @@ public class VistaCentroExcursionista {
         System.out.print("Introduce el número de socio del progenitor: ");
         return scanner.nextInt();
     }
-
-    public String leerFederacion() {
-        System.out.print("Introduce el nombre de la federación: ");
-        return scanner.next();
-    }
-
 
 
     // =============================== Métodos para leer datos de INSCRIPCIONES ========================================
