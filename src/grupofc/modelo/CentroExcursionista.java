@@ -159,6 +159,13 @@ public class CentroExcursionista {
                 .collect(Collectors.toList());
     }
 
+    // Mostrar inscripciones filtradas por excursion
+    public List<Inscripcion> mostrarInscripcionesPorExcursion(String codigoExcursion) {
+        return inscripciones.stream()
+                .filter(inscripcion -> inscripcion.getExcursion().getCodigo().equals(codigoExcursion))
+                .collect(Collectors.toList());
+    }
+
     // ==================== Métodos auxiliares ====================
 
     // Buscar un socio por número de socio

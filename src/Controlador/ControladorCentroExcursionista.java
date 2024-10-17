@@ -4,7 +4,9 @@ package Controlador;
 import grupofc.modelo.*;
 import Vista.VistaCentroExcursionista;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -328,6 +330,7 @@ public class ControladorCentroExcursionista {
 
     // ELIMINAR SOCIO
     private void eliminarSocio() {
+        mostrarTodosLosSocios();
         int numeroSocio = vista.leerNumeroSocio();
         try {
             centro.eliminarSocio(numeroSocio);
@@ -373,6 +376,7 @@ public class ControladorCentroExcursionista {
 
     // MOSTRAR FACTURA MENSUAL
     private void mostrarFacturaMensualPorSocio() {
+        mostrarTodosLosSocios();
         int numeroSocio = vista.leerNumeroSocio();
         double factura = centro.calcularFacturaMensualPorSocio(numeroSocio);
         vista.mostrarResultado("Factura mensual: " + factura);
@@ -569,12 +573,72 @@ public class ControladorCentroExcursionista {
 
     // ELIMINAR INSCRIPCIÓN
     private void eliminarInscripcion() {
+        // Obtener la lista de excursiones primero
+        List<Excursion> excursiones = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX);
+
+        // Verificar si hay excursiones disponibles
+        if (excursiones.isEmpty()) {
+            vista.mostrarResultado("No se han encontrado excursiones programadas.");
+            return;
+        }
+
+        // Mostrar la tabla de todas las excursiones
+        mostrarExcursiones();  // Función que muestra las excursiones en una tabla
+
+        // Pedir al usuario que seleccione el código de la excursión
+        String codigoExcursion = vista.leerCodigoExcursion();
+
+        // Buscar la excursión seleccionada
+        Excursion excursion = excursiones.stream()
+                .filter(e -> e.getCodigo().equals(codigoExcursion))
+                .findFirst().orElse(null);
+
+        if (excursion == null) {
+            vista.mostrarResultado("Excursión no encontrada.");
+            return;
+        }
+
+        // Obtener las inscripciones de la excursión
+        List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorExcursion(excursion.getCodigo());
+
+        // Verificar si hay inscripciones para la excursión
+        if (inscripciones.isEmpty()) {
+            vista.mostrarResultado("No hay inscripciones para esta excursión.");
+            return;
+        }
+
+        // Mostrar las inscripciones para la excursión seleccionada
+        mostrarInscripcionesDeExcursion(excursion);
+
+        // Pedir al usuario que seleccione la inscripción a eliminar
         int numeroInscripcion = vista.leerNumeroInscripcion();
+
+        // Buscar la inscripción seleccionada
+        Inscripcion inscripcion = inscripciones.stream()
+                .filter(i -> i.getNumeroInscripcion() == numeroInscripcion)
+                .findFirst().orElse(null);
+
+        // Verificar si la inscripción existe
+        if (inscripcion == null) {
+            vista.mostrarResultado("No existe ninguna inscripción con ese código.");
+            return;
+        }
+
+        // Verificar si quedan menos de 24 horas para la excursión
+        LocalDateTime fechaExcursion = excursion.getFecha().atStartOfDay();
+        LocalDateTime ahora = LocalDateTime.now();
+
+        if (Duration.between(ahora, fechaExcursion).toHours() < 24) {
+            vista.mostrarResultado("No se pudo eliminar la inscripción con tan poca antelación.");
+            return;
+        }
+
+        // Si quedan más de 24 horas, proceder a eliminar la inscripción
         try {
-            centro.eliminarInscripcion(numeroInscripcion);
+            centro.eliminarInscripcion(inscripcion.getNumeroInscripcion());
             vista.mostrarResultado("Inscripción eliminada correctamente.");
         } catch (Exception e) {
-            vista.mostrarResultado(e.getMessage());
+            vista.mostrarResultado("Error al eliminar la inscripción: " + e.getMessage());
         }
     }
 
@@ -593,7 +657,7 @@ public class ControladorCentroExcursionista {
                 break;
             case 2:
                 // Mostrar la tabla de todos los socios
-                mostrarTodosLosSocios(); // Mostrar tabla de socios
+                mostrarTodosLosSocios();
 
                 // Pedir al usuario que seleccione el número de socio
                 int numeroSocio = vista.leerNumeroSocio();
@@ -604,8 +668,8 @@ public class ControladorCentroExcursionista {
             case 3:
                 // Filtrar por fechas, similar a la función mostrarExcursionesConFiltro
                 vista.mostrarResultado("Introduce las fechas para filtrar las inscripciones.");
-                String fechaInicioStr = vista.leerFecha(); // Leer fecha de inicio como String
-                String fechaFinStr = vista.leerFecha();    // Leer fecha de fin como String
+                String fechaInicioStr = vista.leerFecha();
+                String fechaFinStr = vista.leerFecha();
 
                 // Convertir las fechas de String a LocalDate usando un DateTimeFormatter
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -629,6 +693,31 @@ public class ControladorCentroExcursionista {
                 resultado.append(inscripcion.toString()).append("\n");
             }
             vista.mostrarResultado(resultado.toString());
+        }
+    }
+
+    private void mostrarInscripcionesDeExcursion(Excursion excursion) {
+        List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorExcursion(excursion.getCodigo());
+
+        if (inscripciones.isEmpty()) {
+            vista.mostrarResultado("No hay inscripciones para esta excursión.");
+            return;
+        }
+
+        // Cabecera de la tabla
+        String formato = "| %-15s | %-20s | %-15s |\n";
+        vista.mostrarResultado(String.format("+-----------------+----------------------+-----------------+"));
+        vista.mostrarResultado(String.format("| Nº Inscripción  | Nombre del Socio     | Fecha Inscripción|"));
+        vista.mostrarResultado(String.format("+-----------------+----------------------+-----------------+"));
+
+        // Mostrar cada inscripción
+        for (Inscripcion inscripcion : inscripciones) {
+            vista.mostrarResultado(String.format(formato,
+                    inscripcion.getNumeroInscripcion(),
+                    inscripcion.getSocio().getNombre(),
+                    inscripcion.getFechaInscripcion().toString()));
+
+            vista.mostrarResultado(String.format("+-----------------+----------------------+-----------------+"));
         }
     }
 }
