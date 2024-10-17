@@ -70,7 +70,7 @@ public class ControladorCentroExcursionista {
         String fechaStr = vista.leerFechaExcursion();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaLocal = LocalDate.parse(fechaStr, formatter);
-        Date fecha = java.sql.Date.valueOf(fechaLocal);
+        LocalDate fecha = java.sql.Date.valueOf(fechaLocal).toLocalDate();
         int dias = vista.leerNumeroDiasExcursion();
         double precio = vista.leerPrecioInscripcion();
         Excursion excursion = new Excursion(codigo, descripcion, fecha, dias, precio);

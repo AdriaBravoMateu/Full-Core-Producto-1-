@@ -52,18 +52,20 @@ public class VistaCentroExcursionista {
 
     // Lee la opción elegida por el usuario
     public int leerOpcion() {
-        return scanner.nextInt();
+        int opcion = scanner.nextInt();
+        scanner.nextLine();
+        return opcion;
     }
 
     // === Métodos para leer datos de excursiones ===
     public String leerCodigoExcursion() {
         System.out.print("Introduce el código de la excursión: ");
-        return scanner.next();
+        return scanner.nextLine();
     }
 
     public String leerDescripcionExcursion() {
         System.out.print("Introduce la descripción de la excursión: ");
-        return scanner.next();
+        return scanner.nextLine();
     }
 
     public String leerFechaExcursion() {

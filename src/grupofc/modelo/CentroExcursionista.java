@@ -2,6 +2,7 @@ package grupofc.modelo;
 
 import grupofc.modelo.SocioFederado;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,12 +32,13 @@ public class CentroExcursionista {
     public List<Excursion> mostrarExcursionesConFiltro(LocalDate fechaInicio, LocalDate fechaFin) {
         return excursiones.stream()
                 .filter(excursion -> {
-                    LocalDate fechaExcursion = excursion.getFecha().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fechaExcursion = excursion.getFecha();  // getFecha() debe devolver un LocalDate
                     return (fechaExcursion.isEqual(fechaInicio) || fechaExcursion.isAfter(fechaInicio)) &&
                             (fechaExcursion.isEqual(fechaFin) || fechaExcursion.isBefore(fechaFin));
                 })
                 .collect(Collectors.toList());
     }
+
 
     // ==================== Gestión de Socios ====================
 
@@ -118,7 +120,7 @@ public class CentroExcursionista {
                 .findFirst()
                 .orElse(null);
         if (inscripcion != null) {
-            LocalDate fechaExcursion = inscripcion.getExcursion().getFecha().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+            LocalDate fechaExcursion = inscripcion.getExcursion().getFecha();  // Asegúrate de que getFecha() devuelva LocalDate
             if (fechaExcursion.isAfter(LocalDate.now())) {
                 inscripciones.remove(inscripcion);
             } else {
@@ -138,7 +140,7 @@ public class CentroExcursionista {
     public List<Inscripcion> mostrarInscripcionesPorFechas(LocalDate fechaInicio, LocalDate fechaFin) {
         return inscripciones.stream()
                 .filter(i -> {
-                    LocalDate fechaExcursion = i.getExcursion().getFecha().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+                    LocalDate fechaExcursion = i.getExcursion().getFecha();  // Asegúrate de que getFecha() devuelva LocalDate
                     return (fechaExcursion.isEqual(fechaInicio) || fechaExcursion.isAfter(fechaInicio)) &&
                             (fechaExcursion.isEqual(fechaFin) || fechaExcursion.isBefore(fechaFin));
                 })
