@@ -14,11 +14,21 @@ public class CentroExcursionista {
     private ArrayList<Excursion> excursiones;     // Lista de excursiones
     private ArrayList<Inscripcion> inscripciones; // Lista de inscripciones
 
+    private List<Federacion> federaciones; // Aquí almacenamos todas las federaciones
+
     // Constructor que inicializa las listas
     public CentroExcursionista() {
         socios = new ArrayList<>();
         excursiones = new ArrayList<>();
         inscripciones = new ArrayList<>();
+
+        // Precargamos las federaciones
+        this.federaciones = List.of(
+            new Federacion("FED001", "Federación Andaluza"),
+            new Federacion("FED002", "Federación Catalana"),
+            new Federacion("FED003", "Federación Madrileña")
+        );
+
     }
 
     // ==================== Gestión de Excursiones ====================
