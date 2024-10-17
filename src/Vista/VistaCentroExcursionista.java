@@ -1,7 +1,17 @@
 package Vista;
+
+//======================================================================================================================
+//IMPORTACIONES
 import java.util.Scanner;
 import java.util.List;
 import grupofc.modelo.Federacion;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+//Gestión de excepciones
+import java.util.InputMismatchException;
+//======================================================================================================================
+
+
 public class VistaCentroExcursionista {
     private Scanner scanner;
 
@@ -60,11 +70,31 @@ public class VistaCentroExcursionista {
         System.out.println("2. Completo");
     }
 
-    public void mostrarFederaciones(List<Federacion> federaciones) {
-        System.out.println("Seleccione una federación:");
-        for (int i = 0; i < federaciones.size(); i++) {
-            System.out.printf("%d. %s\n", (i + 1), federaciones.get(i).getNombre());
+    public int mostrarFederaciones(List<Federacion> federaciones) {
+        int opcion = -1;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            System.out.println("Seleccione una federación:");
+            for (int i = 0; i < federaciones.size(); i++) {
+                System.out.printf("%d. %s\n", (i + 1), federaciones.get(i).getNombre());
+            }
+            System.out.print("Elige una opción: ");
+
+            try {
+                opcion = scanner.nextInt();
+                if (opcion >= 1 && opcion <= federaciones.size()) {
+                    entradaValida = true;
+                } else {
+                    System.out.println("Error: Selección fuera de rango.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar un número válido.");
+                scanner.nextLine(); // Consumir la entrada incorrecta
+            }
         }
+
+        return opcion;
     }
 
     /* -----------------------------------------------------------------------------------------------------------------
@@ -95,31 +125,99 @@ public class VistaCentroExcursionista {
     }
 
     public String leerFechaExcursion() {
-        System.out.print("Introduce la fecha de la excursión (YYYY-MM-DD): ");
-        return scanner.next();
+        LocalDate fecha = null;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce la fecha de la excursión (YYYY-MM-DD): ");
+                String fechaStr = scanner.next();
+                fecha = LocalDate.parse(fechaStr);  // Validar que sea una fecha válida
+                entradaValida = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD.");
+            }
+        }
+
+        return fecha.toString();
     }
 
     public int leerNumeroDiasExcursion() {
-        System.out.print("Introduce el número de días de la excursión: ");
-        return scanner.nextInt();
+        int numeroDias = -1;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce el número de días de la excursión: ");
+                numeroDias = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar un número válido.");
+                scanner.nextLine(); // Consumir la entrada incorrecta
+            }
+        }
+
+        return numeroDias;
     }
 
+
     public double leerPrecioInscripcion() {
-        System.out.print("Introduce el precio de inscripción: ");
-        return scanner.nextDouble();
+        double precio = -1;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce el precio de inscripción: ");
+                precio = scanner.nextDouble();
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar un número válido para el precio.");
+                scanner.nextLine();  // Consumir la entrada incorrecta
+            }
+        }
+
+        return precio;
     }
 
 
 
 // =============================== Métodos para leer datos de SOCIOS ===================================================
     public String leerNombreSocio() {
-        System.out.print("Introduce el nombre del socio: ");
-        return scanner.next();
+        String nombre = "";
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            System.out.print("Introduce el nombre del socio: ");
+            nombre = scanner.next();
+            if (!nombre.trim().isEmpty()) {
+                entradaValida = true;
+            } else {
+                System.out.println("Error: El nombre no puede estar vacío.");
+            }
+        }
+
+        return nombre;
     }
 
+
     public int leerNumeroSocio() {
-        System.out.print("Introduce el número de socio: ");
-        return scanner.nextInt();
+        int numeroSocio = -1;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce el número de socio: ");
+                numeroSocio = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea
+                entradaValida = true;  // Si no ocurre excepción, marcamos como válida
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar un número válido.");
+                scanner.nextLine();  // Consumir la entrada incorrecta
+            }
+        }
+
+        return numeroSocio;
     }
 
     public String leerNif() {
@@ -127,21 +225,45 @@ public class VistaCentroExcursionista {
         return scanner.next();
     }
 
-    public String leerTipoSeguro() {
-        System.out.print("Introduce el tipo de seguro (Basico/Completo): ");
-        return scanner.next();
-    }
 
     public int leerNumeroSocioProgenitor() {
-        System.out.print("Introduce el número de socio del progenitor: ");
-        return scanner.nextInt();
+        int numeroProgenitor = -1;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce el número de socio del progenitor: ");
+                numeroProgenitor = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar un número válido.");
+                scanner.nextLine(); // Consumir la entrada incorrecta
+            }
+        }
+
+        return numeroProgenitor;
     }
 
 
     // =============================== Métodos para leer datos de INSCRIPCIONES ========================================
     public int leerNumeroInscripcion() {
-        System.out.print("Introduce el número de inscripción: ");
-        return scanner.nextInt();
+        int numeroInscripcion = -1;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce el número de inscripción: ");
+                numeroInscripcion = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar un número válido.");
+                scanner.nextLine(); // Consumir la entrada incorrecta
+            }
+        }
+
+        return numeroInscripcion;
     }
 
 
@@ -152,8 +274,20 @@ public class VistaCentroExcursionista {
     }
 
     public int leerOpcion() {
-        int opcion = scanner.nextInt();
-        scanner.nextLine();
+        int opcion = -1;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                opcion = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar un número válido.");
+                scanner.nextLine(); // Consumir la entrada incorrecta
+            }
+        }
+
         return opcion;
     }
 }

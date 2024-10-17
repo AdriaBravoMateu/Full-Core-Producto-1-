@@ -160,7 +160,7 @@ public class ControladorCentroExcursionista {
     // Métodos de controlador de SOCIOS
 
     //AGREGAR SOCIO ESTÁNDAR
-    private void agregarSocioEstandar() {
+    private Socio agregarSocioEstandar() {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = vista.leerNumeroSocio();
         String nif = vista.leerNif();
@@ -197,6 +197,8 @@ public class ControladorCentroExcursionista {
 
         //Mostrar el resultado
         vista.mostrarResultado(("Socio Estándar añadido correctamente."));
+
+        return socio;
     }
 
 
@@ -245,7 +247,7 @@ public class ControladorCentroExcursionista {
 
 
     // AGREGAR SOCIO FEDERADO
-    private void agregarSocioFederado() {
+    private Socio agregarSocioFederado() {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = vista.leerNumeroSocio();
         String nif = vista.leerNif();
@@ -255,23 +257,25 @@ public class ControladorCentroExcursionista {
         vista.mostrarFederaciones(federaciones);
         int opcionFederacion = vista.leerOpcion();
 
+        SocioFederado socio = null;
         //Validar la opción seleccionada y obtener la federación
         if (opcionFederacion >= 1 && opcionFederacion <= federaciones.size()) {
             Federacion federacionSeleccionada = federaciones.get(opcionFederacion - 1);
 
             // Crear el socio federado
-            SocioFederado socio = new SocioFederado(numeroSocio, nombre, nif, federacionSeleccionada);
+            socio = new SocioFederado(numeroSocio, nombre, nif, federacionSeleccionada);
             centro.añadirSocioFederado(socio);
             vista.mostrarResultado("Socio Federado añadido correctamente.");
+
         } else {
             vista.mostrarResultado("Opción de federación no válida.");
         }
-
+        return socio;
     }
 
 
     //AGREGAR SOCIO INFANTIL
-    private void agregarSocioInfantil() {
+    private Socio agregarSocioInfantil() {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = vista.leerNumeroSocio();
 
@@ -286,13 +290,16 @@ public class ControladorCentroExcursionista {
                 .filter(s -> (s instanceof SocioEstandar || s instanceof SocioFederado) && s.getNumeroSocio() == numeroSocioProgenitor)
                 .findFirst().orElse(null);
 
+        SocioInfantil socioInfantil = null;
+
         if (progenitor != null) {
-            SocioInfantil socioInfantil = new SocioInfantil(numeroSocio, nombre, progenitor);
+            socioInfantil = new SocioInfantil(numeroSocio, nombre, progenitor);
             centro.añadirSocioInfantil(socioInfantil);
             vista.mostrarResultado("Socio Infantil añadido correctamente. Progenitor: " + progenitor.getNombre());
         } else {
             vista.mostrarResultado("Progenitor no encontrado. No se puede añadir el socio infantil.");
         }
+        return socioInfantil;
     }
 
 
@@ -406,24 +413,50 @@ public class ControladorCentroExcursionista {
     private void agregarInscripcion() {
         int numeroSocio = vista.leerNumeroSocio();
         String codigoExcursion = vista.leerCodigoExcursion();
+
+        // Buscar el socio en la lista de socios
         Socio socio = centro.mostrarSocios().stream()
                 .filter(s -> s.getNumeroSocio() == numeroSocio)
                 .findFirst().orElse(null);
+
+        // Si el socio no existe, permitir agregarlo
+        if (socio == null) {
+            vista.mostrarResultado("Socio no encontrado. Se procederá a añadir un nuevo socio.");
+            vista.mostrarTipoSocios();  // Mostrar menú para seleccionar tipo de socio
+            int tipoSocio = vista.leerOpcion();
+
+            switch (tipoSocio) {
+                case 1:
+                    socio = agregarSocioEstandar();  // Llamar a la función para agregar un socio estándar
+                    break;
+                case 2:
+                    socio = agregarSocioFederado();  // Llamar a la función para agregar un socio federado
+                    break;
+                case 3:
+                    socio = agregarSocioInfantil();  // Llamar a la función para agregar un socio infantil
+                    break;
+                default:
+                    vista.mostrarResultado("Opción no válida. No se ha podido añadir el socio.");
+                    return;
+            }
+        }
+
+        // Buscar la excursión
         Excursion excursion = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX).stream()
                 .filter(e -> e.getCodigo().equals(codigoExcursion))
                 .findFirst().orElse(null);
 
-        if (socio != null && excursion != null) {
+        // Continuar con la inscripción si la excursión existe
+        if (excursion != null) {
             int numeroInscripcion = vista.leerNumeroInscripcion();
             Date fecha = java.sql.Date.valueOf(LocalDate.now());
             Inscripcion inscripcion = new Inscripcion(numeroInscripcion, fecha, socio, excursion);
             centro.añadirInscripcion(inscripcion);
             vista.mostrarResultado("Inscripción añadida correctamente.");
         } else {
-            vista.mostrarResultado("Socio o excursión no encontrados.");
+            vista.mostrarResultado("Excursión no encontrada.");
         }
     }
-
 
     // ELIMINAR INSCRIPCIÓN
     private void eliminarInscripcion() {
