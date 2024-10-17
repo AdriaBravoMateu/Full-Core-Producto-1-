@@ -204,7 +204,7 @@ public class VistaCentroExcursionista {
 
         while (!entradaValida) {
             System.out.print("Introduce el nombre del socio: ");
-            nombre = scanner.next();
+            nombre = scanner.nextLine();
             if (!nombre.trim().isEmpty()) {
                 entradaValida = true;
             } else {
@@ -237,7 +237,7 @@ public class VistaCentroExcursionista {
 
     public String leerNif() {
         System.out.print("Introduce el NIF del socio: ");
-        return scanner.next();
+        return scanner.nextLine();
     }
 
 

@@ -120,21 +120,7 @@ public class ControladorCentroExcursionista {
             int opcion = vista.leerOpcion();
             switch (opcion) {
                 case 1:
-                    vista.mostrarTipoSocios();
-                    int tipoSocio = vista.leerOpcion();
-                    switch (tipoSocio){
-                        case 1:
-                            agregarSocioEstandar();
-                            break;
-                        case 2:
-                            agregarSocioFederado();
-                            break;
-                        case 3:
-                            agregarSocioInfantil();
-                            break;
-                        default:
-                            vista.mostrarResultado("Opción de tipo de socio no válida");
-                    }
+                    agregarSocio();
                     break;
                 case 2:
                     modificarSeguroSocioEstandar();
@@ -158,6 +144,28 @@ public class ControladorCentroExcursionista {
     }
 
     // Métodos de controlador de SOCIOS
+
+    //MENÚ AÑADIR NOMBRE
+    private Socio agregarSocio(){
+        vista.mostrarTipoSocios();
+        int tipoSocio = vista.leerOpcion();
+        Socio socio = null;
+        switch (tipoSocio){
+            case 1:
+                agregarSocioEstandar();
+                break;
+            case 2:
+                agregarSocioFederado();
+                break;
+            case 3:
+                agregarSocioInfantil();
+                break;
+            default:
+                vista.mostrarResultado("Opción de tipo de socio no válida");
+                break;
+        }
+        return socio;
+    }
 
     //AGREGAR SOCIO ESTÁNDAR
     private Socio agregarSocioEstandar() {
