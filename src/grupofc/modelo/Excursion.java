@@ -34,11 +34,11 @@ public class Excursion {
     public void setPrecioInscripcion(double precioInscripcion) {this.precioInscripcion = precioInscripcion;}
 
     public String toString(){
-        return "Excursión { Código de excursión = " + codigo + "\n " +
-                "Descripción = " + descripcion + "\n " +
-                "Fecha = " + fecha + "\n " +
-                "Número de Dias = " + numeroDias + "\n " +
-                "Precio Inscripción =" + precioInscripcion +
-                 "}";
+        return "\n- INFORMACIÓN DE LA EXCURSIÓN -" +
+                "\nCódigo de la Excursión: " + codigo +
+                "\nDescripción: " + descripcion +
+                "\nFecha: " + fecha +
+                "\nNúmero de Dias: " + numeroDias +
+                "\nPrecio Inscripción:" + precioInscripcion;
     }
 }

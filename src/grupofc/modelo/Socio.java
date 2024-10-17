@@ -20,19 +20,19 @@ public abstract class Socio {
     public void setNumeroSocio(int numeroSocio) {this.numeroSocio = numeroSocio;}
     public void setNombre(String nombre) {this.nombre = nombre;}
 
-    // Método abstracto
-    // Este método debe ser implementado por las clases que hereden de 'grupofc.modelo.Socio'.
+    // Metodo abstracto
+    // Este metodo debe ser implementado por las clases que hereden de 'grupofc.modelo.Socio'.
     // Cada tipo de socio calculará su factura mensual de forma distinta.
     public abstract double calcularFacturaMensual();
 
-    // Método toString
-    // Este método devuelve una representación en forma de cadena del socio,
+    // Metodo toString
+    // Este metodo devuelve una representación en forma de cadena del socio,
     // incluyendo su número de socio y nombre.
     @Override
     public String toString() {
-        return "grupofc.modelo.Socio {" +
-                "Número de grupofc.modelo.Socio = " + getNumeroSocio() + '\'' +
-                "Nombre = '" + getNombre() + '\''
-                ;
+        return "\n- INFORMACION DEL SOCIO -" +
+                "\nNúmero de Socio: " + getNumeroSocio() +
+                "\nNombre de Socio: " + getNombre() +
+                "\n";
     }
 }

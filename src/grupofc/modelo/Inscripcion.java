@@ -33,10 +33,10 @@ public class Inscripcion {
 
 
     public String toString(){
-        return "Inscripción {Número de inscripción = " + numeroInscripcion + "\n " +
-                "Fecha de la excursión = " + fechaInscripcion + "\n " +
-                "Número de socio = " + socio + "\n " +
-                "Excursión = " + excursion +
-                 "}";
+        return "\n- INFORMACIÓN DE LA INSCRIPCIÓN -" +
+                "\nNúmero de Inscripción: " + numeroInscripcion +
+                "\nFecha de la Excursión: " + fechaInscripcion +
+                "\nNúmero de Socio: " + socio +
+                "\nExcursión: " + excursion;
     }
 }
