@@ -12,8 +12,7 @@ public class SocioInfantil extends Socio {
     // y luego asigna el valor para el atributo propio de la clase grupofc.modelo.SocioInfantil (numeroSocioPadreOMadre).
     public SocioInfantil(int numeroSocio, String nombre, Socio progenitor) {
         super(numeroSocio, nombre);
-        this.progenitor = progenitor;
-        int numeroSocioProgenitor = progenitor.getNumeroSocio();
+        this.numeroSocioProgenitor = progenitor.getNumeroSocio();
     }
 
     //Getters
