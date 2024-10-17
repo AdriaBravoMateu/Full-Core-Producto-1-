@@ -27,15 +27,14 @@ public class SocioFederado extends Socio {
         return 10 * 0.95; // Cuota base de 10€ con un 5% de descuento (0.95)
     }
 
-    // Método toString
-    // Este método devuelve una representación en forma de cadena del socio federado
+    // Metodo toString
+    // Este metodo devuelve una representación en forma de cadena del socio federado
     // incluyendo su número de socio, nombre, nif y la federación a la que pertenece.
     @Override
     public String toString() {
         return super.toString() +
-                "Tipo de socio: Federado" + '\'' +
-                "NIF='" + nif + '\'' +
-                "grupofc.modelo.Federacion=" + federacion.getNombre() +
-                 '}';
+                "Tipo de socio: Federado" +
+                "\nNIF: " + nif +
+                "\nNombre de la Federación:" + federacion.getNombre();
     }
 }

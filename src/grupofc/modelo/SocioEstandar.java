@@ -24,30 +24,29 @@ public class SocioEstandar extends Socio {
     public void setNif(String nif) {this.nif = nif;}
     public void setSeguro(Seguro seguro) {this.seguro = seguro;}
 
-    // Método para modificar el seguro del socio
-    // Este método recibe un nuevo objeto grupofc.modelo.Seguro y lo asigna al socio estándar.
+    // Metodo para modificar el seguro del socio
+    // Este metodo recibe un nuevo objeto grupofc.modelo.Seguro y lo asigna al socio estándar.
     public void modificarSeguro(Seguro nuevoSeguro) {
         this.seguro = nuevoSeguro;  // Asigna el nuevo seguro al socio estándar
     }
 
-    // Implementación del método abstracto 'calcularFacturaMensual'
-    // Este método calcula el total a pagar por el socio estándar en su factura mensual.
+    // Implementación del metodo abstracto 'calcularFacturaMensual'
+    // Este metodo calcula el total a pagar por el socio estándar en su factura mensual.
     // En este caso, sumamos la cuota base de 10€ más el precio del seguro contratado.
     @Override
     public double calcularFacturaMensual() {
         return 10 + seguro.getPrecio(); // Cuota base de 10€ más el precio del seguro
     }
 
-    // Método toString
-    // Este método devuelve una representación en forma de cadena del socio estándar,
+    // Metodo toString
+    // Este metodo devuelve una representación en forma de cadena del socio estándar,
     // incluyendo su número de socio, nombre, NIF y detalles del seguro.
     @Override
     public String toString() {
         return super.toString() +
-                "Tipo de socio: Estándar" + '\'' +
-                "NIF = '" + nif + '\'' +
-                "grupofc.modelo.Seguro = " + seguro.getTipo() + '\'' +
-                "Precio grupofc.modelo.Seguro = " + seguro.getPrecio() +
-                 '}';
+                "Tipo de socio: Estándar" +
+                "\nNIF: " + nif +
+                "\nTipo de Seguro: " + seguro.getTipo() +
+                "\nPrecio del Seguro: " + seguro.getPrecio();
     }
 }

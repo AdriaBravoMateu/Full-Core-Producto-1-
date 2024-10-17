@@ -22,22 +22,21 @@ public class SocioInfantil extends Socio {
     public void setNumeroSocioProgenitor(int numeroSocioProgenitor) {this.numeroSocioProgenitor = numeroSocioProgenitor;}
 
 
-    // Implementación del método abstracto 'calcularFacturaMensual'
-    // Este método calcula el total a pagar por el socio infantil en su factura mensual.
+    // Implementación del metodo abstracto 'calcularFacturaMensual'
+    // Este metodo calcula el total a pagar por el socio infantil en su factura mensual.
     // En este caso, se aplica un descuento del 50% sobre la cuota base de 10€.
     @Override
     public double calcularFacturaMensual() {
         return 10 * 0.5; // Cuota base de 10€ con un 50% de descuento (0.5)
     }
 
-    // Método toString
-    // Este método devuelve una representación en forma de cadena del socio infantil
+    // Metodo toString
+    // Este metodo devuelve una representación en forma de cadena del socio infantil
     // incluyendo su número de socio, nombre y el número de socio de 1 progenitor.
     @Override
     public String toString() {
         return super.toString() +
-                "Tipo de socio: Infantil" + '\'' +
-                "Número de grupofc.modelo.Socio del progenitor = '" + numeroSocioProgenitor +
-                 '}';
+                "Tipo de socio: Infantil" +
+                "\nNúmero de Socio del progenitor: " + numeroSocioProgenitor;
     }
 }
