@@ -29,15 +29,23 @@ public class VistaCentroExcursionista {
     // Submenú de socios
     public void mostrarMenuSocios() {
         System.out.println("\nGestión de Socios");
-        System.out.println("1. Añadir Socio Estándar");
+        System.out.println("1. Añadir Socio");
         System.out.println("2. Modificar tipo de seguro de un socio estándar");
-        System.out.println("3. Añadir Socio Federado");
-        System.out.println("4. Añadir Socio Infantil");
-        System.out.println("5. Eliminar Socio");
-        System.out.println("6. Mostrar Socios (Todos o por tipo)");
-        System.out.println("7. Mostrar Factura mensual por socio");
-        System.out.println("8. Volver al menú principal");
+        System.out.println("3. Eliminar Socio");
+        System.out.println("4. Mostrar Socios (Todos o por tipo)");
+        System.out.println("5. Mostrar Factura mensual por socio");
+        System.out.println("6. Volver al menú principal");
         System.out.print("Elige una opción: ");
+    }
+    public void mostrarTipoSocios(){
+        System.out.println("1. Añadir Socio Estándar");
+        System.out.println("2. Añadir Socio Federado");
+        System.out.println("3. Añadir Socio Infantil");
+        System.out.print("Elige una opción: ");
+    }
+    public void seleccionarTipoSeguro(){
+        System.out.println("1. Básico");
+        System.out.println("2. Completo");
     }
 
     // Submenú de inscripciones

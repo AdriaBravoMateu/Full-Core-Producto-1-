@@ -101,27 +101,35 @@ public class ControladorCentroExcursionista {
             int opcion = vista.leerOpcion();
             switch (opcion) {
                 case 1:
-                    agregarSocioEstandar();
+                    vista.mostrarTipoSocios();
+                    int tipoSocio = vista.leerOpcion();
+                    switch (tipoSocio){
+                        case 1:
+                            agregarSocioEstandar();
+                            break;
+                        case 2:
+                            agregarSocioFederado();
+                            break;
+                        case 3:
+                            agregarSocioInfantil();
+                            break;
+                        default:
+                            vista.mostrarResultado("Opción de tipo de socio no válida");
+                    }
                     break;
                 case 2:
                     modificarSeguroSocioEstandar();
                     break;
                 case 3:
-                    agregarSocioFederado();
-                    break;
-                case 4:
-                    agregarSocioInfantil();
-                    break;
-                case 5:
                     eliminarSocio();
                     break;
-                case 6:
+                case 4:
                     mostrarSocios();
                     break;
-                case 7:
+                case 5:
                     mostrarFacturaMensualPorSocio();
                     break;
-                case 8:
+                case 6:
                     volver = true;
                     break;
                 default:
@@ -136,7 +144,7 @@ public class ControladorCentroExcursionista {
         String nif = vista.leerNif();
         String tipoSeguro = vista.leerTipoSeguro();
         TipoSeguro seguroEnum = TipoSeguro.valueOf(tipoSeguro.toUpperCase());
-        Seguro seguro = new Seguro(seguroEnum, seguroEnum == TipoSeguro.Basico ? 50 : 100);
+        Seguro seguro = new Seguro(seguroEnum, seguroEnum == TipoSeguro.BASICO ? 50 : 100);
         SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
         centro.añadirSocioEstandar(socio);
         vista.mostrarResultado("Socio Estándar añadido correctamente.");
@@ -146,7 +154,7 @@ public class ControladorCentroExcursionista {
         int numeroSocio = vista.leerNumeroSocio();
         String tipoSeguro = vista.leerTipoSeguro();
         TipoSeguro seguroEnum = TipoSeguro.valueOf(tipoSeguro.toUpperCase());
-        Seguro nuevoSeguro = new Seguro(seguroEnum, seguroEnum == TipoSeguro.Basico ? 50 : 100);
+        Seguro nuevoSeguro = new Seguro(seguroEnum, seguroEnum == TipoSeguro.BASICO ? 50 : 100);
         centro.modificarSeguroSocioEstandar(numeroSocio, nuevoSeguro);
         vista.mostrarResultado("Seguro modificado correctamente.");
     }
