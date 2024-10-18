@@ -1,8 +1,8 @@
-package Controlador;
+package grupoFullCoreControlador;
 
 //IMPORT
-import grupofc.modelo.*;
-import Vista.VistaCentroExcursionista;
+import grupoFullCore.modelo.*;
+import grupoFullCoreVista.VistaCentroExcursionista;
 
 import java.time.Duration;
 import java.time.LocalDate;

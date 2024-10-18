@@ -1,4 +1,4 @@
-package grupofc.modelo;
+package grupoFullCore.modelo;
 
 public enum TipoSeguro {
     BASICO,    // grupofc.modelo.Seguro básico

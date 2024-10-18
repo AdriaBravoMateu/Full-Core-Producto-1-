@@ -1,6 +1,4 @@
-package grupofc.modelo;
-
-import grupofc.modelo.TipoSeguro;
+package grupoFullCore.modelo;
 
 public class Seguro {
     // Atributos privados de la clase grupofc.modelo.Seguro

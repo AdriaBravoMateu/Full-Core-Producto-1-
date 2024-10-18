@@ -1,4 +1,4 @@
-package grupofc.modelo;
+package grupoFullCore.modelo;
 
 public class SocioFederado extends Socio {
 

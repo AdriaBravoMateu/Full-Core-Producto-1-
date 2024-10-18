@@ -1,4 +1,4 @@
-package grupofc.modelo;
+package grupoFullCore.modelo;
 
 import java.time.LocalDate;
 

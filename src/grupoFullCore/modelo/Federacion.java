@@ -1,4 +1,4 @@
-package grupofc.modelo;
+package grupoFullCore.modelo;
 
 public class Federacion {
     // Atributos privados de la clase grupofc.modelo.Federacion

@@ -1,10 +1,10 @@
-package Vista;
+package grupoFullCoreVista;
 
 //======================================================================================================================
 //IMPORTACIONES
 import java.util.Scanner;
 import java.util.List;
-import grupofc.modelo.Federacion;
+import grupoFullCore.modelo.Federacion;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 //Gestión de excepciones

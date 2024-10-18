@@ -1,7 +1,4 @@
-package grupofc.modelo;
-
-import grupofc.modelo.Seguro;
-import grupofc.modelo.Socio;
+package grupoFullCore.modelo;
 
 public class SocioEstandar extends Socio {
     // Atributos privados específicos de la clase grupofc.modelo.SocioEstandar

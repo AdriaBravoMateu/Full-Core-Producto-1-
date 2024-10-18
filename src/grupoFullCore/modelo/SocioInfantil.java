@@ -1,6 +1,4 @@
-package grupofc.modelo;
-
-import grupofc.modelo.Socio;
+package grupoFullCore.modelo;
 
 public class SocioInfantil extends Socio {
     // Atributo privado específico de la clase grupofc.modelo.SocioInfantil

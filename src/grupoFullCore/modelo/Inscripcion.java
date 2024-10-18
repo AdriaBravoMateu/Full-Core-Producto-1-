@@ -1,6 +1,4 @@
-package grupofc.modelo;
-
-import grupofc.modelo.Excursion;
+package grupoFullCore.modelo;
 
 import java.util.Date;
 

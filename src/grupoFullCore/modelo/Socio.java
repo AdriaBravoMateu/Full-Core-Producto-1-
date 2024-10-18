@@ -1,4 +1,4 @@
-package grupofc.modelo;
+package grupoFullCore.modelo;
 
 public abstract class Socio {
     // Atributos protegidos de la clase grupofc.modelo.Socio
