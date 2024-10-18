@@ -692,6 +692,8 @@ public class ControladorCentroExcursionista {
         }
     }
 
+
+    // Es un método auxiliar para mostrar las Inscripciones de forma más visual.
     private void mostrarInscripcionesEnTabla(List<Inscripcion> inscripciones) {
         // Cabecera de la tabla
         String formato = "| %-15s | %-20s | %-30s | %-15s |\n";  // La columna de la fecha se aumenta a 30 caracteres
@@ -716,6 +718,7 @@ public class ControladorCentroExcursionista {
             vista.mostrarResultado(String.format("+-----------------+----------------------+------------------------------+-----------------+"));
         }
     }
+
 
     private void mostrarInscripcionesDeExcursion(Excursion excursion) {
         List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorExcursion(excursion.getCodigo());
