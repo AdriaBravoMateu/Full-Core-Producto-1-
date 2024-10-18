@@ -666,7 +666,7 @@ public class ControladorCentroExcursionista {
                 inscripciones = centro.mostrarInscripcionesPorSocio(numeroSocio);
                 break;
             case 3:
-                // Filtrar por fechas, similar a la función mostrarExcursionesConFiltro
+                // Filtrar por fechas
                 vista.mostrarResultado("Introduce las fechas para filtrar las inscripciones.");
                 String fechaInicioStr = vista.leerFecha();
                 String fechaFinStr = vista.leerFecha();
@@ -684,15 +684,36 @@ public class ControladorCentroExcursionista {
                 return;
         }
 
-        // Mostrar las inscripciones
+        // Mostrar las inscripciones en formato de tabla
         if (inscripciones.isEmpty()) {
             vista.mostrarResultado("No se encontraron inscripciones.");
         } else {
-            StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
-            for (Inscripcion inscripcion : inscripciones) {
-                resultado.append(inscripcion.toString()).append("\n");
-            }
-            vista.mostrarResultado(resultado.toString());
+            mostrarInscripcionesEnTabla(inscripciones);  // Llamar a la función para mostrar la tabla
+        }
+    }
+
+    private void mostrarInscripcionesEnTabla(List<Inscripcion> inscripciones) {
+        // Cabecera de la tabla
+        String formato = "| %-15s | %-20s | %-30s | %-15s |\n";  // La columna de la fecha se aumenta a 30 caracteres
+        vista.mostrarResultado(String.format("+-----------------+----------------------+------------------------------+-----------------+"));
+        vista.mostrarResultado(String.format("| Nº Inscripción  | Nombre del Socio     | Fecha Inscripción            | Excursión       |"));
+        vista.mostrarResultado(String.format("+-----------------+----------------------+------------------------------+-----------------+"));
+
+        // Mostrar cada inscripción con sus detalles
+        for (Inscripcion inscripcion : inscripciones) {
+            String nombreSocio = inscripcion.getSocio().getNombre(); // Obtener el nombre del socio
+            String fechaInscripcion = inscripcion.getFechaInscripcion().toString(); // Usar el método .toString() para la fecha completa
+            String nombreExcursion = inscripcion.getExcursion().getDescripcion(); // Obtener la descripción de la excursión
+
+            // Mostrar la fila de la inscripción en la tabla
+            vista.mostrarResultado(String.format(formato,
+                    inscripcion.getNumeroInscripcion(),
+                    nombreSocio,
+                    fechaInscripcion,  // Usar la fecha completa
+                    nombreExcursion));
+
+            // Línea de separación entre inscripciones
+            vista.mostrarResultado(String.format("+-----------------+----------------------+------------------------------+-----------------+"));
         }
     }
 
