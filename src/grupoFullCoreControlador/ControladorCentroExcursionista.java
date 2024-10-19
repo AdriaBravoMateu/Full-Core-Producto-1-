@@ -163,7 +163,7 @@ public class ControladorCentroExcursionista {
     // Métodos de controlador de SOCIOS
 
     //MENÚ AÑADIR NOMBRE
-    private Socio agregarSocio() {
+    private void agregarSocio() {
         vista.mostrarTipoSocios();
         int tipoSocio = vista.leerOpcion();
         Socio socio = null;
@@ -180,8 +180,7 @@ public class ControladorCentroExcursionista {
             default:
                 vista.mostrarResultado("Opción de tipo de socio no válida");
                 break;
-        }
-        return socio;
+        };
     }
 
     //AGREGAR SOCIO ESTÁNDAR
@@ -505,24 +504,8 @@ public class ControladorCentroExcursionista {
 
         // Si el socio no existe, permitir agregarlo
         if (socio == null) {
-            vista.mostrarResultado("Socio no encontrado. Se procederá a añadir un nuevo socio.");
-            vista.mostrarTipoSocios();  // Mostrar menú para seleccionar tipo de socio
-            int tipoSocio = vista.leerOpcion();
-
-            switch (tipoSocio) {
-                case 1:
-                    socio = agregarSocioEstandar();  // Llamar a la función para agregar un socio estándar
-                    break;
-                case 2:
-                    socio = agregarSocioFederado();  // Llamar a la función para agregar un socio federado
-                    break;
-                case 3:
-                    socio = agregarSocioInfantil();  // Llamar a la función para agregar un socio infantil
-                    break;
-                default:
-                    vista.mostrarResultado("Opción no válida. No se ha podido añadir el socio.");
-                    return;
-            }
+            vista.mostrarResultado("Socio no encontrado. Se procederá a añadir un nuevo socio.\n");
+            agregarSocio();
         }
 
         // Mostrar la tabla de excursiones antes de pedir el código de excursión
