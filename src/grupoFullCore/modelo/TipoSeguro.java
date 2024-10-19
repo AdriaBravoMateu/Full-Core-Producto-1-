@@ -4,7 +4,7 @@ public enum TipoSeguro {
     BASICO(5.0),
     COMPLETO(10.0);
 
-    private final double precio;
+    private double precio;
 
     TipoSeguro(double precio){
         this.precio = precio;
