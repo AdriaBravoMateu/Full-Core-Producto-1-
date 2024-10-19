@@ -127,9 +127,6 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
-
-
-
     // =============================== Métodos para leer datos de EXCURSIONES ==========================================
     public String leerCodigoExcursion() {
         System.out.print("Introduce el código de la excursión: ");

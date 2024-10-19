@@ -4,11 +4,12 @@ package grupoFullCoreControlador;
 import grupoFullCore.modelo.*;
 import grupoFullCoreVista.VistaCentroExcursionista;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 public class ControladorCentroExcursionista {
@@ -170,7 +171,7 @@ public class ControladorCentroExcursionista {
     // Métodos de controlador de SOCIOS
 
     //MENÚ AÑADIR NOMBRE
-    private void agregarSocio() {
+    private Socio agregarSocio() {
         boolean cancelar = false;
         while (!cancelar) {
             vista.mostrarTipoSocios();
@@ -194,6 +195,7 @@ public class ControladorCentroExcursionista {
                     break;
             }
         }
+        return null;
     }
 
     //AGREGAR SOCIO ESTÁNDAR
@@ -510,6 +512,7 @@ public class ControladorCentroExcursionista {
     // Métodos de controlador de INSCRIPCIONES
 
     // AGREGAR INSCRIPCIÓN
+// AGREGAR INSCRIPCIÓN
     private void agregarInscripcion() {
         // Mostrar la tabla de socios antes de leer el número de socio
         mostrarTodosLosSocios();  // Mostrar la tabla de todos los socios
@@ -547,6 +550,7 @@ public class ControladorCentroExcursionista {
             vista.mostrarResultado("Excursión no encontrada.");
         }
     }
+
 
     // ELIMINAR INSCRIPCIÓN
     private void eliminarInscripcion() {
