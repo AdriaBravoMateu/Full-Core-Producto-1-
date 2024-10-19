@@ -9,10 +9,10 @@ public class CargaDatosIniciales {
         public static void cargarDatos(CentroExcursionista centro) {
 
                 //Instancias de socio estandar
-                SocioEstandar socio01 = new SocioEstandar(1, "Socio Estandar 1", "11111111E", new Seguro(TipoSeguro.BASICO, 4));
-                SocioEstandar socio02 = new SocioEstandar(2, "Socio Estandar 2", "22222222E", new Seguro(TipoSeguro.BASICO, 4));
-                SocioEstandar socio03 = new SocioEstandar(3, "Socio Estandar 3", "33333333E", new Seguro(TipoSeguro.COMPLETO, 7));
-                SocioEstandar socio04 = new SocioEstandar(4, "Socio Estandar 4", "44444444E", new Seguro(TipoSeguro.COMPLETO, 7));
+                SocioEstandar socio01 = new SocioEstandar(1, "Socio Estandar 1", "11111111E", new Seguro(TipoSeguro.BASICO));
+                SocioEstandar socio02 = new SocioEstandar(2, "Socio Estandar 2", "22222222E", new Seguro(TipoSeguro.BASICO));
+                SocioEstandar socio03 = new SocioEstandar(3, "Socio Estandar 3", "33333333E", new Seguro(TipoSeguro.COMPLETO));
+                SocioEstandar socio04 = new SocioEstandar(4, "Socio Estandar 4", "44444444E", new Seguro(TipoSeguro.COMPLETO));
 
                 //Instancias de socio federado
                 //Primero asignamos cada federación a una variable

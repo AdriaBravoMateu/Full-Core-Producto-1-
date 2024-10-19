@@ -6,7 +6,7 @@ public class Seguro {
     private double precio;
 
     // Constructor
-    public Seguro(TipoSeguro tipo, double precio) {
+    public Seguro(TipoSeguro tipo) {
         this.tipo = tipo;
         this.precio = precio;
     }

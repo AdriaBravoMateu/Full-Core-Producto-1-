@@ -203,7 +203,7 @@ public class ControladorCentroExcursionista {
 
         TipoSeguro seguroEnum = seleccionarSeguro();
 
-        Seguro seguro = new Seguro(seguroEnum, seguroEnum.getPrecio());
+        Seguro seguro = new Seguro(seguroEnum);
 
         SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
 
@@ -249,7 +249,7 @@ public class ControladorCentroExcursionista {
 
         TipoSeguro nuevoSeguroEnum = seleccionarSeguro();
 
-        Seguro nuevoSeguro = new Seguro(nuevoSeguroEnum, nuevoSeguroEnum.getPrecio());
+        Seguro nuevoSeguro = new Seguro(nuevoSeguroEnum);
 
         centro.modificarSeguroSocioEstandar(numeroSocio, nuevoSeguro);
 
