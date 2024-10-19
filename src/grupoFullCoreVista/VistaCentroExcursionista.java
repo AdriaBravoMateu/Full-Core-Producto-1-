@@ -25,7 +25,7 @@ public class VistaCentroExcursionista {
         System.out.println("1. Gestión de Excursiones");
         System.out.println("2. Gestión de Socios");
         System.out.println("3. Gestión de Inscripciones");
-        System.out.println("4. Salir");
+        System.out.println("0. Salir");
         System.out.print("Elige una opción: ");
     }
 
@@ -37,7 +37,7 @@ public class VistaCentroExcursionista {
         System.out.println("\nGestión de Excursiones");
         System.out.println("1. Añadir Excursión");
         System.out.println("2. Mostrar Excursiones con filtro entre fechas");
-        System.out.println("3. Volver al menú principal");
+        System.out.println("0. Volver al menú principal");
         System.out.print("Elige una opción: ");
     }
 
@@ -52,7 +52,7 @@ public class VistaCentroExcursionista {
         System.out.println("3. Eliminar Socio");
         System.out.println("4. Mostrar Socios (Todos o por tipo)");
         System.out.println("5. Mostrar Factura mensual por socio");
-        System.out.println("6. Volver al menú principal");
+        System.out.println("0. Volver al menú principal");
         System.out.print("Elige una opción: ");
     }
 
@@ -121,7 +121,7 @@ public class VistaCentroExcursionista {
         System.out.println("1. Añadir Inscripción");
         System.out.println("2. Eliminar Inscripción");
         System.out.println("3. Mostrar Inscripciones (filtrar por socio y/o fechas)");
-        System.out.println("4. Volver al menú principal");
+        System.out.println("0. Volver al menú principal");
         System.out.print("Elige una opción: ");
     }
 

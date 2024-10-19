@@ -1,6 +1,5 @@
 package CentroExcursionistaAppFC;
 
-import grupoFullCore.Datos.CargaDatosIniciales;
 import grupoFullCoreControlador.ControladorCentroExcursionista;
 import grupoFullCore.modelo.CentroExcursionista;
 import grupoFullCoreVista.VistaCentroExcursionista;

@@ -1,4 +1,4 @@
-package grupoFullCore.Datos;
+package CentroExcursionistaAppFC;
 import java.time.LocalDate;
 import java.util.Date;
 import java.time.ZoneId;

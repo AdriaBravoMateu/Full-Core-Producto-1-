@@ -37,7 +37,7 @@ public class ControladorCentroExcursionista {
                 case 3:
                     gestionarInscripciones();
                     break;
-                case 4:
+                case 0:
                     salir = true;
                     break;
                 default:
@@ -66,7 +66,7 @@ public class ControladorCentroExcursionista {
                 case 2:
                     mostrarExcursionesConFiltro();
                     break;
-                case 3:
+                case 0:
                     volver = true;
                     break;
                 default:
@@ -151,7 +151,7 @@ public class ControladorCentroExcursionista {
                 case 5:
                     mostrarFacturaMensualPorSocio();
                     break;
-                case 6:
+                case 0:
                     volver = true;
                     break;
                 default:
@@ -479,7 +479,7 @@ public class ControladorCentroExcursionista {
                 case 3:
                     mostrarInscripciones();
                     break;
-                case 4:
+                case 0:
                     volver = true;
                     break;
                 default:
