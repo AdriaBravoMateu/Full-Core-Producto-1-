@@ -100,28 +100,16 @@ public class ControladorCentroExcursionista {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
         LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
-
-        // Obtener las excursiones filtradas por fecha
-        List<Excursion> excursionesFiltradas = centro.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
-
-        // Reutiliza la función para mostrar excursiones filtradas
-        mostrarExcursiones(excursionesFiltradas);
+        List<Excursion> excursiones = centro.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
+        StringBuilder resultado = new StringBuilder("Excursiones encontradas:\n");
+        for (Excursion excursion : excursiones) {
+            resultado.append(excursion.toString()).append("\n");
+        }
+        vista.mostrarResultado(resultado.toString());
     }
 
-    //SOBRECARGA DE MÉTODO
-
-    // Método original sin parámetros
     private void mostrarExcursiones() {
         List<Excursion> excursiones = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX);
-        mostrarExcursiones(excursiones); // Llamada a la nueva función que acepta una lista
-    }
-
-    // Nuevo método que acepta una lista de excursiones
-    private void mostrarExcursiones(List<Excursion> excursiones) {
-        if (excursiones.isEmpty()) {
-            vista.mostrarResultado("No se encontraron excursiones.");
-            return;
-        }
 
         // Cabecera de la tabla
         String formato = "| %-10s | %-20s | %-10s |\n";
@@ -135,6 +123,7 @@ public class ControladorCentroExcursionista {
             vista.mostrarResultado(String.format("+------------+----------------------+------------+"));
         }
     }
+
 
     /* -----------------------------------------------------------------------------------------------------------------
 ----------------------------- GESTIÓN DE SOCIOS ------------------------------------------------------------------------
@@ -631,7 +620,7 @@ public class ControladorCentroExcursionista {
 
     // MOSTRAR INSCRIPCIONES
     private void mostrarInscripciones() {
-        // Mostrar el menú para que el usuario seleccione cómo quiere filtrar las inscripciones
+        // Mostrar el menú
         int opcion = vista.mostrarFiltroInscripciones();
 
         List<Inscripcion> inscripciones;
@@ -670,26 +659,15 @@ public class ControladorCentroExcursionista {
                 return;
         }
 
-        // Mostrar las inscripciones en formato de tabla
+        // Mostrar las inscripciones
         if (inscripciones.isEmpty()) {
             vista.mostrarResultado("No se encontraron inscripciones.");
         } else {
-            // Cabecera de la tabla
-            String formato = "| %-15s | %-20s | %-20s | %-15s |\n";
-            vista.mostrarResultado(String.format("+-----------------+----------------------+----------------------+-----------------+"));
-            vista.mostrarResultado(String.format("| Nº Inscripción  | Nombre del Socio     | Excursión            | Fecha Inscripción|"));
-            vista.mostrarResultado(String.format("+-----------------+----------------------+----------------------+-----------------+"));
-
-            // Mostrar cada inscripción con línea de separación
+            StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
             for (Inscripcion inscripcion : inscripciones) {
-                vista.mostrarResultado(String.format(formato,
-                        inscripcion.getNumeroInscripcion(),
-                        inscripcion.getSocio().getNombre(),
-                        inscripcion.getExcursion().getDescripcion(),
-                        inscripcion.getFechaInscripcion().toString()));
-
-                vista.mostrarResultado(String.format("+-----------------+----------------------+----------------------+-----------------+"));
+                resultado.append(inscripcion.toString()).append("\n");
             }
+            vista.mostrarResultado(resultado.toString());
         }
     }
 

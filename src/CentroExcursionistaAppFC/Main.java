@@ -18,6 +18,5 @@ public class Main {
 
         // Iniciar la aplicación
         controlador.iniciar();
-
     }
 }

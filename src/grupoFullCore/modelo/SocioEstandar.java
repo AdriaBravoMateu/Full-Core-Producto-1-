@@ -32,7 +32,7 @@ public class SocioEstandar extends Socio {
         double factura = cuotaMensual;
         for (Inscripcion inscripcion : inscripcionesDelMes) {
             double precioExcursion = inscripcion.getExcursion().getPrecioInscripcion();
-            factura += precioExcursion + TipoSeguro.getPrecio();
+            factura += precioExcursion + seguro.getPrecio();
         }
         return factura;
     }

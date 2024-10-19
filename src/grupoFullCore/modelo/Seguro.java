@@ -8,7 +8,7 @@ public class Seguro {
     // Constructor
     public Seguro(TipoSeguro tipo) {
         this.tipo = tipo;
-        this.precio = precio;
+        this.precio = tipo.getPrecio();
     }
 
     // Getters
