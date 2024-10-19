@@ -319,15 +319,22 @@ public class ControladorCentroExcursionista {
 
     // ELIMINAR SOCIO
     private void eliminarSocio() {
-        mostrarTodosLosSocios();
-        int numeroSocio = vista.leerNumeroSocio();
-        try {
-            centro.eliminarSocio(numeroSocio);
-            vista.mostrarResultado("Socio eliminado correctamente.");
-        } catch (Exception e) {
-            vista.mostrarResultado(e.getMessage());
+        mostrarTodosLosSocios();  // Mostrar todos los socios antes de eliminar
+        int numeroSocio = vista.leerNumeroSocio();  // Leer el número del socio
+        Socio socioAEliminar = centro.buscarSocioPorNumero(numeroSocio);  // Buscar socio
+
+        if (socioAEliminar == null) {
+            vista.mostrarResultado("Error: El socio con número " + numeroSocio + " no existe.");
+        } else {
+            try {
+                centro.eliminarSocio(numeroSocio);  // Eliminar el socio
+                vista.mostrarResultado("Socio eliminado correctamente.");
+            } catch (Exception e) {
+                vista.mostrarResultado("Error al eliminar el socio: " + e.getMessage());
+            }
         }
     }
+
 
 
     //MOSTRAR SOCIOS

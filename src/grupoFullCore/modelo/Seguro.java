@@ -1,6 +1,7 @@
 package grupoFullCore.modelo;
 
 public class Seguro {
+
     // Atributos
     private TipoSeguro tipo;
     private double precio;

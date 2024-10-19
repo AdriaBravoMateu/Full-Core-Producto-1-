@@ -67,16 +67,22 @@ public class CentroExcursionista {
     }
 
     public void eliminarSocio(int numeroSocio) throws Exception {
-        Socio socio = buscarSocioPorNumero(numeroSocio);
-        if (socio != null) {
-            boolean tieneInscripciones = inscripciones.stream().anyMatch(i -> i.getSocio().equals(socio));
-            if (tieneInscripciones) {
-                throw new Exception("No se puede eliminar un socio con inscripciones activas.");
-            } else {
-                socios.remove(socio);
-            }
+        Socio socio = buscarSocioPorNumero(numeroSocio);  // Buscar el socio
+        if (socio == null) {
+            throw new Exception("Error: El socio con número " + numeroSocio + " no existe.");  // Excepción si no existe
+        }
+
+        // Verificar si el socio tiene inscripciones activas
+        boolean tieneInscripciones = inscripciones.stream()
+                .anyMatch(i -> i.getSocio().equals(socio));
+
+        if (tieneInscripciones) {
+            throw new Exception("No se puede eliminar un socio con inscripciones activas.");  // Excepción si tiene inscripciones
+        } else {
+            socios.remove(socio);  // Eliminar socio si no tiene inscripciones
         }
     }
+
 
     public List<Socio> mostrarSocios() {
         return socios;

@@ -176,8 +176,6 @@ public class VistaCentroExcursionista {
         return precio;
     }
 
-
-
     // =============================== Métodos para leer datos de SOCIOS ===================================================
     public String leerNombreSocio() {
         String nombre = "";
