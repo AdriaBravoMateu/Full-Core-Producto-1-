@@ -312,4 +312,22 @@ public class VistaCentroExcursionista {
 
         return fecha.toString();
     }
+
+    public String leerFechaInsc() {
+        LocalDate fecha = null;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce la fecha de la inscripción (YYYY-MM-DD): ");
+                String fechaStr = scanner.next();
+                fecha = LocalDate.parse(fechaStr);  // Validar que sea una fecha válida
+                entradaValida = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD.");
+            }
+        }
+
+        return fecha.toString();
+    }
 }
