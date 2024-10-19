@@ -79,7 +79,14 @@ public class ControladorCentroExcursionista {
 
     // AGREGAR EXCURSIONES
     private void agregarExcursion() {
-        String codigo = vista.leerCodigoExcursion();
+        String codigo;
+        do {
+            codigo = vista.leerCodigoExcursion();
+            if (centro.buscarExcursionPorCodigo(codigo)) {
+                vista.mostrarResultado("El código de excursión ya existe. Introduzca otro código.");
+            }
+        } while (centro.buscarExcursionPorCodigo(codigo));
+
         String descripcion = vista.leerDescripcionExcursion();
         String fechaStr = vista.leerFecha();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -118,16 +125,22 @@ public class ControladorCentroExcursionista {
             return;
         }
 
-        // Cabecera de la tabla
-        String formato = "| %-10s | %-20s | %-10s |\n";
-        vista.mostrarResultado("+------------+----------------------+------------+");
-        vista.mostrarResultado("| Código     | Descripción           | Fecha      |");
-        vista.mostrarResultado("+------------+----------------------+------------+");
+        // Cabecera de la tabla con las nuevas columnas "Días" y "Precio"
+        String formato = "| %-10s | %-20s | %-10s | %-5d | %-10.2f |\n";
+        vista.mostrarResultado("+------------+----------------------+-------------+-------+-----------+");
+        vista.mostrarResultado("| Código     | Descripción           | Fecha      | Días  | Precio    |");
+        vista.mostrarResultado("+------------+----------------------+-------------+-------+-----------+");
 
-        // Mostrar cada excursión con línea de separación
+        // Mostrar cada excursión con los nuevos datos
         for (Excursion excursion : excursiones) {
-            vista.mostrarResultado(String.format(formato, excursion.getCodigo(), excursion.getDescripcion(), excursion.getFecha()));
-            vista.mostrarResultado(String.format("+------------+----------------------+------------+"));
+            vista.mostrarResultado(String.format(formato,
+                    excursion.getCodigo(),
+                    excursion.getDescripcion(),
+                    excursion.getFecha(),
+                    excursion.getNumeroDias(),
+                    excursion.getPrecioInscripcion()
+            ));
+            vista.mostrarResultado("+------------+----------------------+------------+-------+------------+");
         }
     }
 
@@ -203,19 +216,16 @@ public class ControladorCentroExcursionista {
     //AGREGAR SOCIO ESTÁNDAR
     private Socio agregarSocioEstandar() {
         String nombre = vista.leerNombreSocio();
-        int numeroSocio = vista.leerNumeroSocio();
+        int numeroSocio = solicitarNumeroSocioValido();  // Comprueba que no exista el número
+
         String nif = vista.leerNif();
-
         TipoSeguro seguroEnum = seleccionarSeguro();
-
         Seguro seguro = new Seguro(seguroEnum);
 
         SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
-
         centro.añadirSocioEstandar(socio);
 
         vista.mostrarResultado("Socio Estándar añadido correctamente.");
-
         return socio;
     }
 
@@ -252,6 +262,8 @@ public class ControladorCentroExcursionista {
 
         int numeroSocio = vista.leerNumeroSocio();
 
+        vista.mostrarResultado("Selecciona el nuevo tipo de seguro:");
+
         TipoSeguro nuevoSeguroEnum = seleccionarSeguro();
 
         Seguro nuevoSeguro = new Seguro(nuevoSeguroEnum);
@@ -265,24 +277,18 @@ public class ControladorCentroExcursionista {
     // AGREGAR SOCIO FEDERADO
     private Socio agregarSocioFederado() {
         String nombre = vista.leerNombreSocio();
-        int numeroSocio = vista.leerNumeroSocio();
+        int numeroSocio = solicitarNumeroSocioValido();  /// Comprueba que no exista el número
+
         String nif = vista.leerNif();
-
-        //Mostrar las feeraciones disponibles
         List<Federacion> federaciones = centro.getFederaciones();
-
         int opcionFederacion = vista.mostrarFederaciones(federaciones);
 
         SocioFederado socio = null;
-        //Validar la opción seleccionada y obtener la federación
         if (opcionFederacion >= 1 && opcionFederacion <= federaciones.size()) {
             Federacion federacionSeleccionada = federaciones.get(opcionFederacion - 1);
-
-            // Crear el socio federado
             socio = new SocioFederado(numeroSocio, nombre, nif, federacionSeleccionada);
             centro.añadirSocioFederado(socio);
             vista.mostrarResultado("Socio Federado añadido correctamente.");
-
         } else {
             vista.mostrarResultado("Opción de federación no válida.");
         }
@@ -293,21 +299,16 @@ public class ControladorCentroExcursionista {
     //AGREGAR SOCIO INFANTIL
     private Socio agregarSocioInfantil() {
         String nombre = vista.leerNombreSocio();
-        int numeroSocio = vista.leerNumeroSocio();
+        int numeroSocio = solicitarNumeroSocioValido();  // Comprueba que no exista el número
 
-        // Mostrar la lista de socios estándar y federados
         mostrarSociosEstandarYFederados();
-
-        // Pedir al usuario que seleccione el número de socio del progenitor
         int numeroSocioProgenitor = vista.leerNumeroSocioProgenitor();
 
-        // Buscar el progenitor en la lista de socios
         Socio progenitor = centro.mostrarSocios().stream()
                 .filter(s -> (s instanceof SocioEstandar || s instanceof SocioFederado) && s.getNumeroSocio() == numeroSocioProgenitor)
                 .findFirst().orElse(null);
 
         SocioInfantil socioInfantil = null;
-
         if (progenitor != null) {
             socioInfantil = new SocioInfantil(numeroSocio, nombre, progenitor);
             centro.añadirSocioInfantil(socioInfantil);
@@ -317,6 +318,20 @@ public class ControladorCentroExcursionista {
         }
         return socioInfantil;
     }
+
+    //Método para asegurarse que el número de socio no exista
+    private int solicitarNumeroSocioValido() {
+        int numeroSocio;
+        do {
+            numeroSocio = vista.leerNumeroSocio();
+            if (centro.buscarSocioPorNumero(numeroSocio) != null) {
+                vista.mostrarResultado("El número de socio ya existe. Introduzca otro número.");
+            }
+        } while (centro.buscarSocioPorNumero(numeroSocio) != null);
+
+        return numeroSocio;
+    }
+
 
 
     // ELIMINAR SOCIO
@@ -385,8 +400,13 @@ public class ControladorCentroExcursionista {
     private void mostrarFacturaMensualPorSocio() {
         mostrarTodosLosSocios();
         int numeroSocio = vista.leerNumeroSocio();
+        Socio socio = centro.buscarSocioPorNumero(numeroSocio);
+        if (socio == null) {
+            vista.mostrarResultado("El número de socio no existe.");
+            return;
+        }
         double factura = centro.calcularFacturaMensualPorSocio(numeroSocio);
-        vista.mostrarResultado("Factura mensual: " + factura);
+        vista.mostrarResultado("Factura del mes actual: " + factura);
     }
 
     //Métodos Auxiliares SOCIOS
@@ -458,7 +478,7 @@ public class ControladorCentroExcursionista {
         List<Socio> socios = centro.mostrarSocios();  // Obtener la lista de todos los socios
 
         // Cabecera de la tabla
-        String formato = "| %-12s | %-20s |";
+        String formato = "| %-12s | %-20s | %-10s |\n";
         vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
         vista.mostrarResultado(String.format("| Número Socio | Nombre               | Tipo       |"));
         vista.mostrarResultado(String.format("+--------------+----------------------+------------+"));
@@ -557,9 +577,19 @@ public class ControladorCentroExcursionista {
 
         // Continuar con la inscripción si la excursión existe
         if (excursion != null) {
-            int numeroInscripcion = vista.leerNumeroInscripcion();
+            //Mostrar inscripciones
+            mostrarInscripcionesPorFechas();
+           //Comprobar que el número de inscripción no exista
+            int numeroInscripcion;
+            do {
+                numeroInscripcion = vista.leerNumeroInscripcion();
+                if (centro.buscarInscripcionPorNumero(numeroInscripcion) != null) {
+                    vista.mostrarResultado("El número de inscripción ya existe. Introduzca otro número.");
+                }
+            } while (centro.buscarInscripcionPorNumero(numeroInscripcion) != null);
+
             Date fecha = java.sql.Date.valueOf(LocalDate.now());
-            Inscripcion inscripcion = new Inscripcion(numeroInscripcion, fecha, socio, excursion);
+            Inscripcion inscripcion = new Inscripcion(numeroInscripcion, fecha.toLocalDate(), socio, excursion);
             centro.añadirInscripcion(inscripcion);
             vista.mostrarResultado("Inscripción añadida correctamente.");
         } else {
@@ -683,9 +713,9 @@ public class ControladorCentroExcursionista {
         // Cabecera de la tabla
         if (!inscripciones.isEmpty()) {
             String formato = "| %-15s | %-20s | %-15s | %20s |\n";
-            vista.mostrarResultado("+-----------------+----------------------+-----------------+-------------------------------+");
-            vista.mostrarResultado("| Nº Inscripción  | Nombre del Socio     | Excursión       | Fecha Inscripción             |");
-            vista.mostrarResultado("+-----------------+----------------------+-----------------+-------------------------------+");
+            vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
+            vista.mostrarResultado("| Nº Inscripción  | Nombre del Socio     | Excursión       | Fecha Inscripción    |");
+            vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
 
             // Mostrar cada inscripción
             for (Inscripcion inscripcion : inscripciones) {
@@ -694,8 +724,8 @@ public class ControladorCentroExcursionista {
                         inscripcion.getSocio().getNombre(),
                         inscripcion.getExcursion().getDescripcion(),
                         inscripcion.getFechaInscripcion().toString()));
+                        vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
             }
-            vista.mostrarResultado("+-----------------+----------------------+-----------------+-------------------------------+");
         } else {
             vista.mostrarResultado("No se encontraron inscripciones.");
         }
@@ -724,8 +754,8 @@ public class ControladorCentroExcursionista {
                     inscripcion.getNumeroInscripcion(),
                     inscripcion.getSocio().getNombre(),
                     inscripcion.getExcursion().getDescripcion()));
+                    vista.mostrarResultado("+-----------------+----------------------+-----------------+");
         }
-        vista.mostrarResultado("+-----------------+----------------------+-----------------+");
         return inscripciones;
     }
 
@@ -747,9 +777,9 @@ public class ControladorCentroExcursionista {
 
         // Cabecera de la tabla
         String formato = "| %-15s | %-20s | %-15s | %20s |\n";
-        vista.mostrarResultado("+-----------------+----------------------+-----------------+-------------------------------+");
-        vista.mostrarResultado("| Nº Inscripción  | Nombre del Socio     | Excursión       | Fecha Inscripción             |");
-        vista.mostrarResultado("+-----------------+----------------------+-----------------+-------------------------------+");
+        vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
+        vista.mostrarResultado("| Nº Inscripción  | Nombre del Socio     | Excursión       | Fecha Inscripción    |");
+        vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
 
         // Mostrar cada inscripción
         for (Inscripcion inscripcion : inscripciones) {
@@ -758,8 +788,8 @@ public class ControladorCentroExcursionista {
                     inscripcion.getSocio().getNombre(),
                     inscripcion.getExcursion().getDescripcion(),
                     inscripcion.getFechaInscripcion().toString()));
+                vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
         }
-        vista.mostrarResultado("+-----------------+----------------------+-----------------+-------------------------------+");
         return inscripciones;
     }
 

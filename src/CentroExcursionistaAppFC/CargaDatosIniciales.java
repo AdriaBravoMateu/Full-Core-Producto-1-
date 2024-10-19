@@ -1,4 +1,4 @@
-package grupoFullCore.Datos;
+package CentroExcursionistaAppFC;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -42,10 +42,8 @@ public class CargaDatosIniciales {
 
                 //Instancias de inscripciones
                 //Creamos variables para la conversión de fechas
-                LocalDate fechaLocalInscripcion01 = LocalDate.of(2024, 10, 18);
-                LocalDate fechaLocalInscripcion02 = LocalDate.of(2024, 10, 21);
-                Date fechaInscripcion01 = Date.from(fechaLocalInscripcion01.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                Date fechaInscripcion02 = Date.from(fechaLocalInscripcion02.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                LocalDate fechaInscripcion01 = LocalDate.of(2024, 10, 18);
+                LocalDate fechaInscripcion02 = LocalDate.of(2024, 10, 21);
                 Inscripcion inscripcion01 = new Inscripcion(1, fechaInscripcion01, socio01, excursion01);
                 Inscripcion inscripcion02 = new Inscripcion(2, fechaInscripcion01, socio09, excursion01);
                 Inscripcion inscripcion03 = new Inscripcion(3, fechaInscripcion01, socio10, excursion01);

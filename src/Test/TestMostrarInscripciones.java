@@ -17,7 +17,7 @@ public class TestMostrarInscripciones {
         SocioEstandar socio = new SocioEstandar(1, "Juan Pérez", "12345678A", new Seguro(TipoSeguro.BASICO));
         Excursion excursion = new Excursion("EX001", "Excursión a la montaña", LocalDate.now(), 2, 100);
         Date fechaInscripcion = Date.valueOf(LocalDate.now());
-        Inscripcion inscripcion = new Inscripcion(1, fechaInscripcion, socio, excursion);
+        Inscripcion inscripcion = new Inscripcion(1, fechaInscripcion.toLocalDate(), socio, excursion);
 
         centro.añadirSocioEstandar(socio);
         centro.añadirExcursion(excursion);

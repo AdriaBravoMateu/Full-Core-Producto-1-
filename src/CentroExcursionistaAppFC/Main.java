@@ -13,7 +13,7 @@ public class Main {
         ControladorCentroExcursionista controlador = new ControladorCentroExcursionista(centro, vista);
 
         //Carga de datos para pruebas
-        grupoFullCore.Datos.CargaDatosIniciales.cargarDatos(centro);
+        CentroExcursionistaAppFC.CargaDatosIniciales.cargarDatos(centro);
 
         // Iniciar la aplicación
         controlador.iniciar();

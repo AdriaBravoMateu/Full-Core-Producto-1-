@@ -162,4 +162,17 @@ public class CentroExcursionista {
                 .findFirst()
                 .orElse(null);
     }
+
+    //Buscar inscripcion por numero de inscripcion
+    public Inscripcion buscarInscripcionPorNumero(int numeroInscripcion) {
+        return inscripciones.stream()
+                .filter(s -> s.getNumeroInscripcion() == numeroInscripcion)
+                .findFirst()
+                .orElse(null);
+    }
+
+    //Buscar excursión por codigo de excursión
+    public boolean buscarExcursionPorCodigo(String codigoExcursion){
+        return mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX).stream().anyMatch(e->e.getCodigo().equals(codigoExcursion));
+    }
 }
