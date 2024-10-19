@@ -100,12 +100,9 @@ public class ControladorCentroExcursionista {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
         LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
-        List<Excursion> excursiones = centro.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
-        StringBuilder resultado = new StringBuilder("Excursiones encontradas:\n");
-        for (Excursion excursion : excursiones) {
-            resultado.append(excursion.toString()).append("\n");
-        }
-        vista.mostrarResultado(resultado.toString());
+        List<Excursion> excursionesFiltradas = centro.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
+        mostrarExcursiones(excursionesFiltradas);
+
     }
 
     //SOBRECARGA MÉTODO
@@ -123,9 +120,9 @@ public class ControladorCentroExcursionista {
 
         // Cabecera de la tabla
         String formato = "| %-10s | %-20s | %-10s |\n";
-        vista.mostrarResultado(String.format("+------------+----------------------+------------+"));
-        vista.mostrarResultado(String.format("| Código     | Descripción           | Fecha      |"));
-        vista.mostrarResultado(String.format("+------------+----------------------+------------+"));
+        vista.mostrarResultado("+------------+----------------------+------------+");
+        vista.mostrarResultado("| Código     | Descripción           | Fecha      |");
+        vista.mostrarResultado("+------------+----------------------+------------+");
 
         // Mostrar cada excursión con línea de separación
         for (Excursion excursion : excursiones) {
@@ -515,7 +512,7 @@ public class ControladorCentroExcursionista {
     // AGREGAR INSCRIPCIÓN
     private void agregarInscripcion() {
         // Mostrar la tabla de socios antes de leer el número de socio
-        mostrarSocios();  // Mostrar la tabla de todos los socios
+        mostrarTodosLosSocios();  // Mostrar la tabla de todos los socios
 
         int numeroSocio = vista.leerNumeroSocio();
 
@@ -627,11 +624,11 @@ public class ControladorCentroExcursionista {
     private void mostrarInscripciones() {
         boolean cancelar = false;
 
+        List<Inscripcion> inscripciones = null;
+
         while (!cancelar) {
             // Mostrar el menú
             int opcion = vista.mostrarFiltroInscripciones();
-
-            List<Inscripcion> inscripciones = null;
 
             switch (opcion) {
                 case 1:
@@ -656,23 +653,23 @@ public class ControladorCentroExcursionista {
                 case 0:
                     cancelar = true;
                     vista.mostrarResultado("Regresando al menú anterior...");
-                    continue;
+                    break;
                 default:
                     vista.mostrarResultado("Opción no válida.");
-                    continue;
+                    break;
             }
+        }
 
-            // Verificar que las inscripciones no sean null antes de intentar mostrarlas
-            if (inscripciones != null) {
-                if (inscripciones.isEmpty()) {
-                    vista.mostrarResultado("No se encontraron inscripciones.");
-                } else {
-                    StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
-                    for (Inscripcion inscripcion : inscripciones) {
-                        resultado.append(inscripcion.toString()).append("\n");
-                    }
-                    vista.mostrarResultado(resultado.toString());
+        // Verificar que las inscripciones no sean null antes de intentar mostrarlas
+        if (inscripciones != null) {
+            if (inscripciones.isEmpty()) {
+                vista.mostrarResultado("No se encontraron inscripciones.");
+            } else {
+                StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
+                for (Inscripcion inscripcion : inscripciones) {
+                    resultado.append(inscripcion.toString()).append("\n");
                 }
+                vista.mostrarResultado(resultado.toString());
             }
         }
     }
