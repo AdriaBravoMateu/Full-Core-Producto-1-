@@ -3,7 +3,7 @@ package grupoFullCore.modelo;
 import java.util.List;
 
 public class SocioFederado extends Socio {
-
+    //Atributos
     private String nif;
     private Federacion federacion;
     private static final double descuentoCuota = 0.05;
@@ -27,7 +27,7 @@ public class SocioFederado extends Socio {
         double factura = cuotaMensual * (1 - descuentoCuota);
         for (Inscripcion inscripcion : inscripcionesDelMes) {
             double precioExcursion = inscripcion.getExcursion().getPrecioInscripcion();
-            factura += precioExcursion * (1 - descuentoExcursion);  // 10% de descuento en excursiones
+            factura += precioExcursion * (1 - descuentoExcursion);
         }
         return factura;
     }

@@ -154,7 +154,7 @@ public class ControladorCentroExcursionista {
         int opcionSeguro = vista.leerOpcion();
 
         TipoSeguro seguroEnum = (opcionSeguro == 1) ? TipoSeguro.BASICO : TipoSeguro.COMPLETO;
-        double precio = (seguroEnum == TipoSeguro.BASICO) ? 50 : 100;
+        double precio = (seguroEnum == TipoSeguro.BASICO) ? 4 : 7;
 
         Seguro seguro = new Seguro(seguroEnum, precio);
         SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
