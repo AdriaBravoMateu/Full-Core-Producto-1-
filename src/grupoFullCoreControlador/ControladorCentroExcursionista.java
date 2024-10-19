@@ -346,7 +346,7 @@ public class ControladorCentroExcursionista {
 
             switch (opcion) {
                 case 1:
-                    mostrarTodosLosSocios();  // Llama al método para mostrar todos los socios
+                    mostrarTodosLosSocios();  // Llama al metodo para mostrar todos los socios
                     break;
                 case 2:
                     vista.mostrarOpcionesFiltrarSocios();  // Muestra el submenú para seleccionar el tipo de socio
@@ -365,12 +365,15 @@ public class ControladorCentroExcursionista {
                             cancelar = true;
                             break;
                         default:
-                            vista.mostrarResultado("Opción no válida.");
+                            vista.mostrarResultado("Opción no válida. Ingrese un número válido.");
                             break;
                     }
                     break;
+                case 0:
+                    cancelar = true;
+                    break;
                 default:
-                    vista.mostrarResultado("Opción no válida.");
+                    vista.mostrarResultado("Opción no válida. Ingrese un número válido.");
                     break;
             }
         }
