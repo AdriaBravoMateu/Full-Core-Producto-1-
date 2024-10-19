@@ -107,6 +107,7 @@ public class ControladorCentroExcursionista {
         }
         vista.mostrarResultado(resultado.toString());
     }
+
     //SOBRECARGA MÉTODO
     private void mostrarExcursiones() {
         List<Excursion> excursiones = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX);
@@ -173,23 +174,29 @@ public class ControladorCentroExcursionista {
 
     //MENÚ AÑADIR NOMBRE
     private void agregarSocio() {
-        vista.mostrarTipoSocios();
-        int tipoSocio = vista.leerOpcion();
-        Socio socio = null;
-        switch (tipoSocio) {
-            case 1:
-                agregarSocioEstandar();
-                break;
-            case 2:
-                agregarSocioFederado();
-                break;
-            case 3:
-                agregarSocioInfantil();
-                break;
-            default:
-                vista.mostrarResultado("Opción de tipo de socio no válida");
-                break;
-        };
+        boolean cancelar = false;
+        while (!cancelar) {
+            vista.mostrarTipoSocios();
+            int tipoSocio = vista.leerOpcion();
+            Socio socio = null;
+            switch (tipoSocio) {
+                case 1:
+                    agregarSocioEstandar();
+                    break;
+                case 2:
+                    agregarSocioFederado();
+                    break;
+                case 3:
+                    agregarSocioInfantil();
+                    break;
+                case 0:
+                    cancelar = true;
+                    break;
+                default:
+                    vista.mostrarResultado("Opción de tipo de socio no válida");
+                    break;
+            }
+        }
     }
 
     //AGREGAR SOCIO ESTÁNDAR
@@ -326,34 +333,40 @@ public class ControladorCentroExcursionista {
 
     //MOSTRAR SOCIOS
     private void mostrarSocios() {
-        vista.mostrarOpcionMostrarSocios();  // Muestra el menú "Todos los Socios o Filtrar por tipo"
-        int opcion = vista.leerOpcion();
+        boolean cancelar = false;
+        while (!cancelar) {
+            vista.mostrarOpcionMostrarSocios();  // Muestra el menú "Todos los Socios o Filtrar por tipo"
+            int opcion = vista.leerOpcion();
 
-        switch (opcion) {
-            case 1:
-                mostrarTodosLosSocios();  // Llama al método para mostrar todos los socios
-                break;
-            case 2:
-                vista.mostrarOpcionesFiltrarSocios();  // Muestra el submenú para seleccionar el tipo de socio
-                int tipoSocio = vista.leerOpcion();
-                switch (tipoSocio) {
-                    case 1:
-                        mostrarSociosEstandar();  // Muestra solo los socios estándar
-                        break;
-                    case 2:
-                        mostrarSociosFederados();  // Muestra solo los socios federados
-                        break;
-                    case 3:
-                        mostrarSociosInfantiles();  // Muestra solo los socios infantiles
-                        break;
-                    default:
-                        vista.mostrarResultado("Opción no válida.");
-                        break;
-                }
-                break;
-            default:
-                vista.mostrarResultado("Opción no válida.");
-                break;
+            switch (opcion) {
+                case 1:
+                    mostrarTodosLosSocios();  // Llama al método para mostrar todos los socios
+                    break;
+                case 2:
+                    vista.mostrarOpcionesFiltrarSocios();  // Muestra el submenú para seleccionar el tipo de socio
+                    int tipoSocio = vista.leerOpcion();
+                    switch (tipoSocio) {
+                        case 1:
+                            mostrarSociosEstandar();  // Muestra solo los socios estándar
+                            break;
+                        case 2:
+                            mostrarSociosFederados();  // Muestra solo los socios federados
+                            break;
+                        case 3:
+                            mostrarSociosInfantiles();  // Muestra solo los socios infantiles
+                            break;
+                        case 0:
+                            cancelar = true;
+                            break;
+                        default:
+                            vista.mostrarResultado("Opción no válida.");
+                            break;
+                    }
+                    break;
+                default:
+                    vista.mostrarResultado("Opción no válida.");
+                    break;
+            }
         }
     }
 
@@ -612,56 +625,58 @@ public class ControladorCentroExcursionista {
 
     // MOSTRAR INSCRIPCIONES
     private void mostrarInscripciones() {
-        // Mostrar el menú
-        int opcion = vista.mostrarFiltroInscripciones();
+        boolean cancelar = false;
 
-        List<Inscripcion> inscripciones;
+        while (!cancelar) {
+            // Mostrar el menú
+            int opcion = vista.mostrarFiltroInscripciones();
 
-        switch (opcion) {
-            case 1:
-                // Mostrar todas las inscripciones
-                inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
-                break;
-            case 2:
-                // Mostrar la tabla de todos los socios
-                mostrarTodosLosSocios();
+            List<Inscripcion> inscripciones = null;
 
-                // Pedir al usuario que seleccione el número de socio
-                int numeroSocio = vista.leerNumeroSocio();
+            switch (opcion) {
+                case 1:
+                    inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
+                    break;
+                case 2:
+                    mostrarTodosLosSocios();
+                    int numeroSocio = vista.leerNumeroSocio();
+                    inscripciones = centro.mostrarInscripcionesPorSocio(numeroSocio);
+                    break;
+                case 3:
+                    vista.mostrarResultado("Introduce las fechas para filtrar las inscripciones.");
+                    String fechaInicioStr = vista.leerFecha();
+                    String fechaFinStr = vista.leerFecha();
 
-                // Filtrar las inscripciones por el socio seleccionado
-                inscripciones = centro.mostrarInscripcionesPorSocio(numeroSocio);
-                break;
-            case 3:
-                // Filtrar por fechas, similar a la función mostrarExcursionesConFiltro
-                vista.mostrarResultado("Introduce las fechas para filtrar las inscripciones.");
-                String fechaInicioStr = vista.leerFecha();
-                String fechaFinStr = vista.leerFecha();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
+                    LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
 
-                // Convertir las fechas de String a LocalDate usando un DateTimeFormatter
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
-                LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
-
-                // Filtrar las inscripciones por el rango de fechas
-                inscripciones = centro.mostrarInscripcionesPorFechas(fechaInicio, fechaFin);
-                break;
-            default:
-                vista.mostrarResultado("Opción no válida.");
-                return;
-        }
-
-        // Mostrar las inscripciones
-        if (inscripciones.isEmpty()) {
-            vista.mostrarResultado("No se encontraron inscripciones.");
-        } else {
-            StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
-            for (Inscripcion inscripcion : inscripciones) {
-                resultado.append(inscripcion.toString()).append("\n");
+                    inscripciones = centro.mostrarInscripcionesPorFechas(fechaInicio, fechaFin);
+                    break;
+                case 0:
+                    cancelar = true;
+                    vista.mostrarResultado("Regresando al menú anterior...");
+                    continue;
+                default:
+                    vista.mostrarResultado("Opción no válida.");
+                    continue;
             }
-            vista.mostrarResultado(resultado.toString());
+
+            // Verificar que las inscripciones no sean null antes de intentar mostrarlas
+            if (inscripciones != null) {
+                if (inscripciones.isEmpty()) {
+                    vista.mostrarResultado("No se encontraron inscripciones.");
+                } else {
+                    StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
+                    for (Inscripcion inscripcion : inscripciones) {
+                        resultado.append(inscripcion.toString()).append("\n");
+                    }
+                    vista.mostrarResultado(resultado.toString());
+                }
+            }
         }
     }
+
 
     private void mostrarInscripcionesDeExcursion(Excursion excursion) {
         List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorExcursion(excursion.getCodigo());
