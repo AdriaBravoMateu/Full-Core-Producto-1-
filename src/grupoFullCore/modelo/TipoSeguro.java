@@ -4,7 +4,7 @@ public enum TipoSeguro {
     BASICO(5.0),
     COMPLETO(10.0);
 
-    private double precio;
+    private final double precio;
 
     TipoSeguro(double precio){
         this.precio = precio;
@@ -13,7 +13,7 @@ public enum TipoSeguro {
 
     //Getter y Setter
     public double getPrecio(){
-        return precio;
+        return this.precio;
     }
 
     public void setPrecio(double precio) {
