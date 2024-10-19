@@ -172,20 +172,20 @@ public class ControladorCentroExcursionista {
 
     //MENÚ AÑADIR NOMBRE
     private Socio agregarSocio() {
+        Socio socio = null;
         boolean cancelar = false;
         while (!cancelar) {
             vista.mostrarTipoSocios();
             int tipoSocio = vista.leerOpcion();
-            Socio socio = null;
             switch (tipoSocio) {
                 case 1:
-                    agregarSocioEstandar();
+                    socio = agregarSocioEstandar();
                     break;
                 case 2:
-                    agregarSocioFederado();
+                    socio = agregarSocioFederado();
                     break;
                 case 3:
-                    agregarSocioInfantil();
+                    socio = agregarSocioInfantil();
                     break;
                 case 0:
                     cancelar = true;
@@ -193,6 +193,9 @@ public class ControladorCentroExcursionista {
                 default:
                     vista.mostrarResultado("Opción de tipo de socio no válida");
                     break;
+            }
+            if (socio != null){
+                return socio;
             }
         }
         return null;
@@ -537,7 +540,11 @@ public class ControladorCentroExcursionista {
         // Si el socio no existe, permitir agregarlo
         if (socio == null) {
             vista.mostrarResultado("Socio no encontrado. Se procederá a añadir un nuevo socio.\n");
-            agregarSocio();
+            socio = agregarSocio();
+            if (socio == null){
+                vista.mostrarResultado("Se ha cancelado el proceso de inscripción.\n");
+                return;
+            }
         }
 
         // Mostrar la tabla de excursiones antes de pedir el código de excursión
@@ -638,11 +645,10 @@ public class ControladorCentroExcursionista {
     private void mostrarInscripciones() {
         boolean cancelar = false;
 
-        List<Inscripcion> inscripciones = null;
-
         while (!cancelar) {
             // Mostrar el menú
             int opcion = vista.mostrarFiltroInscripciones();
+            List<Inscripcion> inscripciones = null;
 
             switch (opcion) {
                 case 1:
@@ -672,18 +678,17 @@ public class ControladorCentroExcursionista {
                     vista.mostrarResultado("Opción no válida.");
                     break;
             }
-        }
-
-        // Verificar que las inscripciones no sean null antes de intentar mostrarlas
-        if (inscripciones != null) {
-            if (inscripciones.isEmpty()) {
-                vista.mostrarResultado("No se encontraron inscripciones.");
-            } else {
-                StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
-                for (Inscripcion inscripcion : inscripciones) {
-                    resultado.append(inscripcion.toString()).append("\n");
+            // Verificar que las inscripciones no sean null antes de intentar mostrarlas
+            if (inscripciones != null) {
+                if (inscripciones.isEmpty()) {
+                    vista.mostrarResultado("No se encontraron inscripciones.");
+                } else {
+                    StringBuilder resultado = new StringBuilder("Lista de inscripciones:\n");
+                    for (Inscripcion inscripcion : inscripciones) {
+                        resultado.append(inscripcion.toString()).append("\n");
+                    }
+                    vista.mostrarResultado(resultado.toString());
                 }
-                vista.mostrarResultado(resultado.toString());
             }
         }
     }
