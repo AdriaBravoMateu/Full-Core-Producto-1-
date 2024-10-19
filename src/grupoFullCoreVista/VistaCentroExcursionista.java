@@ -62,6 +62,7 @@ public class VistaCentroExcursionista {
         System.out.println("1. Añadir Socio Estándar");
         System.out.println("2. Añadir Socio Federado");
         System.out.println("3. Añadir Socio Infantil");
+        System.out.println("0. Cancelar.");
         System.out.print("Elige una opción: ");
     }
 
@@ -101,6 +102,7 @@ public class VistaCentroExcursionista {
     public void mostrarOpcionMostrarSocios() {
         System.out.println("1. Mostrar todos los socios");
         System.out.println("2. Filtrar por tipo de socio");
+        System.out.println("0. Cancelar.");
         System.out.print("Elige una opción: ");
     }
 
@@ -264,10 +266,11 @@ public class VistaCentroExcursionista {
     }
 
     public int mostrarFiltroInscripciones() {
-        mostrarResultado("1. Ver todas las inscripciones");
-        mostrarResultado("2. Filtrar por socio");
-        mostrarResultado("3. Filtrar por fechas");
-        mostrarResultado("Seleccione una opción:");
+        System.out.println("1. Ver todas las inscripciones");
+        System.out.println("2. Filtrar por socio");
+        System.out.println("3. Filtrar por fechas");
+        System.out.println("0. Cancelar.");
+        System.out.println("Seleccione una opción:");
 
         return leerOpcion();
     }
