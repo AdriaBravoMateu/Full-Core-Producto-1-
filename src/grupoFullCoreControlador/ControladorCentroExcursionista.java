@@ -201,83 +201,58 @@ public class ControladorCentroExcursionista {
         int numeroSocio = vista.leerNumeroSocio();
         String nif = vista.leerNif();
 
-        //Mostramos el menu para seleccionar el tipo
-        vista.seleccionarTipoSeguro();
-        int opcionSeguro = vista.leerOpcion();
+        TipoSeguro seguroEnum = seleccionarSeguro();
 
-        TipoSeguro seguroEnum;
-        double precio;
-        switch (opcionSeguro) {
-            case 1:
-                seguroEnum = TipoSeguro.BASICO;
-                precio = 50;
-                break;
-            case 2:
-                seguroEnum = TipoSeguro.COMPLETO;
-                precio = 100;
-                break;
-            default:
-                vista.mostrarResultado("Opción de seguro no válida. Se asignará el seguro Básico por defecto");
-                seguroEnum = TipoSeguro.BASICO;
-                precio = 50;
-                break;
-        }
-        // Crear el seguro con el precio adecuado
-        Seguro seguro = new Seguro(seguroEnum, precio);
+        Seguro seguro = new Seguro(seguroEnum, seguroEnum.getPrecio());
 
-        //Crear el socio estándar
         SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
 
-        //Añadir el socio al centro
         centro.añadirSocioEstandar(socio);
 
-        //Mostrar el resultado
-        vista.mostrarResultado(("Socio Estándar añadido correctamente."));
+        vista.mostrarResultado("Socio Estándar añadido correctamente.");
 
         return socio;
+    }
+
+    private TipoSeguro seleccionarSeguro() {
+        TipoSeguro seguroEnum = null;
+        boolean opcionValida = false;
+
+        while (!opcionValida) {
+            vista.seleccionarTipoSeguro();
+            int opcionSeguro = vista.leerOpcion();
+
+            switch (opcionSeguro) {
+                case 1:
+                    seguroEnum = TipoSeguro.BASICO;
+                    opcionValida = true;
+                    break;
+                case 2:
+                    seguroEnum = TipoSeguro.COMPLETO;
+                    opcionValida = true;
+                    break;
+                default:
+                    vista.mostrarResultado("Opción de seguro no válida. Por favor, elija una opción correcta.");
+                    break;
+            }
+        }
+
+        return seguroEnum;
     }
 
 
     // MODIFICAR SEGURO SOCIO ESTÁNDAR
     private void modificarSeguroSocioEstandar() {
-        // Mostrar la lista de socios estándar
         mostrarSociosEstandar();
 
         int numeroSocio = vista.leerNumeroSocio();
 
-        //Mostramos mensaje aclarativo
-        vista.mostrarResultado("Seleccione el tipo de seguro al que quiere cambiar:");
+        TipoSeguro nuevoSeguroEnum = seleccionarSeguro();
 
-        // Mostramos el menú para seleccionar el tipo de seguro (igual que en agregarSocioEstandar)
-        vista.seleccionarTipoSeguro();
-        int opcionSeguro = vista.leerOpcion();
+        Seguro nuevoSeguro = new Seguro(nuevoSeguroEnum, nuevoSeguroEnum.getPrecio());
 
-        TipoSeguro seguroEnum;
-        double precio;
-        switch (opcionSeguro) {
-            case 1:
-                seguroEnum = TipoSeguro.BASICO;
-                precio = 50;
-                break;
-            case 2:
-                seguroEnum = TipoSeguro.COMPLETO;
-                precio = 100;
-                break;
-            default:
-                vista.mostrarResultado("Opción de seguro no válida. Se asignará el seguro Básico por defecto.");
-                seguroEnum = TipoSeguro.BASICO;
-                precio = 50;
-                break;
-        }
-
-
-        // Crear el nuevo seguro con el tipo y precio seleccionados
-        Seguro nuevoSeguro = new Seguro(seguroEnum, precio);
-
-        // Modificar el seguro del socio en el centro
         centro.modificarSeguroSocioEstandar(numeroSocio, nuevoSeguro);
 
-        // Mostrar el resultado
         vista.mostrarResultado("Seguro modificado correctamente.");
     }
 
