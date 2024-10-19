@@ -96,7 +96,12 @@ public class CentroExcursionista {
     public double calcularFacturaMensualPorSocio(int numeroSocio) {
         Socio socio = buscarSocioPorNumero(numeroSocio);
         if (socio != null) {
-            return socio.calcularFacturaMensual();
+            List<Inscripcion> inscripcionesDelMes = inscripciones.stream()
+                    .filter(i -> i.getSocio().equals(socio) &&
+                            i.getExcursion().getFecha().getMonthValue() == LocalDate.now().getMonthValue() &&
+                            i.getExcursion().getFecha().getYear() == LocalDate.now().getYear())
+                    .collect(Collectors.toList());
+            return socio.calcularFacturaMensual(inscripcionesDelMes);
         }
         return 0.0;
     }

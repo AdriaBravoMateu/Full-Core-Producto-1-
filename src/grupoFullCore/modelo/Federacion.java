@@ -1,15 +1,14 @@
 package grupoFullCore.modelo;
 
 public class Federacion {
-    // Atributos privados de la clase grupofc.modelo.Federacion
-    private String codigo;   // Código único de la federación (por ejemplo, "FED01")
-    private String nombre;   // Nombre de la federación (por ejemplo, "Federación de Montaña")
+    // Atributos
+    private String codigo;
+    private String nombre;
 
-    // Constructor de la clase grupofc.modelo.Federacion
-    // El constructor inicializa los atributos 'codigo' y 'nombre' con los valores que se pasan al crear un objeto grupofc.modelo.Federacion.
+    // Constructor
     public Federacion(String codigo, String nombre) {
-        this.codigo = codigo;   // Asigna el código único de la federación
-        this.nombre = nombre;   // Asigna el nombre de la federación
+        this.codigo = codigo;
+        this.nombre = nombre;
     }
 
     // Getters

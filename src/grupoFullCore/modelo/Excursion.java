@@ -3,21 +3,20 @@ package grupoFullCore.modelo;
 import java.time.LocalDate;
 
 public class Excursion {
-    // Atributos de la clase grupofc.modelo.Excursion
-    // Estos representan la información básica que debe almacenarse sobre cada excursión.
-    private String codigo;         // Código alfanumérico único de la excursión
-    private String descripcion;    // Breve descripción de la excursión
-    private LocalDate fecha;            // Fecha de inicio de la excursión
-    private int numeroDias;        // Número de días que dura la excursión
-    private double precioInscripcion; // Precio que debe pagar un socio para inscribirse en la excursión
+    // Atributos
+    private String codigo;
+    private String descripcion;
+    private LocalDate fecha;
+    private int numeroDias;
+    private double precioInscripcion;
 
-    // Constructor de la clase grupofc.modelo.Excursion
+    // Constructor
     public Excursion(String codigo, String descripcion, LocalDate fecha, int numeroDias, double precioInscripcion) {
-        this.codigo = codigo;                     // Asigna el código de la excursión
-        this.descripcion = descripcion;           // Asigna la descripción de la excursión
-        this.fecha = fecha;                       // Asigna la fecha de la excursión
-        this.numeroDias = numeroDias;             // Asigna el número de días de la excursión
-        this.precioInscripcion = precioInscripcion; // Asigna el precio de la inscripción
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.fecha = fecha;
+        this.numeroDias = numeroDias;
+        this.precioInscripcion = precioInscripcion;
     }
 
     //Getters

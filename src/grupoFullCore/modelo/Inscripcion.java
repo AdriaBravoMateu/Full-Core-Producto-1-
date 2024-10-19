@@ -3,19 +3,18 @@ package grupoFullCore.modelo;
 import java.util.Date;
 
 public class Inscripcion {
-    // Atributos privados de la clase grupofc.modelo.Inscripcion
-    private int numeroInscripcion;   // Número único que identifica la inscripción
-    private Date fechaInscripcion;   // Fecha en la que se realizó la inscripción
-    private Socio socio;             // grupofc.modelo.Socio que realiza la inscripción
-    private Excursion excursion;     // Excursión a la que se inscribe el socio
+    // Atributos
+    private int numeroInscripcion;
+    private Date fechaInscripcion;
+    private Socio socio;
+    private Excursion excursion;
 
-    // Constructor de la clase grupofc.modelo.Inscripcion
-    // El constructor inicializa los atributos 'numeroInscripcion', 'fechaInscripcion', 'socio' y 'excursion' con los valores que se pasan al crear un objeto grupofc.modelo.Inscripcion.
+    // Constructor
     public Inscripcion(int numeroInscripcion, Date fechaInscripcion, Socio socio, Excursion excursion) {
-        this.numeroInscripcion = numeroInscripcion;     // Asigna el número de inscripción único
-        this.fechaInscripcion = fechaInscripcion;       // Asigna la fecha en la que se hizo la inscripción
-        this.socio = socio;                             // Asigna el socio que se inscribe a la excursión
-        this.excursion = excursion;                     // Asigna la excursión a la que se inscribe el socio
+        this.numeroInscripcion = numeroInscripcion;
+        this.fechaInscripcion = fechaInscripcion;
+        this.socio = socio;
+        this.excursion = excursion;
     }
 
     //Getters

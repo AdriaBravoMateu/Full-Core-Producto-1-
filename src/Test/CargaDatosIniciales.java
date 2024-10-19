@@ -32,9 +32,9 @@ public class CargaDatosIniciales {
 
                 //Instancias de excursiones
                 //Creamos variables para las fechas
-                LocalDate fechaExcursion01 = LocalDate.of(2024, 10, 30);
-                LocalDate fechaExcursion02 = LocalDate.of(2024, 11, 10);
-                LocalDate fechaExcursion03 = LocalDate.of(2024, 11, 19);
+                LocalDate fechaExcursion01 = LocalDate.of(2024, 10, 25);
+                LocalDate fechaExcursion02 = LocalDate.of(2024, 10, 28);
+                LocalDate fechaExcursion03 = LocalDate.of(2024, 10, 30);
                 Excursion excursion01 = new Excursion("Exc01", "Excursion 01", fechaExcursion01, 5, 250);
                 Excursion excursion02 = new Excursion("Exc02", "Excursion 02", fechaExcursion02, 3, 150);
                 Excursion excursion03 = new Excursion("Exc03", "Excursion 03", fechaExcursion03, 7, 400);

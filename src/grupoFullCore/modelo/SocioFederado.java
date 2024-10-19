@@ -1,14 +1,18 @@
 package grupoFullCore.modelo;
 
+import java.util.List;
+
 public class SocioFederado extends Socio {
 
     private String nif;
     private Federacion federacion;
+    private static final double descuentoCuota = 0.05;
+    private static final double descuentoExcursion = 0.10;
 
     public SocioFederado(int numeroSocio, String nombre, String nif, Federacion federacion) {
-        super(numeroSocio, nombre);    // Llama al constructor de la clase grupofc.modelo.Socio
-        this.nif = nif;                // Asigna el NIF del socio federado
-        this.federacion = federacion;  // Asigna la federación a la que pertenece el socio federado
+        super(numeroSocio, nombre);
+        this.nif = nif;
+        this.federacion = federacion;
     }
 
     //Getters
@@ -18,18 +22,17 @@ public class SocioFederado extends Socio {
     public void setNif(String nif) {this.nif = nif;}
     public void setFederacion(Federacion federacion) {this.federacion = federacion;}
 
-// Implementación del metodo abstracto 'calcularFacturaMensual'.
-// Este metodo calcula el total a pagar por el socio federado en su factura mensual.
-// En este caso, se aplica un descuento del 5% sobre la cuota base de 10€.
-
-    @Override
-    public double calcularFacturaMensual() {
-        return 10 * 0.95; // Cuota base de 10€ con un 5% de descuento (0.95)
+    //Método para calcular la factura mensual del socio federado
+    public double calcularFacturaMensual(List<Inscripcion> inscripcionesDelMes) {
+        double factura = cuotaMensual * (1 - descuentoCuota);
+        for (Inscripcion inscripcion : inscripcionesDelMes) {
+            double precioExcursion = inscripcion.getExcursion().getPrecioInscripcion();
+            factura += precioExcursion * (1 - descuentoExcursion);  // 10% de descuento en excursiones
+        }
+        return factura;
     }
 
     // Metodo toString
-    // Este metodo devuelve una representación en forma de cadena del socio federado
-    // incluyendo su número de socio, nombre, nif y la federación a la que pertenece.
     @Override
     public String toString() {
         return super.toString() +

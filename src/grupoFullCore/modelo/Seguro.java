@@ -1,14 +1,14 @@
 package grupoFullCore.modelo;
 
 public class Seguro {
-    // Atributos privados de la clase grupofc.modelo.Seguro
-    private TipoSeguro tipo;  // Tipo de seguro (Enum: BASICO o COMPLETO)
-    private double precio;    // Precio del seguro
+    // Atributos
+    private TipoSeguro tipo;
+    private double precio;
 
-    // Constructor de la clase grupofc.modelo.Seguro
+    // Constructor
     public Seguro(TipoSeguro tipo, double precio) {
-        this.tipo = tipo;      // Asigna el tipo de seguro (BASICO o COMPLETO)
-        this.precio = precio;  // Asigna el precio del seguro
+        this.tipo = tipo;
+        this.precio = precio;
     }
 
     // Getters

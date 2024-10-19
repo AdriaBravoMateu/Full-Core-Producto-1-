@@ -1,13 +1,13 @@
 package grupoFullCore.modelo;
 
-public class SocioInfantil extends Socio {
-    // Atributo privado específico de la clase grupofc.modelo.SocioInfantil
-    private Socio progenitor;
-    private int numeroSocioProgenitor;  // Número de socio del padre o madre que cubre al socio infantil
+import java.util.List;
 
-    // Constructor de la clase grupofc.modelo.SocioInfantil
-    // Llama al constructor de la clase padre (grupofc.modelo.Socio) para inicializar los atributos comunes (numeroSocio y nombre)
-    // y luego asigna el valor para el atributo propio de la clase grupofc.modelo.SocioInfantil (numeroSocioPadreOMadre).
+public class SocioInfantil extends Socio {
+    // Atributos
+    private Socio progenitor;
+    private int numeroSocioProgenitor;
+    private static final double descuentoCuota = 0.50;
+
     public SocioInfantil(int numeroSocio, String nombre, Socio progenitor) {
         super(numeroSocio, nombre);
         this.numeroSocioProgenitor = progenitor.getNumeroSocio();
@@ -19,17 +19,18 @@ public class SocioInfantil extends Socio {
     public void setNumeroSocioProgenitor(int numeroSocioProgenitor) {this.numeroSocioProgenitor = numeroSocioProgenitor;}
 
 
-    // Implementación del metodo abstracto 'calcularFacturaMensual'
-    // Este metodo calcula el total a pagar por el socio infantil en su factura mensual.
-    // En este caso, se aplica un descuento del 50% sobre la cuota base de 10€.
+    //Método para calcular la factura mensual del socio infantil
     @Override
-    public double calcularFacturaMensual() {
-        return 10 * 0.5; // Cuota base de 10€ con un 50% de descuento (0.5)
+    public double calcularFacturaMensual(List<Inscripcion> inscripcionesDelMes) {
+        double factura = cuotaMensual * (1 - descuentoCuota);
+        for (Inscripcion inscripcion : inscripcionesDelMes) {
+            double precioExcursion = inscripcion.getExcursion().getPrecioInscripcion();
+            factura += precioExcursion;
+        }
+        return factura;
     }
 
     // Metodo toString
-    // Este metodo devuelve una representación en forma de cadena del socio infantil
-    // incluyendo su número de socio, nombre y el número de socio de 1 progenitor.
     @Override
     public String toString() {
         return super.toString() +
