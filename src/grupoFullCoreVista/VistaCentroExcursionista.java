@@ -1,11 +1,16 @@
 package grupoFullCoreVista;
 
+//======================================================================================================================
+//IMPORTACIONES
 import java.util.Scanner;
 import java.util.List;
 import grupoFullCore.modelo.Federacion;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+//Gestión de excepciones
 import java.util.InputMismatchException;
+//======================================================================================================================
+
 
 public class VistaCentroExcursionista {
     private Scanner scanner;
@@ -24,7 +29,10 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
-    // SUBMENÚ DE EXCURSIONES
+    /* -----------------------------------------------------------------------------------------------------------------
+    ----------------------------- SUBMENÚ DE EXCURSIONES----------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
+     */
     public void mostrarMenuExcursiones() {
         System.out.println("\nGestión de Excursiones");
         System.out.println("1. Añadir Excursión");
@@ -33,7 +41,10 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
-    // SUBMENÚ DE SOCIOS
+    /* -----------------------------------------------------------------------------------------------------------------
+    ----------------------------- SUBMENÚ DE SOCIOS --------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
+     */
     public void mostrarMenuSocios() {
         System.out.println("\nGestión de Socios");
         System.out.println("1. Añadir Socio");
@@ -45,6 +56,8 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
+
+    // Menú auxiliar SOCIOS
     public void mostrarTipoSocios(){
         System.out.println("1. Añadir Socio Estándar");
         System.out.println("2. Añadir Socio Federado");
@@ -67,9 +80,9 @@ public class VistaCentroExcursionista {
                 System.out.printf("%d. %s\n", (i + 1), federaciones.get(i).getNombre());
             }
             System.out.print("Elige una opción: ");
+            opcion = scanner.nextInt();
+            scanner.nextLine();
             try {
-                opcion = scanner.nextInt();
-                scanner.nextLine(); // Consumir el salto de línea
                 if (opcion >= 1 && opcion <= federaciones.size()) {
                     entradaValida = true;
                 } else {
@@ -80,15 +93,18 @@ public class VistaCentroExcursionista {
                 scanner.nextLine(); // Consumir la entrada incorrecta
             }
         }
+
         return opcion;
     }
 
+    // Menú para elegir entre todos los socios o filtrar por tipo
     public void mostrarOpcionMostrarSocios() {
         System.out.println("1. Mostrar todos los socios");
         System.out.println("2. Filtrar por tipo de socio");
         System.out.print("Elige una opción: ");
     }
 
+    // Menú para filtrar por tipo de socio
     public void mostrarOpcionesFiltrarSocios() {
         System.out.println("1. Socios Estándar");
         System.out.println("2. Socios Federados");
@@ -96,6 +112,10 @@ public class VistaCentroExcursionista {
         System.out.print("Elige una opción: ");
     }
 
+    /* -----------------------------------------------------------------------------------------------------------------
+    ----------------------------- SUBMENÚ DE INSCRIPCIONES -------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------
+     */
     public void mostrarMenuInscripciones() {
         System.out.println("\nGestión de Inscripciones");
         System.out.println("1. Añadir Inscripción");
@@ -104,6 +124,9 @@ public class VistaCentroExcursionista {
         System.out.println("4. Volver al menú principal");
         System.out.print("Elige una opción: ");
     }
+
+
+
 
     // =============================== Métodos para leer datos de EXCURSIONES ==========================================
     public String leerCodigoExcursion() {
@@ -135,6 +158,7 @@ public class VistaCentroExcursionista {
         return numeroDias;
     }
 
+
     public double leerPrecioInscripcion() {
         double precio = -1;
         boolean entradaValida = false;
@@ -143,16 +167,17 @@ public class VistaCentroExcursionista {
             try {
                 System.out.print("Introduce el precio de inscripción: ");
                 precio = scanner.nextDouble();
-                scanner.nextLine(); // Consumir el salto de línea
                 entradaValida = true;
             } catch (InputMismatchException e) {
-                System.out.println("Error: Debe ingresar un número válido.");
+                System.out.println("Error: Debe ingresar un número válido para el precio.");
                 scanner.nextLine();  // Consumir la entrada incorrecta
             }
         }
 
         return precio;
     }
+
+
 
     // =============================== Métodos para leer datos de SOCIOS ===================================================
     public String leerNombreSocio() {
@@ -168,8 +193,10 @@ public class VistaCentroExcursionista {
                 System.out.println("Error: El nombre no puede estar vacío.");
             }
         }
+
         return nombre;
     }
+
 
     public int leerNumeroSocio() {
         int numeroSocio = -1;
@@ -179,10 +206,6 @@ public class VistaCentroExcursionista {
             try {
                 System.out.print("Introduce el número de socio: ");
                 numeroSocio = scanner.nextInt();
-                if (numeroSocio < 0) {
-                    System.out.println("Error: El número de socio no puede ser negativo.");
-                    continue;
-                }
                 scanner.nextLine(); // Consumir el salto de línea
                 entradaValida = true;  // Si no ocurre excepción, marcamos como válida
             } catch (InputMismatchException e) {
@@ -190,6 +213,7 @@ public class VistaCentroExcursionista {
                 scanner.nextLine();  // Consumir la entrada incorrecta
             }
         }
+
         return numeroSocio;
     }
 
@@ -197,6 +221,7 @@ public class VistaCentroExcursionista {
         System.out.print("Introduce el NIF del socio: ");
         return scanner.nextLine();
     }
+
 
     public int leerNumeroSocioProgenitor() {
         int numeroProgenitor = -1;
@@ -213,8 +238,10 @@ public class VistaCentroExcursionista {
                 scanner.nextLine(); // Consumir la entrada incorrecta
             }
         }
+
         return numeroProgenitor;
     }
+
 
     // =============================== Métodos para leer datos de INSCRIPCIONES ========================================
     public int leerNumeroInscripcion() {
@@ -236,25 +263,16 @@ public class VistaCentroExcursionista {
         return numeroInscripcion;
     }
 
-    public String leerFecha() {
-        LocalDate fecha = null;
-        boolean entradaValida = false;
+    public int mostrarFiltroInscripciones() {
+        mostrarResultado("1. Ver todas las inscripciones");
+        mostrarResultado("2. Filtrar por socio");
+        mostrarResultado("3. Filtrar por fechas");
+        mostrarResultado("Seleccione una opción:");
 
-        while (!entradaValida) {
-            try {
-                System.out.print("Introduce la fecha de la excursión (YYYY-MM-DD): ");
-                String fechaStr = scanner.next();
-                fecha = LocalDate.parse(fechaStr);  // Validar que sea una fecha válida
-                if (fecha.isBefore(LocalDate.now())) {
-                    throw new DateTimeParseException("Fecha en el pasado.", fechaStr, 0);
-                }
-                entradaValida = true;
-            } catch (DateTimeParseException e) {
-                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD que no esté en el pasado.");
-            }
-        }
-        return fecha.toString();
+        return leerOpcion();
     }
+
+
 
     // =============================== Métodos genéricos para mostrar datos ============================================
     public void mostrarResultado(String resultado) {
@@ -275,6 +293,25 @@ public class VistaCentroExcursionista {
                 scanner.nextLine(); // Consumir la entrada incorrecta
             }
         }
+
         return opcion;
+    }
+
+    public String leerFecha() {
+        LocalDate fecha = null;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce la fecha de la excursión (YYYY-MM-DD): ");
+                String fechaStr = scanner.next();
+                fecha = LocalDate.parse(fechaStr);  // Validar que sea una fecha válida
+                entradaValida = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD.");
+            }
+        }
+
+        return fecha.toString();
     }
 }
