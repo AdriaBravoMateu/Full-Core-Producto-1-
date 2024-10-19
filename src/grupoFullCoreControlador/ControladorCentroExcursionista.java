@@ -107,9 +107,18 @@ public class ControladorCentroExcursionista {
         }
         vista.mostrarResultado(resultado.toString());
     }
-
+    //SOBRECARGA MÉTODO
     private void mostrarExcursiones() {
         List<Excursion> excursiones = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX);
+        mostrarExcursiones(excursiones); // Llamada a la nueva función que acepta una lista
+    }
+
+    // Nuevo método que acepta una lista de excursiones
+    private void mostrarExcursiones(List<Excursion> excursiones) {
+        if (excursiones.isEmpty()) {
+            vista.mostrarResultado("No se encontraron excursiones.");
+            return;
+        }
 
         // Cabecera de la tabla
         String formato = "| %-10s | %-20s | %-10s |\n";
