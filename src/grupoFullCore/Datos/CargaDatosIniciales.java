@@ -1,4 +1,4 @@
-package Test;
+package grupoFullCore.Datos;
 import java.time.LocalDate;
 import java.util.Date;
 import java.time.ZoneId;
