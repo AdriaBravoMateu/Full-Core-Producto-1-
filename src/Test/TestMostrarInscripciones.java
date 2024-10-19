@@ -30,5 +30,4 @@ public class TestMostrarInscripciones {
         assertEquals(1, inscripciones.size());
         assertTrue(inscripciones.contains(inscripcion));
     }
-
 }

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +26,6 @@ public class TestCalcularFacturaMensual {
         double factura = centro.calcularFacturaMensualPorSocio(1);
 
         // Assert
-        assertEquals(150, factura);  // Cuota básica 50 + precio excursión 100
+        assertEquals(115, factura);  // Cuota básica 10eur + precio excursión 100eur + Seguro 5eur
     }
 }
-
