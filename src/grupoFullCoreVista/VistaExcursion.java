@@ -1,5 +1,7 @@
 package grupoFullCoreVista;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
@@ -66,9 +68,20 @@ public class VistaExcursion {
         return precio;
     }
 
-    public String leerFecha() {
-        System.out.print("Introduce la fecha de la excursión (YYYY-MM-DD): ");
-        return scanner.nextLine();  // Leer la fecha de la excursión
+    public String leerFecha(String mensaje) {
+        LocalDate fecha = null;
+        boolean entradaValida = false;
+        while (!entradaValida) {
+            try {
+                System.out.print(mensaje + " (YYYY-MM-DD): ");
+                String fechaStr = scanner.next();
+                fecha = LocalDate.parse(fechaStr);  // Validar que sea una fecha válida
+                entradaValida = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD.");
+            }
+        }
+        return fecha.toString();
     }
 
     public void mostrarResultado(String resultado) {
@@ -91,5 +104,8 @@ public class VistaExcursion {
         }
 
         return opcion;
+    }
+    public String leerFechaExcursion() {
+        return leerFecha("Introduce la fecha de la excursión");
     }
 }

@@ -1,5 +1,8 @@
 package grupoFullCoreVista;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
@@ -9,6 +12,8 @@ public class VistaInscripcion {
     public VistaInscripcion() {
         scanner = new Scanner(System.in);
     }
+
+
 
     public void mostrarMenuInscripciones() {
         System.out.println("\nGestión de Inscripciones");
@@ -67,9 +72,23 @@ public class VistaInscripcion {
         return scanner.nextLine();  // Leer el código de la excursión
     }
 
-    public String leerFechaInsc() {
-        System.out.print("Introduce la fecha de la inscripción (YYYY-MM-DD): ");
-        return scanner.nextLine();  // Leer la fecha de la inscripción
+    public LocalDate leerFechaInsc() {
+        LocalDate fecha = null;
+        boolean entradaValida = false;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Introduce la fecha de la inscripción (YYYY-MM-DD): ");
+                String fechaStr = scanner.next();
+                fecha = LocalDate.parse(fechaStr, formatter);  // Validar que sea una fecha válida
+                entradaValida = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Debe ingresar una fecha válida en el formato YYYY-MM-DD.");
+            }
+        }
+
+        return fecha;  // Devuelve directamente un LocalDate
     }
 
     public void mostrarResultado(String resultado) {
@@ -91,4 +110,5 @@ public class VistaInscripcion {
         }
         return opcion;
     }
+
 }

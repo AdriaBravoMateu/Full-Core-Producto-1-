@@ -9,7 +9,6 @@ import grupoFullCoreVista.VistaSocio;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ControladorInscripcion {
@@ -144,23 +143,30 @@ public class ControladorInscripcion {
     private void mostrarInscripciones() {
         int opcion = vista.mostrarFiltroInscripciones();
         List<Inscripcion> inscripciones = null;
+
         switch (opcion) {
             case 1:
+                // Mostrar todas las inscripciones
                 inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
                 break;
             case 2:
+                // Filtrar por socio
+                new ControladorSocio(centro, new VistaSocio()).mostrarTodosLosSocios();
                 int numeroSocio = vista.leerNumeroSocio();
                 inscripciones = centro.mostrarInscripcionesPorSocio(numeroSocio);
                 break;
             case 3:
-                mostrarInscripcionesPorFechas();
+                // Filtrar por fechas
+                inscripciones = mostrarInscripcionesPorFechas();
                 break;
             case 0:
                 return;
             default:
                 vista.mostrarResultado("Opción no válida.");
+                return;
         }
 
+        // Mostrar las inscripciones si no está vacío
         if (inscripciones != null && !inscripciones.isEmpty()) {
             String formato = "| %-15s | %-20s | %-15s | %20s |\n";
             vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
@@ -182,44 +188,14 @@ public class ControladorInscripcion {
     private List<Inscripcion> mostrarInscripcionesPorFechas() {
         // Solicitar las fechas de inicio y fin para el filtro
         vista.mostrarResultado("Introduce las fechas para filtrar las inscripciones.");
-        String fechaInicioStr = vista.leerFechaInsc();
-        String fechaFinStr = vista.leerFechaInsc();
 
-        // Parsear las fechas
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
-        LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
+        // Ya no es necesario hacer el parseo, se obtiene un LocalDate directamente
+        LocalDate fechaInicio = vista.leerFechaInsc();  // Ahora devuelve un LocalDate
+        LocalDate fechaFin = vista.leerFechaInsc();     // Devuelve un LocalDate
 
         // Obtener las inscripciones filtradas entre las fechas indicadas
-        List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorFechas(fechaInicio, fechaFin);
-
-        // Verificar si se encontraron inscripciones
-        if (inscripciones == null || inscripciones.isEmpty()) {
-            vista.mostrarResultado("No se encontraron inscripciones.");
-            return inscripciones;  // Retorna la lista vacía
-        }
-
-        // Si hay inscripciones, mostrar los resultados
-        String formato = "| %-15s | %-20s | %-15s | %20s |\n";
-        vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
-        vista.mostrarResultado("| Nº Inscripción  | Nombre del Socio     | Excursión       | Fecha Inscripción    |");
-        vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
-
-        // Mostrar cada inscripción
-        for (Inscripcion inscripcion : inscripciones) {
-            vista.mostrarResultado(String.format(formato,
-                    inscripcion.getNumeroInscripcion(),
-                    inscripcion.getSocio().getNombre(),
-                    inscripcion.getExcursion().getDescripcion(),
-                    inscripcion.getFechaInscripcion().toString()));
-            vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
-        }
-
-        // Retorna la lista de inscripciones
-        return inscripciones;
+        return centro.mostrarInscripcionesPorFechas(fechaInicio, fechaFin);
     }
-
-
 
 
     private void mostrarInscripcionesDeExcursion(Excursion excursion) {

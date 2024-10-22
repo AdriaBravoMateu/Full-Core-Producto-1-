@@ -141,9 +141,9 @@ public class CentroExcursionista {
     public List<Inscripcion> mostrarInscripcionesPorFechas(LocalDate fechaInicio, LocalDate fechaFin) {
         return inscripciones.stream()
                 .filter(i -> {
-                    LocalDate fechaExcursion = i.getExcursion().getFecha();
-                    return (fechaExcursion.isEqual(fechaInicio) || fechaExcursion.isAfter(fechaInicio)) &&
-                            (fechaExcursion.isEqual(fechaFin) || fechaExcursion.isBefore(fechaFin));
+                    LocalDate fechaInscripcion = i.getFechaInscripcion();  // Usar la fecha de inscripción en lugar de la fecha de la excursión
+                    return (fechaInscripcion.isEqual(fechaInicio) || fechaInscripcion.isAfter(fechaInicio)) &&
+                            (fechaInscripcion.isEqual(fechaFin) || fechaInscripcion.isBefore(fechaFin));
                 })
                 .collect(Collectors.toList());
     }

@@ -46,7 +46,7 @@ public class ControladorExcursion {
         } while (centro.buscarExcursionPorCodigo(codigo));
 
         String descripcion = vista.leerDescripcionExcursion();
-        String fechaStr = vista.leerFecha();
+        String fechaStr = vista.leerFechaExcursion();  // Utiliza el método actualizado para leer la fecha
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaLocal = LocalDate.parse(fechaStr, formatter);
         LocalDate fecha = java.sql.Date.valueOf(fechaLocal).toLocalDate();
@@ -59,8 +59,8 @@ public class ControladorExcursion {
 
     private void mostrarExcursionesConFiltro() {
         vista.mostrarResultado("Introduce las fechas para filtrar las excursiones.");
-        String fechaInicioStr = vista.leerFecha();
-        String fechaFinStr = vista.leerFecha();
+        String fechaInicioStr = vista.leerFechaExcursion();
+        String fechaFinStr = vista.leerFechaExcursion();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
         LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
