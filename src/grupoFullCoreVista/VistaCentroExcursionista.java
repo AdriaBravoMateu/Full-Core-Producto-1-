@@ -1,4 +1,4 @@
-package grupoFullCoreVista;
+/*package grupoFullCoreVista;
 
 //======================================================================================================================
 //IMPORTACIONES
@@ -32,7 +32,7 @@ public class VistaCentroExcursionista {
     /* -----------------------------------------------------------------------------------------------------------------
     ----------------------------- SUBMENÚ DE EXCURSIONES----------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------
-     */
+
     public void mostrarMenuExcursiones() {
         System.out.println("\nGestión de Excursiones");
         System.out.println("1. Añadir Excursión");
@@ -44,7 +44,7 @@ public class VistaCentroExcursionista {
     /* -----------------------------------------------------------------------------------------------------------------
     ----------------------------- SUBMENÚ DE SOCIOS --------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------
-     */
+
     public void mostrarMenuSocios() {
         System.out.println("\nGestión de Socios");
         System.out.println("1. Añadir Socio");
@@ -117,7 +117,7 @@ public class VistaCentroExcursionista {
     /* -----------------------------------------------------------------------------------------------------------------
     ----------------------------- SUBMENÚ DE INSCRIPCIONES -------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------
-     */
+
     public void mostrarMenuInscripciones() {
         System.out.println("\nGestión de Inscripciones");
         System.out.println("1. Añadir Inscripción");
@@ -331,3 +331,5 @@ public class VistaCentroExcursionista {
         return fecha.toString();
     }
 }
+
+ */
