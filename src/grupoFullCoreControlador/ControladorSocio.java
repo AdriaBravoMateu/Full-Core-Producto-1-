@@ -7,10 +7,21 @@ import java.util.List;
 public class ControladorSocio {
     private CentroExcursionista centro;
     private VistaSocio vista;
+    private ControladorExcursion controladorExcursion;
+    private ControladorInscripcion controladorInscripcion;
 
-    public ControladorSocio(CentroExcursionista centro, VistaSocio vista) {
+    public ControladorSocio(CentroExcursionista centro, VistaSocio vista, ControladorExcursion controladorExcursion, ControladorInscripcion controladorInscripcion) {
         this.centro = centro;
         this.vista = vista;
+        this.controladorExcursion = controladorExcursion;
+        this.controladorInscripcion = controladorInscripcion;
+    }
+
+    public void setControladorExcursion(ControladorExcursion controladorExcursion) {
+        this.controladorExcursion = controladorExcursion;
+    }
+    public void setControladorInscripcion(ControladorInscripcion controladorInscripcion) {
+        this.controladorInscripcion = controladorInscripcion;
     }
 
     public void gestionarSocios() {
@@ -46,6 +57,10 @@ public class ControladorSocio {
     public Socio agregarSocio() {
         Socio socio = null;
         boolean cancelar = false;
+
+        //mostrar socios existentes para saber qué número de socio introducir
+        mostrarTodosLosSocios();
+
         while (!cancelar) {
             vista.mostrarTipoSocios();
             int tipoSocio = vista.leerOpcion();

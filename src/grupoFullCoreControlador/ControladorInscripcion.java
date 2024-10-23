@@ -4,7 +4,6 @@ package grupoFullCoreControlador;
 import grupoFullCore.modelo.*;
 import grupoFullCoreVista.VistaExcursion;
 import grupoFullCoreVista.VistaInscripcion;
-import grupoFullCoreVista.VistaSocio;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -14,11 +13,24 @@ import java.util.List;
 public class ControladorInscripcion {
     private CentroExcursionista centro;
     private VistaInscripcion vista;
+    private ControladorSocio controladorSocio;
+    private ControladorExcursion controladorExcursion;
 
-    public ControladorInscripcion(CentroExcursionista centro, VistaInscripcion vista) {
+    public ControladorInscripcion(CentroExcursionista centro, VistaInscripcion vista, ControladorSocio controladorSocio, ControladorExcursion controladorExcursion ) {
         this.centro = centro;
         this.vista = vista;
+        this.controladorSocio = controladorSocio;
+        this.controladorExcursion = controladorExcursion;
     }
+
+    public void setControladorSocio(ControladorSocio controladorSocio) {
+        this.controladorSocio = controladorSocio;
+    }
+    public void setControladorExcursion(ControladorExcursion controladorExcursion) {
+        this.controladorExcursion = controladorExcursion;
+    }
+
+
 
     public void gestionarInscripciones() {
         boolean volver = false;
@@ -46,7 +58,7 @@ public class ControladorInscripcion {
 
     private void agregarInscripcion() {
         // Mostrar todos los socios usando el controlador de socios
-        new ControladorSocio(centro, new VistaSocio()).mostrarTodosLosSocios();
+        controladorSocio.mostrarTodosLosSocios();
 
         int numeroSocio = vista.leerNumeroSocio();
         Socio socio = centro.mostrarSocios().stream()
@@ -55,7 +67,7 @@ public class ControladorInscripcion {
 
         if (socio == null) {
             vista.mostrarResultado("Socio no encontrado. Se procederá a añadir un nuevo socio.");
-            socio = new ControladorSocio(centro, new VistaSocio()).agregarSocio();
+            socio = controladorSocio.agregarSocio();
             if (socio == null) {
                 vista.mostrarResultado("Se ha cancelado el proceso de inscripción.");
                 return;
@@ -63,7 +75,7 @@ public class ControladorInscripcion {
         }
 
         // Mostrar excursiones usando el controlador de excursiones
-        new ControladorExcursion(centro, new VistaExcursion()).mostrarExcursiones(centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX));
+        controladorExcursion.mostrarExcursiones(centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX));
 
         String codigoExcursion = vista.leerCodigoExcursion();
         Excursion excursion = centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX).stream()
@@ -71,6 +83,8 @@ public class ControladorInscripcion {
                 .findFirst().orElse(null);
 
         if (excursion != null) {
+            List<Inscripcion> inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
+            mostrarListaInscripciones(inscripciones);
             int numeroInscripcion;
             do {
                 numeroInscripcion = vista.leerNumeroInscripcion();
@@ -94,11 +108,8 @@ public class ControladorInscripcion {
             return;
         }
 
-    // Crear una instancia del controlador de excursiones
-        ControladorExcursion controladorExcursiones = new ControladorExcursion(centro, new VistaExcursion());
-
     // Llamar al método de instancia 'mostrarExcursiones' con la lista de excursiones
-        controladorExcursiones.mostrarExcursiones(centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX));
+        controladorExcursion.mostrarExcursiones(centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX));
         String codigoExcursion = vista.leerCodigoExcursion();
         Excursion excursion = excursiones.stream()
                 .filter(e -> e.getCodigo().equals(codigoExcursion))
@@ -146,17 +157,14 @@ public class ControladorInscripcion {
 
         switch (opcion) {
             case 1:
-                // Mostrar todas las inscripciones
                 inscripciones = centro.mostrarInscripcionesPorFechas(LocalDate.MIN, LocalDate.MAX);
                 break;
             case 2:
-                // Filtrar por socio
-                new ControladorSocio(centro, new VistaSocio()).mostrarTodosLosSocios();
+                controladorSocio.mostrarTodosLosSocios();
                 int numeroSocio = vista.leerNumeroSocio();
                 inscripciones = centro.mostrarInscripcionesPorSocio(numeroSocio);
                 break;
             case 3:
-                // Filtrar por fechas
                 inscripciones = mostrarInscripcionesPorFechas();
                 break;
             case 0:
@@ -165,13 +173,16 @@ public class ControladorInscripcion {
                 vista.mostrarResultado("Opción no válida.");
                 return;
         }
+        mostrarListaInscripciones(inscripciones);
+    }
 
-        // Mostrar las inscripciones si no está vacío
+    private void mostrarListaInscripciones(List<Inscripcion> inscripciones) {
         if (inscripciones != null && !inscripciones.isEmpty()) {
             String formato = "| %-15s | %-20s | %-15s | %20s |\n";
             vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
             vista.mostrarResultado("| Nº Inscripción  | Nombre del Socio     | Excursión       | Fecha Inscripción    |");
             vista.mostrarResultado("+-----------------+----------------------+-----------------+----------------------+");
+
             for (Inscripcion inscripcion : inscripciones) {
                 vista.mostrarResultado(String.format(formato,
                         inscripcion.getNumeroInscripcion(),
@@ -186,14 +197,17 @@ public class ControladorInscripcion {
     }
 
     private List<Inscripcion> mostrarInscripcionesPorFechas() {
-        // Solicitar las fechas de inicio y fin para el filtro
         vista.mostrarResultado("Introduce las fechas para filtrar las inscripciones.");
 
-        // Ya no es necesario hacer el parseo, se obtiene un LocalDate directamente
-        LocalDate fechaInicio = vista.leerFechaInsc();  // Ahora devuelve un LocalDate
-        LocalDate fechaFin = vista.leerFechaInsc();     // Devuelve un LocalDate
+        LocalDate fechaInicio = vista.leerFechaInsc();
+        LocalDate fechaFin = vista.leerFechaInsc();
 
-        // Obtener las inscripciones filtradas entre las fechas indicadas
+        // Validar que la fecha de inicio no sea posterior a la fecha de fin
+        if (fechaInicio.isAfter(fechaFin)) {
+            vista.mostrarResultado("La fecha de inicio no puede ser posterior a la fecha de fin.");
+            return List.of(); // Retorna una lista vacía en caso de error
+        }
+
         return centro.mostrarInscripcionesPorFechas(fechaInicio, fechaFin);
     }
 

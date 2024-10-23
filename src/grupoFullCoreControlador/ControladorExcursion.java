@@ -9,10 +9,21 @@ import java.util.List;
 public class ControladorExcursion {
     private CentroExcursionista centro;
     private VistaExcursion vista;
+    private ControladorSocio controladorSocio;
+    private ControladorInscripcion controladorInscripcion;
 
-    public ControladorExcursion(CentroExcursionista centro, VistaExcursion vista) {
+    public ControladorExcursion(CentroExcursionista centro, VistaExcursion vista, ControladorSocio controladorSocio, ControladorInscripcion controladorInscripcion) {
         this.centro = centro;
         this.vista = vista;
+        this.controladorSocio = controladorSocio;
+        this.controladorInscripcion = controladorInscripcion;
+    }
+
+    public void setControladorSocio(ControladorSocio controladorSocio) {
+        this.controladorSocio = controladorSocio;
+    }
+    public void setControladorInscripcion(ControladorInscripcion controladorInscripcion) {
+        this.controladorInscripcion = controladorInscripcion;
     }
 
     public void gestionarExcursiones() {
@@ -38,6 +49,8 @@ public class ControladorExcursion {
 
     private void agregarExcursion() {
         String codigo;
+        //mostrar excursiones existentes para saber qué código de excursión introducir
+        mostrarExcursiones(centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX));
         do {
             codigo = vista.leerCodigoExcursion();
             if (centro.buscarExcursionPorCodigo(codigo)) {
