@@ -1,95 +1,99 @@
 package grupoFullCore.modelo;
 
+import grupoFullCore.modelo.DAO.SocioDAO;
+import grupoFullCore.modelo.DAO.ExcursionDAO;
+import grupoFullCore.modelo.DAO.InscripcionDAO;
+import grupoFullCore.modelo.DAO.FederacionDAO;
+import grupoFullCore.modelo.DAO.factory.DAOFactory;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CentroExcursionista {
+    private SocioDAO socioDAO;
+    private ExcursionDAO excursionDAO;
+    private InscripcionDAO inscripcionDAO;
+    private FederacionDAO federacionDAO;
 
-    private ArrayList<Socio> socios;              // Lista de socios
-    private ArrayList<Excursion> excursiones;     // Lista de excursiones
-    private ArrayList<Inscripcion> inscripciones; // Lista de inscripciones
-    private List<Federacion> federaciones;        // Lista de federaciones disponibles
-
-    // Constructor que inicializa las listas
+    // Constructor que inicializa los DAOs
     public CentroExcursionista() {
-        socios = new ArrayList<>();
-        excursiones = new ArrayList<>();
-        inscripciones = new ArrayList<>();
-
-        // Precargar federaciones disponibles
-        this.federaciones = List.of(
-                new Federacion("FED001", "Federación Andaluza"),
-                new Federacion("FED002", "Federación Catalana"),
-                new Federacion("FED003", "Federación Madrileña")
-        );
+        this.socioDAO = DAOFactory.getSocioDAO();
+        this.excursionDAO = DAOFactory.getExcursionDAO();
+        this.inscripcionDAO = DAOFactory.getInscripcionDAO();
+        this.federacionDAO = DAOFactory.getFederacionDAO();
     }
 
     // ====================== Gestión de Federaciones ======================
+
     public List<Federacion> getFederaciones() {
-        return federaciones;
+        return federacionDAO.mostrarFederaciones();
+    }
+
+    public void agregarFederacion(Federacion federacion) {
+        federacionDAO.agregarFederacion(federacion);
     }
 
     // ==================== Gestión de Excursiones ====================
+
     public void añadirExcursion(Excursion excursion) {
-        excursiones.add(excursion);
+        excursionDAO.agregarExcursion(excursion);
     }
 
     public List<Excursion> mostrarExcursionesConFiltro(LocalDate fechaInicio, LocalDate fechaFin) {
-        return excursiones.stream()
-                .filter(excursion -> {
-                    LocalDate fechaExcursion = excursion.getFecha();  // getFecha() debe devolver un LocalDate
-                    return (fechaExcursion.isEqual(fechaInicio) || fechaExcursion.isAfter(fechaInicio)) &&
-                            (fechaExcursion.isEqual(fechaFin) || fechaExcursion.isBefore(fechaFin));
-                })
-                .collect(Collectors.toList());
+        return excursionDAO.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
+    }
+
+    public boolean buscarExcursionPorCodigo(String codigoExcursion) {
+        return excursionDAO.buscarExcursionPorCodigo(codigoExcursion) != null;
+    }
+
+    public void eliminarExcursion(String codigo) throws Exception {
+        excursionDAO.eliminarExcursion(codigo);
     }
 
     // ==================== Gestión de Socios ====================
+
     public void añadirSocioEstandar(SocioEstandar socio) {
-        socios.add(socio);
+        socioDAO.agregarSocio(socio);
     }
 
     public void modificarSeguroSocioEstandar(int numeroSocio, Seguro nuevoSeguro) {
-        SocioEstandar socio = (SocioEstandar) buscarSocioPorNumero(numeroSocio);
+        SocioEstandar socio = (SocioEstandar) socioDAO.buscarSocioPorNumero(numeroSocio);
         if (socio != null) {
             socio.modificarSeguro(nuevoSeguro);
+            socioDAO.actualizarSocio(socio); // Asumimos que este método existe en el DAO para actualizar datos
         }
     }
 
     public void añadirSocioFederado(SocioFederado socio) {
-        socios.add(socio);
+        socioDAO.agregarSocio(socio);
     }
 
     public void añadirSocioInfantil(SocioInfantil socio) {
-        socios.add(socio);
+        socioDAO.agregarSocio(socio);
     }
 
     public void eliminarSocio(int numeroSocio) throws Exception {
-        Socio socio = buscarSocioPorNumero(numeroSocio);  // Buscar el socio
+        Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
         if (socio == null) {
-            throw new Exception("Error: El socio con número " + numeroSocio + " no existe.");  // Excepción si no existe
+            throw new Exception("Error: El socio con número " + numeroSocio + " no existe.");
         }
 
-        // Verificar si el socio tiene inscripciones activas
-        boolean tieneInscripciones = inscripciones.stream()
-                .anyMatch(i -> i.getSocio().equals(socio));
-
-        if (tieneInscripciones) {
-            throw new Exception("No se puede eliminar un socio con inscripciones activas.");  // Excepción si tiene inscripciones
+        // Verificar si el socio tiene inscripciones activas antes de eliminar
+        if (!inscripcionDAO.mostrarInscripcionesPorSocio(numeroSocio).isEmpty()) {
+            throw new Exception("No se puede eliminar un socio con inscripciones activas.");
         } else {
-            socios.remove(socio);  // Eliminar socio si no tiene inscripciones
+            socioDAO.eliminarSocio(numeroSocio);
         }
     }
 
-
     public List<Socio> mostrarSocios() {
-        return socios;
+        return socioDAO.mostrarSocios();
     }
 
     public List<Socio> mostrarSociosPorTipo(String tipo) {
-        return socios.stream()
+        return socioDAO.mostrarSocios().stream()
                 .filter(socio -> {
                     if (tipo.equalsIgnoreCase("estándar") && socio instanceof SocioEstandar) return true;
                     if (tipo.equalsIgnoreCase("federado") && socio instanceof SocioFederado) return true;
@@ -100,12 +104,14 @@ public class CentroExcursionista {
     }
 
     public double calcularFacturaMensualPorSocio(int numeroSocio) {
-        Socio socio = buscarSocioPorNumero(numeroSocio);
+        Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
         if (socio != null) {
-            List<Inscripcion> inscripcionesDelMes = inscripciones.stream()
-                    .filter(i -> i.getSocio().equals(socio) &&
-                            i.getExcursion().getFecha().getMonthValue() == LocalDate.now().getMonthValue() &&
-                            i.getExcursion().getFecha().getYear() == LocalDate.now().getYear())
+            List<Inscripcion> inscripcionesDelMes = inscripcionDAO.mostrarInscripcionesPorSocio(numeroSocio).stream()
+                    .filter(i -> {
+                        LocalDate fecha = i.getExcursion().getFecha();
+                        return fecha.getMonthValue() == LocalDate.now().getMonthValue() &&
+                                fecha.getYear() == LocalDate.now().getYear();
+                    })
                     .collect(Collectors.toList());
             return socio.calcularFacturaMensual(inscripcionesDelMes);
         }
@@ -113,66 +119,29 @@ public class CentroExcursionista {
     }
 
     // ==================== Gestión de Inscripciones ====================
+
     public void añadirInscripcion(Inscripcion inscripcion) {
-        inscripciones.add(inscripcion);
+        inscripcionDAO.agregarInscripcion(inscripcion);
     }
 
     public void eliminarInscripcion(int numeroInscripcion) throws Exception {
-        Inscripcion inscripcion = inscripciones.stream()
-                .filter(i -> i.getNumeroInscripcion() == numeroInscripcion)
-                .findFirst()
-                .orElse(null);
-        if (inscripcion != null) {
-            LocalDate fechaExcursion = inscripcion.getExcursion().getFecha();
-            if (fechaExcursion.isAfter(LocalDate.now())) {
-                inscripciones.remove(inscripcion);
-            } else {
-                throw new Exception("No se puede eliminar una inscripción de una excursión pasada.");
-            }
+        Inscripcion inscripcion = inscripcionDAO.buscarInscripcionPorNumero(numeroInscripcion);
+        if (inscripcion != null && inscripcion.getExcursion().getFecha().isAfter(LocalDate.now())) {
+            inscripcionDAO.eliminarInscripcion(numeroInscripcion);
+        } else {
+            throw new Exception("No se puede eliminar una inscripción de una excursión pasada.");
         }
     }
 
     public List<Inscripcion> mostrarInscripcionesPorSocio(int numeroSocio) {
-        return inscripciones.stream()
-                .filter(i -> i.getSocio().getNumeroSocio() == numeroSocio)
-                .collect(Collectors.toList());
+        return inscripcionDAO.mostrarInscripcionesPorSocio(numeroSocio);
     }
 
     public List<Inscripcion> mostrarInscripcionesPorFechas(LocalDate fechaInicio, LocalDate fechaFin) {
-        return inscripciones.stream()
-                .filter(i -> {
-                    LocalDate fechaInscripcion = i.getFechaInscripcion();  // Usar la fecha de inscripción en lugar de la fecha de la excursión
-                    return (fechaInscripcion.isEqual(fechaInicio) || fechaInscripcion.isAfter(fechaInicio)) &&
-                            (fechaInscripcion.isEqual(fechaFin) || fechaInscripcion.isBefore(fechaFin));
-                })
-                .collect(Collectors.toList());
+        return inscripcionDAO.mostrarInscripcionesPorFecha(fechaInicio, fechaFin);
     }
 
     public List<Inscripcion> mostrarInscripcionesPorExcursion(String codigoExcursion) {
-        return inscripciones.stream()
-                .filter(inscripcion -> inscripcion.getExcursion().getCodigo().equals(codigoExcursion))
-                .collect(Collectors.toList());
-    }
-
-    // ==================== Métodos auxiliares ====================
-    // Cambiar acceso a público para que sea accesible desde otras clases
-    public Socio buscarSocioPorNumero(int numeroSocio) {
-        return socios.stream()
-                .filter(s -> s.getNumeroSocio() == numeroSocio)
-                .findFirst()
-                .orElse(null);
-    }
-
-    //Buscar inscripcion por numero de inscripcion
-    public Inscripcion buscarInscripcionPorNumero(int numeroInscripcion) {
-        return inscripciones.stream()
-                .filter(s -> s.getNumeroInscripcion() == numeroInscripcion)
-                .findFirst()
-                .orElse(null);
-    }
-
-    //Buscar excursión por codigo de excursión
-    public boolean buscarExcursionPorCodigo(String codigoExcursion){
-        return mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX).stream().anyMatch(e->e.getCodigo().equals(codigoExcursion));
+        return inscripcionDAO.mostrarInscripcionesPorExcursion(codigoExcursion);
     }
 }

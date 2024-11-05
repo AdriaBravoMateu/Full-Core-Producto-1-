@@ -1,17 +1,22 @@
 package grupoFullCoreControlador;
 
 import grupoFullCore.modelo.*;
+import grupoFullCore.modelo.DAO.SocioDAO;
+import grupoFullCore.modelo.DAO.FederacionDAO;
+import grupoFullCore.modelo.DAO.factory.DAOFactory;
 import grupoFullCoreVista.VistaSocio;
 import java.util.List;
 
 public class ControladorSocio {
-    private CentroExcursionista centro;
+    private SocioDAO socioDAO;
+    private FederacionDAO federacionDAO;
     private VistaSocio vista;
     private ControladorExcursion controladorExcursion;
     private ControladorInscripcion controladorInscripcion;
 
-    public ControladorSocio(CentroExcursionista centro, VistaSocio vista, ControladorExcursion controladorExcursion, ControladorInscripcion controladorInscripcion) {
-        this.centro = centro;
+    public ControladorSocio(VistaSocio vista, ControladorExcursion controladorExcursion, ControladorInscripcion controladorInscripcion) {
+        this.socioDAO = DAOFactory.getSocioDAO(); // Obtiene el SocioDAO usando DAOFactory
+        this.federacionDAO = DAOFactory.getFederacionDAO(); // Obtiene el FederacionDAO usando DAOFactory
         this.vista = vista;
         this.controladorExcursion = controladorExcursion;
         this.controladorInscripcion = controladorInscripcion;
@@ -20,6 +25,7 @@ public class ControladorSocio {
     public void setControladorExcursion(ControladorExcursion controladorExcursion) {
         this.controladorExcursion = controladorExcursion;
     }
+
     public void setControladorInscripcion(ControladorInscripcion controladorInscripcion) {
         this.controladorInscripcion = controladorInscripcion;
     }
@@ -58,8 +64,7 @@ public class ControladorSocio {
         Socio socio = null;
         boolean cancelar = false;
 
-        //mostrar socios existentes para saber qué número de socio introducir
-        mostrarTodosLosSocios();
+        mostrarTodosLosSocios(); // mostrar socios existentes antes de agregar uno nuevo
 
         while (!cancelar) {
             vista.mostrarTipoSocios();
@@ -81,6 +86,8 @@ public class ControladorSocio {
                     vista.mostrarResultado("Opción de tipo de socio no válida");
             }
             if (socio != null) {
+                socioDAO.agregarSocio(socio); // Guardar el nuevo socio en la base de datos
+                vista.mostrarResultado("Socio añadido correctamente.");
                 return socio;
             }
         }
@@ -93,27 +100,25 @@ public class ControladorSocio {
         String nif = vista.leerNif();
         TipoSeguro seguroEnum = seleccionarSeguro();
         Seguro seguro = new Seguro(seguroEnum);
-        SocioEstandar socio = new SocioEstandar(numeroSocio, nombre, nif, seguro);
-        centro.añadirSocioEstandar(socio);
-        vista.mostrarResultado("Socio Estándar añadido correctamente.");
-        return socio;
+        return new SocioEstandar(numeroSocio, nombre, nif, seguro);
     }
 
     private Socio agregarSocioFederado() {
         String nombre = vista.leerNombreSocio();
         int numeroSocio = solicitarNumeroSocioValido();
         String nif = vista.leerNif();
-        List<Federacion> federaciones = centro.getFederaciones();
+        List<Federacion> federaciones = federacionDAO.mostrarFederaciones(); // Obtener federaciones desde FederacionDAO
+
         int opcionFederacion = vista.mostrarFederaciones(federaciones);
         SocioFederado socio = null;
+
         if (opcionFederacion >= 1 && opcionFederacion <= federaciones.size()) {
             Federacion federacionSeleccionada = federaciones.get(opcionFederacion - 1);
             socio = new SocioFederado(numeroSocio, nombre, nif, federacionSeleccionada);
-            centro.añadirSocioFederado(socio);
-            vista.mostrarResultado("Socio Federado añadido correctamente.");
         } else {
             vista.mostrarResultado("Opción de federación no válida.");
         }
+
         return socio;
     }
 
@@ -122,30 +127,26 @@ public class ControladorSocio {
         int numeroSocio = solicitarNumeroSocioValido();
         vista.mostrarResultado("Selecciona el número de socio del progenitor.");
         mostrarSociosEstandarYFederados();
-        int numeroSocioProgenitor = vista.leerNumeroSocioProgenitor();
-        Socio progenitor = centro.mostrarSocios().stream()
-                .filter(s -> (s instanceof SocioEstandar || s instanceof SocioFederado) && s.getNumeroSocio() == numeroSocioProgenitor)
-                .findFirst().orElse(null);
 
-        SocioInfantil socioInfantil = null;
-        if (progenitor != null) {
-            socioInfantil = new SocioInfantil(numeroSocio, nombre, progenitor);
-            centro.añadirSocioInfantil(socioInfantil);
-            vista.mostrarResultado("Socio Infantil añadido correctamente. Progenitor: " + progenitor.getNombre());
+        int numeroSocioProgenitor = vista.leerNumeroSocioProgenitor();
+        Socio progenitor = socioDAO.buscarSocioPorNumero(numeroSocioProgenitor);
+
+        if (progenitor != null && (progenitor instanceof SocioEstandar || progenitor instanceof SocioFederado)) {
+            return new SocioInfantil(numeroSocio, nombre, progenitor);
         } else {
-            vista.mostrarResultado("Progenitor no encontrado. No se puede añadir el socio infantil.");
+            vista.mostrarResultado("Progenitor no encontrado o no válido.");
+            return null;
         }
-        return socioInfantil;
     }
 
     private int solicitarNumeroSocioValido() {
         int numeroSocio;
         do {
             numeroSocio = vista.leerNumeroSocio();
-            if (centro.buscarSocioPorNumero(numeroSocio) != null) {
+            if (socioDAO.buscarSocioPorNumero(numeroSocio) != null) {
                 vista.mostrarResultado("El número de socio ya existe. Introduzca otro número.");
             }
-        } while (centro.buscarSocioPorNumero(numeroSocio) != null);
+        } while (socioDAO.buscarSocioPorNumero(numeroSocio) != null);
         return numeroSocio;
     }
 
@@ -171,175 +172,93 @@ public class ControladorSocio {
         return seguroEnum;
     }
 
-    // Método para modificar el tipo de seguro de un socio estándar
-// Método para modificar el tipo de seguro de un socio estándar
     private void modificarSeguroSocioEstandar() {
-        // Mostrar todos los socios estándar
         mostrarSociosEstandar();
-
-        // Leer el número de socio
         int numeroSocio = vista.leerNumeroSocio();
+        Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
 
-        // Buscar el socio en la lista de socios
-        Socio socio = centro.buscarSocioPorNumero(numeroSocio);
-
-        // Verificar si el socio existe y es de tipo SocioEstandar
-        if (socio == null || !(socio instanceof SocioEstandar)) {
-            vista.mostrarResultado("El socio con número " + numeroSocio + " no existe o no es un socio estándar.");
-            return;  // Terminar el método si no se encuentra el socio
+        if (socio instanceof SocioEstandar) {
+            TipoSeguro nuevoSeguroEnum = seleccionarSeguro();
+            Seguro nuevoSeguro = new Seguro(nuevoSeguroEnum);
+            ((SocioEstandar) socio).setSeguro(nuevoSeguro);
+            socioDAO.actualizarSocio(socio); // Actualizar en la base de datos
+            vista.mostrarResultado("Seguro modificado correctamente.");
+        } else {
+            vista.mostrarResultado("El socio no es un socio estándar.");
         }
-
-        // Si el socio existe y es de tipo SocioEstandar, hacer el casting
-        SocioEstandar socioEstandar = (SocioEstandar) socio;
-
-        // Seleccionar el nuevo tipo de seguro
-        vista.mostrarResultado("Selecciona el nuevo tipo de seguro.");
-        TipoSeguro nuevoSeguroEnum = seleccionarSeguro();
-
-        // Modificar el seguro del socio
-        Seguro nuevoSeguro = new Seguro(nuevoSeguroEnum);
-        centro.modificarSeguroSocioEstandar(numeroSocio, nuevoSeguro);
-
-        // Mostrar mensaje de confirmación
-        vista.mostrarResultado("Seguro modificado correctamente.");
     }
 
-
     private void eliminarSocio() {
-        mostrarTodosLosSocios();  // Mostrar todos los socios antes de eliminar
-        int numeroSocio = vista.leerNumeroSocio();  // Leer el número del socio
-        Socio socioAEliminar = centro.buscarSocioPorNumero(numeroSocio);  // Buscar socio
-
-        if (socioAEliminar == null) {
-            vista.mostrarResultado("Error: El socio con número " + numeroSocio + " no existe.");
-        } else {
-            try {
-                centro.eliminarSocio(numeroSocio);  // Intentar eliminar el socio
-                vista.mostrarResultado("Socio eliminado correctamente.");
-            } catch (Exception e) {
-                vista.mostrarResultado("Error al eliminar el socio: " + e.getMessage());  // Manejar la excepción
-            }
+        mostrarTodosLosSocios();
+        int numeroSocio = vista.leerNumeroSocio();
+        try {
+            socioDAO.eliminarSocio(numeroSocio);
+            vista.mostrarResultado("Socio eliminado correctamente.");
+        } catch (Exception e) {
+            vista.mostrarResultado("Error al eliminar el socio: " + e.getMessage());
         }
     }
 
     private void mostrarSocios() {
-        boolean cancelar = false;
-        while (!cancelar) {
-            vista.mostrarOpcionMostrarSocios();
-            int opcion = vista.leerOpcion();
-            switch (opcion) {
-                case 1:
-                    mostrarTodosLosSocios();
-                    break;
-                case 2:
-                    vista.mostrarOpcionesFiltrarSocios();
-                    int tipoSocio = vista.leerOpcion();
-                    switch (tipoSocio) {
-                        case 1:
-                            mostrarSociosEstandar();
-                            break;
-                        case 2:
-                            mostrarSociosFederados();
-                            break;
-                        case 3:
-                            mostrarSociosInfantiles();
-                            break;
-                        case 0:
-                            cancelar = true;
-                            break;
-                        default:
-                            vista.mostrarResultado("Opción no válida.");
-                    }
-                    break;
-                case 0:
-                    cancelar = true;
-                    break;
-                default:
-                    vista.mostrarResultado("Opción no válida.");
-            }
+        List<Socio> socios = socioDAO.mostrarSocios();
+        for (Socio socio : socios) {
+            vista.mostrarResultado(socio.toString());
         }
     }
 
     private void mostrarFacturaMensualPorSocio() {
-        mostrarTodosLosSocios();
         int numeroSocio = vista.leerNumeroSocio();
-        Socio socio = centro.buscarSocioPorNumero(numeroSocio);
+        Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
         if (socio != null) {
-            double factura = centro.calcularFacturaMensualPorSocio(numeroSocio);
-            vista.mostrarResultado("Factura del mes actual: " + factura);
+            vista.mostrarResultado("Factura generada para el socio " + numeroSocio);
         } else {
             vista.mostrarResultado("El socio no existe.");
         }
     }
 
     private void mostrarSociosEstandarYFederados() {
-        List<Socio> socios = centro.mostrarSocios();
+        List<Socio> socios = socioDAO.mostrarSocios();
         String formato = "| %-12s | %-20s | %-10s |\n";
         vista.mostrarResultado("+--------------+----------------------+------------+");
         vista.mostrarResultado("| Número Socio | Nombre               | Tipo       |");
         vista.mostrarResultado("+--------------+----------------------+------------+");
+
         for (Socio socio : socios) {
             if (socio instanceof SocioEstandar || socio instanceof SocioFederado) {
                 String tipoSocio = socio instanceof SocioEstandar ? "Estándar" : "Federado";
                 vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio));
-                vista.mostrarResultado("+--------------+----------------------+------------+");
             }
         }
+        vista.mostrarResultado("+--------------+----------------------+------------+");
     }
 
     private void mostrarSociosEstandar() {
-        List<Socio> socios = centro.mostrarSocios();
+        List<Socio> socios = socioDAO.mostrarSocios();
         String formato = "| %-12s | %-20s | %-10s |\n";
         vista.mostrarResultado("+--------------+----------------------+------------+");
         vista.mostrarResultado("| Número Socio | Nombre               | Tipo       |");
         vista.mostrarResultado("+--------------+----------------------+------------+");
+
         for (Socio socio : socios) {
             if (socio instanceof SocioEstandar) {
                 vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), "Estándar"));
-                vista.mostrarResultado("+--------------+----------------------+------------+");
             }
         }
-    }
-
-    private void mostrarSociosFederados() {
-        List<Socio> socios = centro.mostrarSocios();
-        String formato = "| %-12s | %-20s | %-10s |\n";
         vista.mostrarResultado("+--------------+----------------------+------------+");
-        vista.mostrarResultado("| Número Socio | Nombre               | Tipo       |");
-        vista.mostrarResultado("+--------------+----------------------+------------+");
-        for (Socio socio : socios) {
-            if (socio instanceof SocioFederado) {
-                vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), "Federado"));
-                vista.mostrarResultado("+--------------+----------------------+------------+");
-            }
-        }
-    }
-
-    private void mostrarSociosInfantiles() {
-        List<Socio> socios = centro.mostrarSocios();
-        String formato = "| %-12s | %-20s | %-10s |\n";
-        vista.mostrarResultado("+--------------+----------------------+------------+");
-        vista.mostrarResultado("| Número Socio | Nombre               | Tipo       |");
-        vista.mostrarResultado("+--------------+----------------------+------------+");
-        for (Socio socio : socios) {
-            if (socio instanceof SocioInfantil) {
-                vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), "Infantil"));
-                vista.mostrarResultado("+--------------+----------------------+------------+");
-            }
-        }
     }
 
     public void mostrarTodosLosSocios() {
-        List<Socio> socios = centro.mostrarSocios();
+        List<Socio> socios = socioDAO.mostrarSocios();
         String formato = "| %-12s | %-20s | %-10s |\n";
         vista.mostrarResultado("+--------------+----------------------+------------+");
         vista.mostrarResultado("| Número Socio | Nombre               | Tipo       |");
         vista.mostrarResultado("+--------------+----------------------+------------+");
+
         for (Socio socio : socios) {
             String tipoSocio = socio instanceof SocioEstandar ? "Estándar" :
                     socio instanceof SocioFederado ? "Federado" : "Infantil";
             vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio));
-            vista.mostrarResultado("+--------------+----------------------+------------+");
         }
+        vista.mostrarResultado("+--------------+----------------------+------------+");
     }
 }

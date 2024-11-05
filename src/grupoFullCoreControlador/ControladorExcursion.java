@@ -1,19 +1,21 @@
 package grupoFullCoreControlador;
 
 import grupoFullCore.modelo.*;
+import grupoFullCore.modelo.DAO.ExcursionDAO;
+import grupoFullCore.modelo.DAO.factory.DAOFactory;
 import grupoFullCoreVista.VistaExcursion;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ControladorExcursion {
-    private CentroExcursionista centro;
+    private ExcursionDAO excursionDAO;
     private VistaExcursion vista;
     private ControladorSocio controladorSocio;
     private ControladorInscripcion controladorInscripcion;
 
-    public ControladorExcursion(CentroExcursionista centro, VistaExcursion vista, ControladorSocio controladorSocio, ControladorInscripcion controladorInscripcion) {
-        this.centro = centro;
+    public ControladorExcursion(VistaExcursion vista, ControladorSocio controladorSocio, ControladorInscripcion controladorInscripcion) {
+        this.excursionDAO = DAOFactory.getExcursionDAO(); // Obtiene ExcursionDAO usando DAOFactory
         this.vista = vista;
         this.controladorSocio = controladorSocio;
         this.controladorInscripcion = controladorInscripcion;
@@ -22,6 +24,7 @@ public class ControladorExcursion {
     public void setControladorSocio(ControladorSocio controladorSocio) {
         this.controladorSocio = controladorSocio;
     }
+
     public void setControladorInscripcion(ControladorInscripcion controladorInscripcion) {
         this.controladorInscripcion = controladorInscripcion;
     }
@@ -49,24 +52,28 @@ public class ControladorExcursion {
 
     private void agregarExcursion() {
         String codigo;
-        //mostrar excursiones existentes para saber qué código de excursión introducir
-        mostrarExcursiones(centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX));
+
+        // Muestra excursiones existentes para evitar duplicados de código
+        mostrarExcursiones(excursionDAO.mostrarExcursiones());
+
         do {
             codigo = vista.leerCodigoExcursion();
-            if (centro.buscarExcursionPorCodigo(codigo)) {
+            if (excursionDAO.buscarExcursionPorCodigo(codigo) != null) {
                 vista.mostrarResultado("El código de excursión ya existe. Introduzca otro código.");
             }
-        } while (centro.buscarExcursionPorCodigo(codigo));
+        } while (excursionDAO.buscarExcursionPorCodigo(codigo) != null);
 
+        // Lee los demás datos de la excursión
         String descripcion = vista.leerDescripcionExcursion();
-        String fechaStr = vista.leerFechaExcursion();  // Utiliza el método actualizado para leer la fecha
+        String fechaStr = vista.leerFechaExcursion();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fechaLocal = LocalDate.parse(fechaStr, formatter);
-        LocalDate fecha = java.sql.Date.valueOf(fechaLocal).toLocalDate();
+        LocalDate fecha = LocalDate.parse(fechaStr, formatter);
         int dias = vista.leerNumeroDiasExcursion();
         double precio = vista.leerPrecioInscripcion();
+
+        // Crea la nueva excursión y la agrega a la base de datos
         Excursion excursion = new Excursion(codigo, descripcion, fecha, dias, precio);
-        centro.añadirExcursion(excursion);
+        excursionDAO.agregarExcursion(excursion);
         vista.mostrarResultado("Excursión añadida correctamente.");
     }
 
@@ -77,8 +84,9 @@ public class ControladorExcursion {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, formatter);
         LocalDate fechaFin = LocalDate.parse(fechaFinStr, formatter);
-        List<Excursion> excursionesFiltradas = centro.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
-        mostrarExcursiones(centro.mostrarExcursionesConFiltro(LocalDate.MIN, LocalDate.MAX));
+
+        List<Excursion> excursionesFiltradas = excursionDAO.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
+        mostrarExcursiones(excursionesFiltradas);
     }
 
     public void mostrarExcursiones(List<Excursion> excursiones) {
@@ -86,10 +94,12 @@ public class ControladorExcursion {
             vista.mostrarResultado("No se encontraron excursiones.");
             return;
         }
+
         String formato = "| %-10s | %-20s | %-10s | %-5d | %-10.2f |\n";
         vista.mostrarResultado("+------------+----------------------+-------------+-------+-----------+");
-        vista.mostrarResultado("| Código     | Descripción           | Fecha      | Días  | Precio    |");
+        vista.mostrarResultado("| Código     | Descripción          | Fecha       | Días  | Precio    |");
         vista.mostrarResultado("+------------+----------------------+-------------+-------+-----------+");
+
         for (Excursion excursion : excursiones) {
             vista.mostrarResultado(String.format(formato,
                     excursion.getCodigo(),
@@ -98,7 +108,7 @@ public class ControladorExcursion {
                     excursion.getNumeroDias(),
                     excursion.getPrecioInscripcion()
             ));
-            vista.mostrarResultado("+------------+----------------------+------------+-------+------------+");
         }
+        vista.mostrarResultado("+------------+----------------------+-------------+-------+-----------+");
     }
 }

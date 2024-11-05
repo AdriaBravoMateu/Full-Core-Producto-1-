@@ -21,9 +21,9 @@ public class Main {
         VistaInscripcion vistaInscripciones = new VistaInscripcion();
 
         // Crear los controladores
-        ControladorSocio controladorSocio = new ControladorSocio(centro, vistaSocios, null, null);
-        ControladorExcursion controladorExcursion = new ControladorExcursion(centro, vistaExcursiones, controladorSocio, null);
-        ControladorInscripcion controladorInscripcion = new ControladorInscripcion(centro, vistaInscripciones, controladorSocio, controladorExcursion);
+        ControladorSocio controladorSocio = new ControladorSocio(vistaSocios, null, null);
+        ControladorExcursion controladorExcursion = new ControladorExcursion( vistaExcursiones, controladorSocio, null);
+        ControladorInscripcion controladorInscripcion = new ControladorInscripcion(vistaInscripciones, controladorSocio, controladorExcursion);
 
         //Actualizamos controladores con atributos correctos
         controladorSocio.setControladorInscripcion(controladorInscripcion);
