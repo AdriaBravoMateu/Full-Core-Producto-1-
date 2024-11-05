@@ -1,10 +1,6 @@
 package grupoFullCore.modelo.ImplementacionDAO;
 
-import grupoFullCore.modelo.Socio;
-import grupoFullCore.modelo.TipoSeguro;
-import grupoFullCore.modelo.Seguro;
-import grupoFullCore.modelo.SocioEstandar;
-import grupoFullCore.modelo.DatabaseConnection;
+import grupoFullCore.modelo.*;
 import grupoFullCore.modelo.DAO.SocioDAO;
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,17 +21,27 @@ public class SocioDAOImpl implements SocioDAO {
             // Asignación de parámetros
             statement.setInt(1, socio.getNumeroSocio());
             statement.setString(2, socio.getNombre());
-            statement.setString(3, socio.getClass().getSimpleName()); // Tipo de socio: Estándar, Federado, Infantil
+            //statement.setString(3, socio.getClass().getSimpleName()); // Tipo de socio: Estándar, Federado, Infantil
 
             // Validación condicional si es un SocioEstandar
             if (socio instanceof SocioEstandar) {
                 SocioEstandar socioEstandar = (SocioEstandar) socio;
                 statement.setString(4, socioEstandar.getNif());
                 statement.setString(5, socioEstandar.getSeguro().getTipo().name());
-            } else {
+            }
+            if (socio instanceof SocioFederado) {
+                SocioFederado socioFederado = (SocioFederado) socio;
+                statement.setString(4, socioFederado.getNif());
+                statement.setString(5, socioFederado.getFederacion().getNombre());
+            }
+            if (socio instanceof SocioInfantil){
+                SocioInfantil socioInfantil = (SocioInfantil) socio;
+                statement.setString(4, socioInfantil.getProgenitor().getNombre());
+            }
+            /*else {
                 statement.setString(4, null); // No aplica NIF ni seguro a otros tipos de socios
                 statement.setString(5, null);
-            }
+            }*/
 
             // Ejecutar la actualización
             statement.executeUpdate();

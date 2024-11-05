@@ -7,9 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/CentroExcursionistaDB";
+    private static final String URL = "jdbc:mysql://localhost:3306/FullCoreDB";
     private static final String USER = "root";
-    private static final String PASSWORD = "password";
+    private static final String PASSWORD = "1234";
 
     // Logger para la clase
     private static final Logger logger = Logger.getLogger(DatabaseConnection.class.getName());
