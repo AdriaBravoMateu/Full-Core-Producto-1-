@@ -204,6 +204,29 @@ public class SocioDAOImpl implements SocioDAO {
         }
     }
 
+    public void actualizarTipoSeguro(SocioEstandar socio, TipoSeguro nuevoTipoSeguro) {
+        String sql = "UPDATE socio_estandar SET tipoSeguro = ? WHERE numeroSocio = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+            // Asigna el tipo de seguro como cadena de texto, y el número de socio para identificar la fila
+            stmt.setString(1, nuevoTipoSeguro.toString());
+            stmt.setInt(2, socio.getNumeroSocio());
+
+            int filasActualizadas = stmt.executeUpdate();
+            if (filasActualizadas > 0) {
+                // Crea un nuevo objeto Seguro y asigna este a socio
+                Seguro nuevoSeguro = new Seguro(nuevoTipoSeguro);
+                socio.setSeguro(nuevoSeguro); // Ahora pasamos un objeto Seguro
+            } else {
+                throw new RuntimeException("No se pudo actualizar el tipo de seguro; el socio no existe.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al actualizar el tipo de seguro", e);
+        }
+    }
+
     @Override
     public void actualizarSocio(Socio socio) {
         String querySocio = "UPDATE socio SET nombre = ?, tipoSocio = ? WHERE numeroSocio = ?";

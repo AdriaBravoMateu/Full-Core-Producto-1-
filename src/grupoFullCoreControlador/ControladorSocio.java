@@ -188,10 +188,15 @@ public class ControladorSocio {
 
         if (socio instanceof SocioEstandar) {
             TipoSeguro nuevoSeguroEnum = seleccionarSeguro();
-            Seguro nuevoSeguro = new Seguro(nuevoSeguroEnum);
-            ((SocioEstandar) socio).setSeguro(nuevoSeguro);
-            socioDAO.actualizarSocio(socio); // Actualizar en la base de datos
-            vista.mostrarResultado("Seguro modificado correctamente.");
+
+            // Verifica que el tipo de seguro no sea nulo antes de actualizar
+            if (nuevoSeguroEnum != null) {
+                // Actualiza solo el tipo de seguro en la base de datos usando el método específico del DAO
+                socioDAO.actualizarTipoSeguro((SocioEstandar) socio, nuevoSeguroEnum);
+                vista.mostrarResultado("Seguro modificado correctamente.");
+            } else {
+                vista.mostrarResultado("Error: El tipo de seguro no puede ser nulo.");
+            }
         } else {
             vista.mostrarResultado("El socio no es un socio estándar.");
         }
