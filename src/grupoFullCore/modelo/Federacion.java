@@ -10,6 +10,11 @@ public class Federacion {
         this.codigo = codigo;
         this.nombre = nombre;
     }
+    // Sobrecarga de constructores
+    public Federacion(String codigo) {
+        this.codigo = codigo;
+    }
+
 
     // Getters
     public String getCodigo() {return codigo;}

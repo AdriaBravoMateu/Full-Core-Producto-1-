@@ -17,7 +17,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     private static final Logger logger = Logger.getLogger(InscripcionDAOImpl.class.getName());
     @Override
     public void agregarInscripcion(Inscripcion inscripcion) {
-        String query = "INSERT INTO Inscripciones (numeroInscripcion, fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Inscripcion (numeroInscripcion, fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -34,7 +34,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
 
     @Override
     public Inscripcion buscarInscripcionPorNumero(int numeroInscripcion) {
-        String query = "SELECT * FROM Inscripciones WHERE numeroInscripcion = ?";
+        String query = "SELECT * FROM Inscripcion WHERE numeroInscripcion = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -60,7 +60,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     @Override
     public List<Inscripcion> mostrarInscripciones() {
         List<Inscripcion> inscripciones = new ArrayList<>();
-        String query = "SELECT * FROM Inscripciones";
+        String query = "SELECT * FROM Inscripcion";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -85,7 +85,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     @Override
     public List<Inscripcion> mostrarInscripcionesPorFecha(LocalDate fechaInicio, LocalDate fechaFin) {
         List<Inscripcion> inscripciones = new ArrayList<>();
-        String query = "SELECT * FROM Inscripciones WHERE fechaInscripcion BETWEEN ? AND ?";
+        String query = "SELECT * FROM Inscripcion WHERE fechaInscripcion BETWEEN ? AND ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -113,7 +113,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     @Override
     public List<Inscripcion> mostrarInscripcionesPorSocio(int numeroSocio) {
         List<Inscripcion> inscripciones = new ArrayList<>();
-        String query = "SELECT * FROM Inscripciones WHERE numeroSocio = ?";
+        String query = "SELECT * FROM Inscripcion WHERE numeroSocio = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -138,7 +138,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     @Override
     public List<Inscripcion> mostrarInscripcionesPorExcursion(String codigoExcursion) {
         List<Inscripcion> inscripciones = new ArrayList<>();
-        String query = "SELECT * FROM Inscripciones WHERE codigoExcursion = ?";
+        String query = "SELECT * FROM Inscripcion WHERE codigoExcursion = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -163,7 +163,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     }
     @Override
     public void eliminarInscripcion(int numeroInscripcion) throws Exception {
-        String query = "DELETE FROM Inscripciones WHERE numeroInscripcion = ?";
+        String query = "DELETE FROM Inscripcion WHERE numeroInscripcion = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 

@@ -30,7 +30,7 @@ public class Main {
         controladorExcursion.setControladorInscripcion(controladorInscripcion);
 
         // Cargar datos iniciales para pruebas
-        CentroExcursionistaAppFC.CargaDatosIniciales.cargarDatos(centro);
+        CentroExcursionistaAppFC.CargaDatosIniciales.cargarDatos();
 
         // Iniciar la aplicación con el menú principal
         iniciarAplicacion(controladorSocio, controladorExcursion, controladorInscripcion);

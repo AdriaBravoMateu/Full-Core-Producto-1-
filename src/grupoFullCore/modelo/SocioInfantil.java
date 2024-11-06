@@ -10,16 +10,35 @@ public class SocioInfantil extends Socio {
 
     public SocioInfantil(int numeroSocio, String nombre, Socio progenitor) {
         super(numeroSocio, nombre);
-        this.numeroSocioProgenitor = progenitor.getNumeroSocio();
+        this.progenitor = progenitor;  // Asigna el objeto progenitor completo
+        if (progenitor != null) {
+            this.numeroSocioProgenitor = progenitor.getNumeroSocio();
+        }
     }
 
-    //Getters
-    public Socio getProgenitor() {return progenitor;}
-    //Setters
-    public void setNumeroSocioProgenitor(int numeroSocioProgenitor) {this.numeroSocioProgenitor = numeroSocioProgenitor;}
+    public SocioInfantil(int numeroSocio, String nombre, TipoSocio tipo, Socio progenitor) {
+        super(numeroSocio, nombre, tipo);
+        this.progenitor = progenitor;  // Asigna el objeto progenitor completo
+        if (progenitor != null) {
+            this.numeroSocioProgenitor = progenitor.getNumeroSocio();
+        }
+    }
 
+    // Getters
+    public Socio getProgenitor() {
+        return progenitor;
+    }
 
-    //Método para calcular la factura mensual del socio infantil
+    public int getNumeroSocioProgenitor() {
+        return numeroSocioProgenitor;
+    }
+
+    // Setters
+    public void setNumeroSocioProgenitor(int numeroSocioProgenitor) {
+        this.numeroSocioProgenitor = numeroSocioProgenitor;
+    }
+
+    // Método para calcular la factura mensual del socio infantil
     @Override
     public double calcularFacturaMensual(List<Inscripcion> inscripcionesDelMes) {
         double factura = cuotaMensual * (1 - descuentoCuota);
@@ -30,7 +49,7 @@ public class SocioInfantil extends Socio {
         return factura;
     }
 
-    // Metodo toString
+    // Método toString
     @Override
     public String toString() {
         return super.toString() +

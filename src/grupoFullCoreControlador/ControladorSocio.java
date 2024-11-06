@@ -4,8 +4,15 @@ import grupoFullCore.modelo.*;
 import grupoFullCore.modelo.DAO.SocioDAO;
 import grupoFullCore.modelo.DAO.FederacionDAO;
 import grupoFullCore.modelo.DAO.factory.DAOFactory;
+
 import grupoFullCoreVista.VistaSocio;
+
 import java.util.List;
+
+import static grupoFullCore.modelo.TipoSocio.ESTANDAR;
+import static grupoFullCore.modelo.TipoSocio.FEDERADO;
+import static grupoFullCore.modelo.TipoSocio.INFANTIL;
+
 
 public class ControladorSocio {
     private SocioDAO socioDAO;
@@ -13,6 +20,7 @@ public class ControladorSocio {
     private VistaSocio vista;
     private ControladorExcursion controladorExcursion;
     private ControladorInscripcion controladorInscripcion;
+    private CentroExcursionista centroExcursionista;
 
     public ControladorSocio(VistaSocio vista, ControladorExcursion controladorExcursion, ControladorInscripcion controladorInscripcion) {
         this.socioDAO = DAOFactory.getSocioDAO(); // Obtiene el SocioDAO usando DAOFactory
@@ -20,6 +28,7 @@ public class ControladorSocio {
         this.vista = vista;
         this.controladorExcursion = controladorExcursion;
         this.controladorInscripcion = controladorInscripcion;
+        this.centroExcursionista = new CentroExcursionista();
     }
 
     public void setControladorExcursion(ControladorExcursion controladorExcursion) {
@@ -100,7 +109,7 @@ public class ControladorSocio {
         String nif = vista.leerNif();
         TipoSeguro seguroEnum = seleccionarSeguro();
         Seguro seguro = new Seguro(seguroEnum);
-        return new SocioEstandar(numeroSocio, nombre, nif, seguro);
+        return new SocioEstandar(numeroSocio, nombre, ESTANDAR, nif, seguro);
     }
 
     private Socio agregarSocioFederado() {
@@ -114,7 +123,7 @@ public class ControladorSocio {
 
         if (opcionFederacion >= 1 && opcionFederacion <= federaciones.size()) {
             Federacion federacionSeleccionada = federaciones.get(opcionFederacion - 1);
-            socio = new SocioFederado(numeroSocio, nombre, nif, federacionSeleccionada);
+            socio = new SocioFederado(numeroSocio, nombre, FEDERADO, nif, federacionSeleccionada);
         } else {
             vista.mostrarResultado("Opción de federación no válida.");
         }
@@ -132,7 +141,7 @@ public class ControladorSocio {
         Socio progenitor = socioDAO.buscarSocioPorNumero(numeroSocioProgenitor);
 
         if (progenitor != null && (progenitor instanceof SocioEstandar || progenitor instanceof SocioFederado)) {
-            return new SocioInfantil(numeroSocio, nombre, progenitor);
+            return new SocioInfantil(numeroSocio, nombre, INFANTIL, progenitor);
         } else {
             vista.mostrarResultado("Progenitor no encontrado o no válido.");
             return null;
@@ -199,22 +208,65 @@ public class ControladorSocio {
         }
     }
 
+
+    public void mostrarFacturaMensualPorSocio() {
+        mostrarTodosLosSocios();
+        int numeroSocio = vista.leerNumeroSocio();
+        double importeFactura = centroExcursionista.calcularFacturaMensualPorSocio(numeroSocio);
+        vista.mostrarResultado("La factura mensual es: " + importeFactura + "€");
+    }
+
+
+
     private void mostrarSocios() {
-        List<Socio> socios = socioDAO.mostrarSocios();
-        for (Socio socio : socios) {
-            vista.mostrarResultado(socio.toString());
+        boolean volver = false;
+        while (!volver) {
+            vista.mostrarOpcionesMostrarSocios();
+            int opcion = vista.leerOpcion();
+
+            switch (opcion) {
+                case 1:
+                    mostrarTodosLosSocios();
+                    break;
+                case 2:
+                    mostrarSociosPorTipo();
+                    break;
+                case 0:
+                    volver = true;
+                    break;
+                default:
+                    vista.mostrarResultado("Opción no válida.");
+            }
+        }
+    }
+    private void mostrarSociosPorTipo() {
+        boolean opcionValida = false;
+        while (!opcionValida) {
+            vista.mostrarSubmenuTipoSocio();
+            int tipoOpcion = vista.leerOpcion();
+
+            switch (tipoOpcion) {
+                case 1:
+                    mostrarSociosEstandar();
+                    opcionValida = true;
+                    break;
+                case 2:
+                    mostrarSociosFederado();
+                    opcionValida = true;
+                    break;
+                case 3:
+                    mostrarSociosInfantil();
+                    opcionValida = true;
+                    break;
+                case 0:
+                    opcionValida = true;
+                    break;
+                default:
+                    vista.mostrarResultado("Opción de tipo de socio no válida.");
+            }
         }
     }
 
-    private void mostrarFacturaMensualPorSocio() {
-        int numeroSocio = vista.leerNumeroSocio();
-        Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
-        if (socio != null) {
-            vista.mostrarResultado("Factura generada para el socio " + numeroSocio);
-        } else {
-            vista.mostrarResultado("El socio no existe.");
-        }
-    }
 
     private void mostrarSociosEstandarYFederados() {
         List<Socio> socios = socioDAO.mostrarSocios();
@@ -234,18 +286,37 @@ public class ControladorSocio {
 
     private void mostrarSociosEstandar() {
         List<Socio> socios = socioDAO.mostrarSocios();
-        String formato = "| %-12s | %-20s | %-10s |\n";
-        vista.mostrarResultado("+--------------+----------------------+------------+");
-        vista.mostrarResultado("| Número Socio | Nombre               | Tipo       |");
-        vista.mostrarResultado("+--------------+----------------------+------------+");
-
+        vista.mostrarEncabezadoSocios();
         for (Socio socio : socios) {
             if (socio instanceof SocioEstandar) {
-                vista.mostrarResultado(String.format(formato, socio.getNumeroSocio(), socio.getNombre(), "Estándar"));
+                vista.mostrarSocio(socio, "Estándar");
             }
         }
-        vista.mostrarResultado("+--------------+----------------------+------------+");
+        vista.mostrarFinTabla();
     }
+
+    private void mostrarSociosFederado() {
+        List<Socio> socios = socioDAO.mostrarSocios();
+        vista.mostrarEncabezadoSocios();
+        for (Socio socio : socios) {
+            if (socio instanceof SocioFederado) {
+                vista.mostrarSocio(socio, "Federado");
+            }
+        }
+        vista.mostrarFinTabla();
+    }
+
+    private void mostrarSociosInfantil() {
+        List<Socio> socios = socioDAO.mostrarSocios();
+        vista.mostrarEncabezadoSocios();
+        for (Socio socio : socios) {
+            if (socio instanceof SocioInfantil) {
+                vista.mostrarSocio(socio, "Infantil");
+            }
+        }
+        vista.mostrarFinTabla();
+    }
+
 
     public void mostrarTodosLosSocios() {
         List<Socio> socios = socioDAO.mostrarSocios();

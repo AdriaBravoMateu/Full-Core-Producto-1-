@@ -105,16 +105,22 @@ public class CentroExcursionista {
 
     public double calcularFacturaMensualPorSocio(int numeroSocio) {
         Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
+
         if (socio != null) {
+            // Obtiene las inscripciones del mes actual para el socio
             List<Inscripcion> inscripcionesDelMes = inscripcionDAO.mostrarInscripcionesPorSocio(numeroSocio).stream()
-                    .filter(i -> {
-                        LocalDate fecha = i.getExcursion().getFecha();
+                    .filter(inscripcion -> {
+                        LocalDate fecha = inscripcion.getExcursion().getFecha();
                         return fecha.getMonthValue() == LocalDate.now().getMonthValue() &&
                                 fecha.getYear() == LocalDate.now().getYear();
                     })
                     .collect(Collectors.toList());
+
+            // Calcula la factura mensual del socio en base a sus inscripciones y reglas de facturación
             return socio.calcularFacturaMensual(inscripcionesDelMes);
         }
+
+        // Si el socio no existe, devuelve 0
         return 0.0;
     }
 

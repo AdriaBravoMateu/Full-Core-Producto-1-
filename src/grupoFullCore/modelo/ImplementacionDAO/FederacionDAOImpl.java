@@ -11,7 +11,7 @@ public class FederacionDAOImpl implements FederacionDAO {
 
     @Override
     public void agregarFederacion(Federacion federacion) {
-        String query = "INSERT INTO Federaciones (codigo, nombre) VALUES (?, ?)";
+        String query = "INSERT INTO Federacion (codigo, nombre) VALUES (?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -26,7 +26,7 @@ public class FederacionDAOImpl implements FederacionDAO {
 
     @Override
     public Federacion buscarFederacionPorCodigo(String codigo) {
-        String query = "SELECT * FROM Federaciones WHERE codigo = ?";
+        String query = "SELECT * FROM Federacion WHERE codigo = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -46,7 +46,7 @@ public class FederacionDAOImpl implements FederacionDAO {
     @Override
     public List<Federacion> mostrarFederaciones() {
         List<Federacion> federaciones = new ArrayList<>();
-        String query = "SELECT * FROM Federaciones";
+        String query = "SELECT * FROM Federacion";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -65,7 +65,7 @@ public class FederacionDAOImpl implements FederacionDAO {
 
     @Override
     public void eliminarFederacion(String codigo) throws Exception {
-        String query = "DELETE FROM Federaciones WHERE codigo = ?";
+        String query = "DELETE FROM Federacion WHERE codigo = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 

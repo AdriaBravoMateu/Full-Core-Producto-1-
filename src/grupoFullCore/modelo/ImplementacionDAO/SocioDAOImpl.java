@@ -11,42 +11,63 @@ public class SocioDAOImpl implements SocioDAO {
     // Método para agregar un nuevo socio a la base de datos
     @Override
     public void agregarSocio(Socio socio) {
-        // Definición de la consulta SQL con parámetros
-        String query = "INSERT INTO Socios (numeroSocio, nombre, tipo, nif, seguro_tipo) VALUES (?, ?, ?, ?, ?)";
+        String querySocio = "INSERT INTO socio (numeroSocio, nombre, tipoSocio) VALUES (?, ?, ?)";
 
-        // Usar try-with-resources para garantizar el cierre de recursos
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statementSocio = connection.prepareStatement(querySocio)) {
 
-            // Asignación de parámetros
-            statement.setInt(1, socio.getNumeroSocio());
-            statement.setString(2, socio.getNombre());
-            //statement.setString(3, socio.getClass().getSimpleName()); // Tipo de socio: Estándar, Federado, Infantil
+            statementSocio.setInt(1, socio.getNumeroSocio());
+            statementSocio.setString(2, socio.getNombre());
+            statementSocio.setString(3, socio.getTipo());
+            statementSocio.executeUpdate();
 
-            // Validación condicional si es un SocioEstandar
             if (socio instanceof SocioEstandar) {
+                // Inserción en la tabla `socio_estandar`
                 SocioEstandar socioEstandar = (SocioEstandar) socio;
-                statement.setString(4, socioEstandar.getNif());
-                statement.setString(5, socioEstandar.getSeguro().getTipo().name());
-            }
-            if (socio instanceof SocioFederado) {
-                SocioFederado socioFederado = (SocioFederado) socio;
-                statement.setString(4, socioFederado.getNif());
-                statement.setString(5, socioFederado.getFederacion().getNombre());
-            }
-            if (socio instanceof SocioInfantil){
-                SocioInfantil socioInfantil = (SocioInfantil) socio;
-                statement.setString(4, socioInfantil.getProgenitor().getNombre());
-            }
-            /*else {
-                statement.setString(4, null); // No aplica NIF ni seguro a otros tipos de socios
-                statement.setString(5, null);
-            }*/
+                String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
+                tipoSeguro = tipoSeguro.substring(0, 1).toUpperCase() + tipoSeguro.substring(1).toLowerCase();
 
-            // Ejecutar la actualización
-            statement.executeUpdate();
+                String queryEstandar = "INSERT INTO socio_estandar (numeroSocio, nif, tipoSeguro) VALUES (?, ?, ?)";
+                try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
+                    statementEstandar.setInt(1, socio.getNumeroSocio());
+                    statementEstandar.setString(2, socioEstandar.getNif());
+                    statementEstandar.setString(3, tipoSeguro);
+                    statementEstandar.executeUpdate();
+                }
+            } else if (socio instanceof SocioFederado) {
+                // Inserción en la tabla `socio_federado`
+                SocioFederado socioFederado = (SocioFederado) socio;
+                String queryFederado = "INSERT INTO socio_federado (numeroSocio, nif, codigoFederacion) VALUES (?, ?, ?)";
+                try (PreparedStatement statementFederado = connection.prepareStatement(queryFederado)) {
+                    statementFederado.setInt(1, socio.getNumeroSocio());
+                    statementFederado.setString(2, socioFederado.getNif());
+                    statementFederado.setString(3, socioFederado.getFederacion().getCodigo());
+                    statementFederado.executeUpdate();
+                }
+            } else if (socio instanceof SocioInfantil) {
+                // Recupera el progenitor desde la base de datos antes de crear el `SocioInfantil`
+                SocioInfantil socioInfantil = (SocioInfantil) socio;
+                int numeroSocioProgenitor = socioInfantil.getNumeroSocioProgenitor();
+                Socio progenitor = buscarSocioPorNumero(numeroSocioProgenitor);  // Busca el progenitor en la base de datos
+
+                // Verificación para evitar `NullPointerException`
+                if (progenitor == null) {
+                    System.err.println("Error: El progenitor con número de socio " + numeroSocioProgenitor + " no existe.");
+                    return;  // Salir del método si el progenitor no existe
+                }
+
+                // Reasigna el objeto `progenitor` al `socioInfantil`
+                socioInfantil = new SocioInfantil(socioInfantil.getNumeroSocio(), socioInfantil.getNombre(), progenitor);
+
+                String queryInfantil = "INSERT INTO socio_infantil (numeroSocio, numeroSocioProgenitor) VALUES (?, ?)";
+                try (PreparedStatement statementInfantil = connection.prepareStatement(queryInfantil)) {
+                    statementInfantil.setInt(1, socioInfantil.getNumeroSocio());
+                    statementInfantil.setInt(2, socioInfantil.getProgenitor().getNumeroSocio());
+                    statementInfantil.executeUpdate();
+                }
+            }
+
         } catch (SQLException e) {
-            // Registro de errores
             System.err.println("Error al agregar el socio: " + e.getMessage());
         }
     }
@@ -54,7 +75,7 @@ public class SocioDAOImpl implements SocioDAO {
     // Método para buscar un socio por su número de socio
     @Override
     public Socio buscarSocioPorNumero(int numeroSocio) {
-        String query = "SELECT * FROM Socios WHERE numeroSocio = ?";
+        String query = "SELECT * FROM socio WHERE numeroSocio = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -64,28 +85,49 @@ public class SocioDAOImpl implements SocioDAO {
             // Ejecutar consulta y procesar resultado
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                // Extracción de datos del resultado
                 String nombre = resultSet.getString("nombre");
-                String tipo = resultSet.getString("tipo");
 
-                if ("SocioEstandar".equals(tipo)) { // Si el tipo es SocioEstandar
-                    String nif = resultSet.getString("nif");
-                    String seguroTipo = resultSet.getString("seguro_tipo");
-
-                    // Convertir seguroTipo a TipoSeguro, y luego crear un Seguro
-                    TipoSeguro tipoSeguroEnum = TipoSeguro.valueOf(seguroTipo); // Convierte el String a TipoSeguro
-                    Seguro seguro = new Seguro(tipoSeguroEnum); // Crea una instancia de Seguro con el TipoSeguro
-
-                    // Crear y retornar el SocioEstandar con el seguro adecuado
-                    return new SocioEstandar(numeroSocio, nombre, nif, seguro);
+                // Verificar en la tabla socio_estandar
+                String queryEstandar = "SELECT * FROM socio_estandar WHERE numeroSocio = ?";
+                try (PreparedStatement stmtEstandar = connection.prepareStatement(queryEstandar)) {
+                    stmtEstandar.setInt(1, numeroSocio);
+                    ResultSet rsEstandar = stmtEstandar.executeQuery();
+                    if (rsEstandar.next()) {
+                        String nif = rsEstandar.getString("nif");
+                        String tipoSeguro = rsEstandar.getString("tipoSeguro");
+                        TipoSeguro tipoSeguroEnum = TipoSeguro.fromString(tipoSeguro);
+                        Seguro seguro = new Seguro(tipoSeguroEnum);
+                        return new SocioEstandar(numeroSocio, nombre, nif, seguro);
+                    }
                 }
-                // Puedes agregar lógica adicional para otros tipos de socios aquí
+
+                // Verificar en la tabla socio_federado
+                String queryFederado = "SELECT * FROM socio_federado WHERE numeroSocio = ?";
+                try (PreparedStatement stmtFederado = connection.prepareStatement(queryFederado)) {
+                    stmtFederado.setInt(1, numeroSocio);
+                    ResultSet rsFederado = stmtFederado.executeQuery();
+                    if (rsFederado.next()) {
+                        String nif = rsFederado.getString("nif");
+                        String codigoFederacion = rsFederado.getString("codigoFederacion");
+                        Federacion federacion = new Federacion(codigoFederacion); // Asume que tienes un constructor adecuado
+                        return new SocioFederado(numeroSocio, nombre, nif, federacion);
+                    }
+                }
+
+                // Verificar en la tabla socio_infantil
+                String queryInfantil = "SELECT * FROM socio_infantil WHERE numeroSocio = ?";
+                try (PreparedStatement stmtInfantil = connection.prepareStatement(queryInfantil)) {
+                    stmtInfantil.setInt(1, numeroSocio);
+                    ResultSet rsInfantil = stmtInfantil.executeQuery();
+                    if (rsInfantil.next()) {
+                        int numeroSocioProgenitor = rsInfantil.getInt("numeroSocioProgenitor");
+                        Socio progenitor = buscarSocioPorNumero(numeroSocioProgenitor); // Llama a buscarSocioPorNumero para obtener el progenitor
+                        return new SocioInfantil(numeroSocio, nombre, progenitor);
+                    }
+                }
             }
         } catch (SQLException e) {
             System.err.println("Error al buscar el socio: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            // Maneja casos en los que seguroTipo no coincide con ningún valor de TipoSeguro
-            System.err.println("Error: Tipo de seguro no válido en la base de datos: " + e.getMessage());
         }
         return null; // Retorna null si no se encuentra el socio o si ocurre un error
     }
@@ -94,37 +136,21 @@ public class SocioDAOImpl implements SocioDAO {
     @Override
     public List<Socio> mostrarSocios() {
         List<Socio> socios = new ArrayList<>();
-        String query = "SELECT * FROM Socios";
+        String query = "SELECT * FROM socio";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
 
-            // Procesamiento de resultados
             while (resultSet.next()) {
                 int numeroSocio = resultSet.getInt("numeroSocio");
-                String nombre = resultSet.getString("nombre");
-                String tipo = resultSet.getString("tipo");
-
-                // Verificar el tipo de socio
-                if ("SocioEstandar".equals(tipo)) { // Si es un SocioEstandar
-                    String nif = resultSet.getString("nif");
-                    String seguroTipo = resultSet.getString("seguro_tipo");
-
-                    // Convertir seguroTipo a TipoSeguro y luego crear un Seguro
-                    TipoSeguro tipoSeguroEnum = TipoSeguro.valueOf(seguroTipo); // Convierte el String a TipoSeguro
-                    Seguro seguro = new Seguro(tipoSeguroEnum); // Crea una instancia de Seguro con el TipoSeguro
-
-                    // Agregar el SocioEstandar a la lista con el seguro adecuado
-                    socios.add(new SocioEstandar(numeroSocio, nombre, nif, seguro));
+                Socio socio = buscarSocioPorNumero(numeroSocio); // Usa buscarSocioPorNumero para obtener el tipo correcto
+                if (socio != null) {
+                    socios.add(socio);
                 }
-                // Aquí puedes agregar lógica para otros tipos de Socio (SocioFederado, SocioInfantil, etc.)
             }
         } catch (SQLException e) {
             System.err.println("Error al listar los socios: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            // Manejo de valores no válidos para seguroTipo
-            System.err.println("Error: Tipo de seguro no válido en la base de datos: " + e.getMessage());
         }
         return socios;
     }
@@ -132,7 +158,7 @@ public class SocioDAOImpl implements SocioDAO {
     // Método para eliminar un socio
     @Override
     public void eliminarSocio(int numeroSocio) throws Exception {
-        String query = "DELETE FROM Socios WHERE numeroSocio = ?";
+        String query = "DELETE FROM socio WHERE numeroSocio = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -146,22 +172,55 @@ public class SocioDAOImpl implements SocioDAO {
 
     @Override
     public void actualizarSocio(Socio socio) {
-        String query = "UPDATE Socios SET nombre = ?, tipo = ?, nif = ?, seguro_tipo = ? WHERE numeroSocio = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        String querySocio = "UPDATE socio SET nombre = ?, tipoSocio = ? WHERE numeroSocio = ?";
 
-            statement.setString(1, socio.getNombre());
-            statement.setString(2, socio.getClass().getSimpleName());
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statementSocio = connection.prepareStatement(querySocio)) {
+
+            // Actualizamos tabla socio
+            statementSocio.setInt(1, socio.getNumeroSocio());
+            statementSocio.setString(2, socio.getNombre());
+            statementSocio.setString(3, socio.getTipo());
+            statementSocio.executeUpdate();
+
+
+            // Actualizamos la tabla específica según el tipo de socio
             if (socio instanceof SocioEstandar) {
                 SocioEstandar socioEstandar = (SocioEstandar) socio;
-                statement.setString(3, socioEstandar.getNif());
-                statement.setString(4, socioEstandar.getSeguro().getTipo().name());
-            } else {
-                statement.setNull(3, java.sql.Types.VARCHAR);
-                statement.setNull(4, java.sql.Types.VARCHAR);
+                String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
+                tipoSeguro = tipoSeguro.substring(0, 1).toUpperCase() + tipoSeguro.substring(1).toLowerCase();
+
+                if (tipoSeguro != null) {
+                    String queryEstandar = "UPDATE socio_estandar SET nif = ?, tipoSeguro = ? WHERE numeroSocio = ?";
+                    try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
+                        statementEstandar.setString(1, socioEstandar.getNif());
+                        statementEstandar.setString(2, tipoSeguro);  // Configura el tipo de seguro
+                        statementEstandar.setInt(3, socioEstandar.getNumeroSocio());
+                        statementEstandar.executeUpdate();
+                    }
+                } else {
+                    System.err.println("Error: El seguro del socio estándar es nulo.");
+                }
+
+            } else if (socio instanceof SocioFederado) {
+                SocioFederado socioFederado = (SocioFederado) socio;
+                String queryFederado = "UPDATE socio_federado SET nif = ?, federacion = ? WHERE numeroSocio = ?";
+                try (PreparedStatement statementFederado = connection.prepareStatement(queryFederado)) {
+                    statementFederado.setInt(1, socio.getNumeroSocio());
+                    statementFederado.setString(2, socioFederado.getNif());
+                    statementFederado.setString(3, socioFederado.getFederacion().getNombre());
+                    statementFederado.executeUpdate();
+                }
+            } else if (socio instanceof SocioInfantil) {
+                SocioInfantil socioInfantil = (SocioInfantil) socio;
+                String queryInfantil = "UPDATE socio_infantil SET progenitor = ? WHERE numeroSocio = ?";
+                try (PreparedStatement statementInfantil = connection.prepareStatement(queryInfantil)) {
+                    statementInfantil.setInt(1, socio.getNumeroSocio());
+                    statementInfantil.setInt(2, socioInfantil.getProgenitor().getNumeroSocio());
+                    statementInfantil.executeUpdate();
+                }
             }
-            statement.setInt(5, socio.getNumeroSocio());
-            statement.executeUpdate();
+
         } catch (SQLException e) {
             System.err.println("Error al actualizar el socio: " + e.getMessage());
         }

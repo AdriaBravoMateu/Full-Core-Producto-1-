@@ -1,6 +1,7 @@
 package grupoFullCoreVista;
 
 import grupoFullCore.modelo.Federacion;
+import grupoFullCore.modelo.Socio;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -139,4 +140,35 @@ public class VistaSocio {
         }
         return opcion;
     }
+
+    public void mostrarOpcionesMostrarSocios() {
+        System.out.println("Seleccione una opción para mostrar socios:");
+        System.out.println("1. Todos");
+        System.out.println("2. Por tipo");
+        System.out.println("0. Volver");
+    }
+
+    public void mostrarSubmenuTipoSocio() {
+        System.out.println("Seleccione el tipo de socio a mostrar:");
+        System.out.println("1. Estándar");
+        System.out.println("2. Federado");
+        System.out.println("3. Infantil");
+        System.out.println("0. Volver");
+    }
+
+    public void mostrarEncabezadoSocios() {
+        System.out.println("+--------------+----------------------+------------+");
+        System.out.println("| Número Socio | Nombre               | Tipo       |");
+        System.out.println("+--------------+----------------------+------------+");
+    }
+
+    public void mostrarSocio(Socio socio, String tipoSocio) {
+        String formato = "| %-12s | %-20s | %-10s |\n";
+        System.out.printf(formato, socio.getNumeroSocio(), socio.getNombre(), tipoSocio);
+    }
+
+    public void mostrarFinTabla() {
+        System.out.println("+--------------+----------------------+------------+");
+    }
+
 }

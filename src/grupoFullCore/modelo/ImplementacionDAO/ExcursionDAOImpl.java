@@ -12,7 +12,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
 
     @Override
     public void agregarExcursion(Excursion excursion) {
-        String query = "INSERT INTO Excursiones (codigo, descripcion, fecha, numeroDias, precioInscripcion) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Excursion (codigo, descripcion, fecha, numeroDias, precioInscripcion) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -30,7 +30,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
 
     @Override
     public Excursion buscarExcursionPorCodigo(String codigo) {
-        String query = "SELECT * FROM Excursiones WHERE codigo = ?";
+        String query = "SELECT * FROM Excursion WHERE codigo = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -54,7 +54,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
     @Override
     public List<Excursion> mostrarExcursiones() {
         List<Excursion> excursiones = new ArrayList<>();
-        String query = "SELECT * FROM Excursiones";
+        String query = "SELECT * FROM Excursion";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -77,7 +77,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
     @Override
     public List<Excursion> mostrarExcursionesConFiltro(LocalDate fechaInicio, LocalDate fechaFin) {
         List<Excursion> excursiones = new ArrayList<>();
-        String query = "SELECT * FROM Excursiones WHERE fecha BETWEEN ? AND ?";
+        String query = "SELECT * FROM Excursion WHERE fecha BETWEEN ? AND ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -102,7 +102,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
 
     @Override
     public void eliminarExcursion(String codigo) throws Exception {
-        String query = "DELETE FROM Excursiones WHERE codigo = ?";
+        String query = "DELETE FROM Excursion WHERE codigo = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 

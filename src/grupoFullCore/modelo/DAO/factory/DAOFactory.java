@@ -1,13 +1,7 @@
 package grupoFullCore.modelo.DAO.factory;
 
-import grupoFullCore.modelo.DAO.SocioDAO;
-import grupoFullCore.modelo.DAO.ExcursionDAO;
-import grupoFullCore.modelo.DAO.InscripcionDAO;
-import grupoFullCore.modelo.DAO.FederacionDAO;
-import grupoFullCore.modelo.ImplementacionDAO.SocioDAOImpl;
-import grupoFullCore.modelo.ImplementacionDAO.ExcursionDAOImpl;
-import grupoFullCore.modelo.ImplementacionDAO.InscripcionDAOImpl;
-import grupoFullCore.modelo.ImplementacionDAO.FederacionDAOImpl;
+import grupoFullCore.modelo.DAO.*;
+import grupoFullCore.modelo.ImplementacionDAO.*;
 
 public class DAOFactory {
 
@@ -29,5 +23,8 @@ public class DAOFactory {
     // Método para obtener la instancia de FederacionDAO
     public static FederacionDAO getFederacionDAO() {
         return new FederacionDAOImpl();
+    }
+
+    public static SeguroDAO getSeguroDAO() { return new SeguroDAOImpl();
     }
 }

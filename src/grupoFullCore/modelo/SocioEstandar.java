@@ -9,9 +9,15 @@ public class SocioEstandar extends Socio {
 
     // Constructor
     public SocioEstandar(int numeroSocio, String nombre, String nif, Seguro seguro) {
-        super(numeroSocio, nombre);  // Llama al constructor de la clase grupofc.modelo.Socio
-        this.nif = nif;              // Asigna el NIF del socio estándar
-        this.seguro = seguro;        // Asigna el seguro contratado por el socio
+        super(numeroSocio, nombre);
+        this.nif = nif;
+        this.seguro = seguro;
+    }
+
+    public SocioEstandar(int numeroSocio, String nombre, TipoSocio tipo,  String nif, Seguro seguro) {
+        super(numeroSocio, nombre, tipo);
+        this.nif = nif;
+        this.seguro = seguro;
     }
 
     //Getters
