@@ -25,7 +25,6 @@ public class SocioDAOImpl implements SocioDAO {
                 // Inserción en la tabla `socio_estandar`
                 SocioEstandar socioEstandar = (SocioEstandar) socio;
                 String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
-                tipoSeguro = tipoSeguro.substring(0, 1).toUpperCase() + tipoSeguro.substring(1).toLowerCase();
 
                 String queryEstandar = "INSERT INTO socio_estandar (numeroSocio, nif, tipoSeguro) VALUES (?, ?, ?)";
                 try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
@@ -158,13 +157,48 @@ public class SocioDAOImpl implements SocioDAO {
     // Método para eliminar un socio
     @Override
     public void eliminarSocio(int numeroSocio) throws Exception {
-        String query = "DELETE FROM socio WHERE numeroSocio = ?";
+        String queryObtenerTipo = "SELECT tipoSocio FROM socio WHERE numeroSocio = ?";
+        String queryEliminarSocio = "DELETE FROM socio WHERE numeroSocio = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statementObtenerTipo = connection.prepareStatement(queryObtenerTipo);
+             PreparedStatement statementEliminarSocio = connection.prepareStatement(queryEliminarSocio)) {
 
-            statement.setInt(1, numeroSocio);
-            statement.executeUpdate();
+            //Obtenemos tipo de socio
+            statementObtenerTipo.setInt(1, numeroSocio);
+            ResultSet resultSet = statementObtenerTipo.executeQuery();
+
+            if (resultSet.next()) {
+                String tipoSocio = resultSet.getString("tipoSocio");
+
+                // Eliminamos el socio de la tabla específica de tipo
+                if ("Estandar".equals(tipoSocio)) {
+                    String queryEliminarEstandar = "DELETE FROM socio_estandar WHERE numeroSocio = ?";
+                    try (PreparedStatement statementEliminarEstandar = connection.prepareStatement(queryEliminarEstandar)) {
+                        statementEliminarEstandar.setInt(1, numeroSocio);
+                        statementEliminarEstandar.executeUpdate();
+                    }
+                } else if ("Federado".equals(tipoSocio)) {
+                    String queryEliminarFederado = "DELETE FROM socio_federado WHERE numeroSocio = ?";
+                    try (PreparedStatement statementEliminarFederado = connection.prepareStatement(queryEliminarFederado)) {
+                        statementEliminarFederado.setInt(1, numeroSocio);
+                        statementEliminarFederado.executeUpdate();
+                    }
+                } else if ("Infantil".equals(tipoSocio)) {
+                    String queryEliminarInfantil = "DELETE FROM socio_infantil WHERE numeroSocio = ?";
+                    try (PreparedStatement statementEliminarInfantil = connection.prepareStatement(queryEliminarInfantil)) {
+                        statementEliminarInfantil.setInt(1, numeroSocio);
+                        statementEliminarInfantil.executeUpdate();
+                    }
+                }
+
+                // Eliminamos el socio de la tabla socio
+                statementEliminarSocio.setInt(1, numeroSocio);
+                statementEliminarSocio.executeUpdate();
+            } else {
+                throw new Exception("No se encontró el socio con número " + numeroSocio);
+            }
+
         } catch (SQLException e) {
             throw new Exception("Error al eliminar el socio: " + e.getMessage());
         }
@@ -188,21 +222,18 @@ public class SocioDAOImpl implements SocioDAO {
             if (socio instanceof SocioEstandar) {
                 SocioEstandar socioEstandar = (SocioEstandar) socio;
                 String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
-                tipoSeguro = tipoSeguro.substring(0, 1).toUpperCase() + tipoSeguro.substring(1).toLowerCase();
 
                 if (tipoSeguro != null) {
                     String queryEstandar = "UPDATE socio_estandar SET nif = ?, tipoSeguro = ? WHERE numeroSocio = ?";
                     try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
                         statementEstandar.setString(1, socioEstandar.getNif());
-                        statementEstandar.setString(2, tipoSeguro);  // Configura el tipo de seguro
-                        statementEstandar.setInt(3, socioEstandar.getNumeroSocio());
+                        statementEstandar.setString(2, tipoSeguro);
+                        statementEstandar.setInt(3, socio.getNumeroSocio());
                         statementEstandar.executeUpdate();
                     }
-                } else {
-                    System.err.println("Error: El seguro del socio estándar es nulo.");
                 }
 
-            } else if (socio instanceof SocioFederado) {
+                } else if (socio instanceof SocioFederado) {
                 SocioFederado socioFederado = (SocioFederado) socio;
                 String queryFederado = "UPDATE socio_federado SET nif = ?, federacion = ? WHERE numeroSocio = ?";
                 try (PreparedStatement statementFederado = connection.prepareStatement(queryFederado)) {
