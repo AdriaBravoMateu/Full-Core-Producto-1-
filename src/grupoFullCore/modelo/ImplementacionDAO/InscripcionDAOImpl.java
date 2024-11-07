@@ -17,14 +17,13 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     private static final Logger logger = Logger.getLogger(InscripcionDAOImpl.class.getName());
     @Override
     public void agregarInscripcion(Inscripcion inscripcion) {
-        String query = "INSERT INTO Inscripcion (numeroInscripcion, fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Inscripcion (fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setInt(1, inscripcion.getNumeroInscripcion());
-            statement.setDate(2, Date.valueOf(inscripcion.getFechaInscripcion()));
-            statement.setInt(3, inscripcion.getSocio().getNumeroSocio());
-            statement.setString(4, inscripcion.getExcursion().getCodigo());
+            statement.setDate(1, Date.valueOf(inscripcion.getFechaInscripcion()));
+            statement.setInt(2, inscripcion.getSocio().getNumeroSocio());
+            statement.setInt(3, inscripcion.getExcursion().getCodigo());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -44,7 +43,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
             if (resultSet.next()) {
                 LocalDate fechaInscripcion = resultSet.getDate("fechaInscripcion").toLocalDate();
                 int numeroSocio = resultSet.getInt("numeroSocio");
-                String codigoExcursion = resultSet.getString("codigoExcursion");
+                int codigoExcursion = resultSet.getInt("codigoExcursion");
 
                 Socio socio = new SocioDAOImpl().buscarSocioPorNumero(numeroSocio);
                 Excursion excursion = new ExcursionDAOImpl().buscarExcursionPorCodigo(codigoExcursion);
@@ -69,7 +68,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
                 int numeroInscripcion = resultSet.getInt("numeroInscripcion");
                 LocalDate fechaInscripcion = resultSet.getDate("fechaInscripcion").toLocalDate();
                 int numeroSocio = resultSet.getInt("numeroSocio");
-                String codigoExcursion = resultSet.getString("codigoExcursion");
+                int codigoExcursion = resultSet.getInt("codigoExcursion");
 
                 Socio socio = new SocioDAOImpl().buscarSocioPorNumero(numeroSocio);
                 Excursion excursion = new ExcursionDAOImpl().buscarExcursionPorCodigo(codigoExcursion);
@@ -97,7 +96,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
                 int numeroInscripcion = resultSet.getInt("numeroInscripcion");
                 LocalDate fechaInscripcion = resultSet.getDate("fechaInscripcion").toLocalDate();
                 int numeroSocio = resultSet.getInt("numeroSocio");
-                String codigoExcursion = resultSet.getString("codigoExcursion");
+                int codigoExcursion = resultSet.getInt("codigoExcursion");
 
                 Socio socio = new SocioDAOImpl().buscarSocioPorNumero(numeroSocio);
                 Excursion excursion = new ExcursionDAOImpl().buscarExcursionPorCodigo(codigoExcursion);
@@ -123,7 +122,7 @@ public class InscripcionDAOImpl implements InscripcionDAO {
             while (resultSet.next()) {
                 int numeroInscripcion = resultSet.getInt("numeroInscripcion");
                 LocalDate fechaInscripcion = resultSet.getDate("fechaInscripcion").toLocalDate();
-                String codigoExcursion = resultSet.getString("codigoExcursion");
+                int codigoExcursion = resultSet.getInt("codigoExcursion");
 
                 Socio socio = new SocioDAOImpl().buscarSocioPorNumero(numeroSocio);
                 Excursion excursion = new ExcursionDAOImpl().buscarExcursionPorCodigo(codigoExcursion);
@@ -136,13 +135,13 @@ public class InscripcionDAOImpl implements InscripcionDAO {
         return inscripciones;
     }
     @Override
-    public List<Inscripcion> mostrarInscripcionesPorExcursion(String codigoExcursion) {
+    public List<Inscripcion> mostrarInscripcionesPorExcursion(int codigoExcursion) {
         List<Inscripcion> inscripciones = new ArrayList<>();
         String query = "SELECT * FROM Inscripcion WHERE codigoExcursion = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, codigoExcursion);
+            statement.setInt(1, codigoExcursion);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {

@@ -67,9 +67,9 @@ public class VistaInscripcion {
         return numeroSocio;
     }
 
-    public String leerCodigoExcursion() {
+    public int leerCodigoExcursion() {
         System.out.print("Introduce el código de la excursión: ");
-        return scanner.nextLine();  // Leer el código de la excursión
+        return Integer.parseInt(scanner.nextLine());  // Leer el código de la excursión
     }
 
     public LocalDate leerFechaInsc() {

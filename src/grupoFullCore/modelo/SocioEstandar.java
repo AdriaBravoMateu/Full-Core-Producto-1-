@@ -20,6 +20,18 @@ public class SocioEstandar extends Socio {
         this.seguro = seguro;
     }
 
+    public SocioEstandar(String nombre, String nif, Seguro seguro) {
+        super(nombre);
+        this.nif = nif;
+        this.seguro = seguro;
+    }
+
+    public SocioEstandar(String nombre, TipoSocio tipo,  String nif, Seguro seguro) {
+        super(nombre, tipo);
+        this.nif = nif;
+        this.seguro = seguro;
+    }
+
     //Getters
     public String getNif() {return nif;}
     public Seguro getSeguro() {return seguro;}

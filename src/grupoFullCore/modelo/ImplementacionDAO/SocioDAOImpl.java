@@ -11,59 +11,68 @@ public class SocioDAOImpl implements SocioDAO {
     // Método para agregar un nuevo socio a la base de datos
     @Override
     public void agregarSocio(Socio socio) {
-        String querySocio = "INSERT INTO socio (numeroSocio, nombre, tipoSocio) VALUES (?, ?, ?)";
+        String querySocio = "INSERT INTO socio (nombre, tipoSocio) VALUES (?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statementSocio = connection.prepareStatement(querySocio)) {
 
-            statementSocio.setInt(1, socio.getNumeroSocio());
-            statementSocio.setString(2, socio.getNombre());
-            statementSocio.setString(3, socio.getTipo());
+            statementSocio.setString(1, socio.getNombre());
+            statementSocio.setString(2, socio.getTipo());
             statementSocio.executeUpdate();
 
-            if (socio instanceof SocioEstandar) {
-                // Inserción en la tabla `socio_estandar`
-                SocioEstandar socioEstandar = (SocioEstandar) socio;
-                String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
+            // Obtener número de socio generado Automáticamente para que aparezca en la tabla de SQL
 
-                String queryEstandar = "INSERT INTO socio_estandar (numeroSocio, nif, tipoSeguro) VALUES (?, ?, ?)";
-                try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
-                    statementEstandar.setInt(1, socio.getNumeroSocio());
-                    statementEstandar.setString(2, socioEstandar.getNif());
-                    statementEstandar.setString(3, tipoSeguro);
-                    statementEstandar.executeUpdate();
-                }
-            } else if (socio instanceof SocioFederado) {
-                // Inserción en la tabla `socio_federado`
-                SocioFederado socioFederado = (SocioFederado) socio;
-                String queryFederado = "INSERT INTO socio_federado (numeroSocio, nif, codigoFederacion) VALUES (?, ?, ?)";
-                try (PreparedStatement statementFederado = connection.prepareStatement(queryFederado)) {
-                    statementFederado.setInt(1, socio.getNumeroSocio());
-                    statementFederado.setString(2, socioFederado.getNif());
-                    statementFederado.setString(3, socioFederado.getFederacion().getCodigo());
-                    statementFederado.executeUpdate();
-                }
-            } else if (socio instanceof SocioInfantil) {
-                // Recupera el progenitor desde la base de datos antes de crear el `SocioInfantil`
-                SocioInfantil socioInfantil = (SocioInfantil) socio;
-                int numeroSocioProgenitor = socioInfantil.getNumeroSocioProgenitor();
-                Socio progenitor = buscarSocioPorNumero(numeroSocioProgenitor);  // Busca el progenitor en la base de datos
+            ResultSet generatedKeys = statementSocio.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int socioNumero = generatedKeys.getInt(1);
+                socio.setNumeroSocio(socioNumero);
 
-                // Verificación para evitar `NullPointerException`
-                if (progenitor == null) {
-                    System.err.println("Error: El progenitor con número de socio " + numeroSocioProgenitor + " no existe.");
-                    return;  // Salir del método si el progenitor no existe
-                }
+                if (socio instanceof SocioEstandar) {
+                    // Inserción en la tabla `socio_estandar`
+                    SocioEstandar socioEstandar = (SocioEstandar) socio;
+                    String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
 
-                // Reasigna el objeto `progenitor` al `socioInfantil`
-                socioInfantil = new SocioInfantil(socioInfantil.getNumeroSocio(), socioInfantil.getNombre(), progenitor);
+                    String queryEstandar = "INSERT INTO socio_estandar (numeroSocio, nif, tipoSeguro) VALUES (?, ?, ?)";
+                    try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
+                        statementEstandar.setInt(1, socio.getNumeroSocio());
+                        statementEstandar.setString(2, socioEstandar.getNif());
+                        statementEstandar.setString(3, tipoSeguro);
+                        statementEstandar.executeUpdate();
+                    }
+                } else if (socio instanceof SocioFederado) {
+                    // Inserción en la tabla `socio_federado`
+                    SocioFederado socioFederado = (SocioFederado) socio;
+                    String queryFederado = "INSERT INTO socio_federado (numeroSocio, nif, codigoFederacion) VALUES (?, ?, ?)";
+                    try (PreparedStatement statementFederado = connection.prepareStatement(queryFederado)) {
+                        statementFederado.setInt(1, socio.getNumeroSocio());
+                        statementFederado.setString(2, socioFederado.getNif());
+                        statementFederado.setString(3, socioFederado.getFederacion().getCodigo());
+                        statementFederado.executeUpdate();
+                    }
+                } else if (socio instanceof SocioInfantil) {
+                    // Recupera el progenitor desde la base de datos antes de crear el `SocioInfantil`
+                    SocioInfantil socioInfantil = (SocioInfantil) socio;
+                    int numeroSocioProgenitor = socioInfantil.getNumeroSocioProgenitor();
+                    Socio progenitor = buscarSocioPorNumero(numeroSocioProgenitor);  // Busca el progenitor en la base de datos
 
-                String queryInfantil = "INSERT INTO socio_infantil (numeroSocio, numeroSocioProgenitor) VALUES (?, ?)";
-                try (PreparedStatement statementInfantil = connection.prepareStatement(queryInfantil)) {
-                    statementInfantil.setInt(1, socioInfantil.getNumeroSocio());
-                    statementInfantil.setInt(2, socioInfantil.getProgenitor().getNumeroSocio());
-                    statementInfantil.executeUpdate();
+                    // Verificación para evitar `NullPointerException`
+                    if (progenitor == null) {
+                        System.err.println("Error: El progenitor con número de socio " + numeroSocioProgenitor + " no existe.");
+                        return;  // Salir del método si el progenitor no existe
+                    }
+
+                    // Reasigna el objeto `progenitor` al `socioInfantil`
+                    socioInfantil = new SocioInfantil(socioInfantil.getNumeroSocio(), socioInfantil.getNombre(), progenitor);
+
+                    String queryInfantil = "INSERT INTO socio_infantil (numeroSocio, numeroSocioProgenitor) VALUES (?, ?)";
+                    try (PreparedStatement statementInfantil = connection.prepareStatement(queryInfantil)) {
+                        statementInfantil.setInt(1, socioInfantil.getNumeroSocio());
+                        statementInfantil.setInt(2, socioInfantil.getProgenitor().getNumeroSocio());
+                        statementInfantil.executeUpdate();
+                    }
                 }
+            } else {
+                System.err.println("Error al obtener el numero de socio.");
             }
 
         } catch (SQLException e) {

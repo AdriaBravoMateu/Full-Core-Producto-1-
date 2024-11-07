@@ -21,6 +21,18 @@ public class SocioFederado extends Socio {
         this.federacion = federacion;
     }
 
+    public SocioFederado(String nombre, String nif, Federacion federacion) {
+        super(nombre);
+        this.nif = nif;
+        this.federacion = federacion;
+    }
+
+    public SocioFederado(String nombre, TipoSocio tipo, String nif, Federacion federacion) {
+        super(nombre, tipo);
+        this.nif = nif;
+        this.federacion = federacion;
+    }
+
     //Getters
     public String getNif() {return nif;}
     public Federacion getFederacion() {return federacion;}

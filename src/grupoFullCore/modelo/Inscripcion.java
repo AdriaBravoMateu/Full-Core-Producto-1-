@@ -17,6 +17,12 @@ public class Inscripcion {
         this.excursion = excursion;
     }
 
+    public Inscripcion(LocalDate fechaInscripcion, Socio socio, Excursion excursion) {
+        this.fechaInscripcion = fechaInscripcion;
+        this.socio = socio;
+        this.excursion = excursion;
+    }
+
     //Getters
     public int getNumeroInscripcion() {return numeroInscripcion;}
     public LocalDate getFechaInscripcion() {return fechaInscripcion;}

@@ -10,6 +10,6 @@ public interface InscripcionDAO {
     List<Inscripcion> mostrarInscripciones();
     List<Inscripcion> mostrarInscripcionesPorFecha(LocalDate fechaInicio, LocalDate fechaFin);
     List<Inscripcion> mostrarInscripcionesPorSocio(int numeroSocio);
-    List<Inscripcion> mostrarInscripcionesPorExcursion(String codigoExcursion);
+    List<Inscripcion> mostrarInscripcionesPorExcursion(int codigoExcursion);
     void eliminarInscripcion(int numeroInscripcion) throws Exception;
 }

@@ -11,7 +11,7 @@ public class TestAñadirExcursion {
     void añadirExcursion_deberiaAgregarExcursionALaLista() {
         // Arrange
         CentroExcursionista centro = new CentroExcursionista();
-        Excursion excursion = new Excursion("EX001", "Excursión a la montaña", LocalDate.of(2024, 10, 25), 2, 100);
+        Excursion excursion = new Excursion(1, "Excursión a la montaña", LocalDate.of(2024, 10, 25), 2, 100);
 
         // Act
         centro.añadirExcursion(excursion);

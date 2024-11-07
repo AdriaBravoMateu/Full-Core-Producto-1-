@@ -12,15 +12,14 @@ public class ExcursionDAOImpl implements ExcursionDAO {
 
     @Override
     public void agregarExcursion(Excursion excursion) {
-        String query = "INSERT INTO Excursion (codigo, descripcion, fecha, numeroDias, precioInscripcion) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Excursion (descripcion, fecha, numeroDias, precioInscripcion) VALUES (?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, excursion.getCodigo());
-            statement.setString(2, excursion.getDescripcion());
-            statement.setDate(3, Date.valueOf(excursion.getFecha()));
-            statement.setInt(4, excursion.getNumeroDias());
-            statement.setDouble(5, excursion.getPrecioInscripcion());
+            statement.setString(1, excursion.getDescripcion());
+            statement.setDate(2, Date.valueOf(excursion.getFecha()));
+            statement.setInt(3, excursion.getNumeroDias());
+            statement.setDouble(4, excursion.getPrecioInscripcion());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -29,12 +28,12 @@ public class ExcursionDAOImpl implements ExcursionDAO {
     }
 
     @Override
-    public Excursion buscarExcursionPorCodigo(String codigo) {
+    public Excursion buscarExcursionPorCodigo(int codigo) {
         String query = "SELECT * FROM Excursion WHERE codigo = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, codigo);
+            statement.setInt(1, codigo);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -60,7 +59,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                String codigo = resultSet.getString("codigo");
+                int codigo = resultSet.getInt("codigo");
                 String descripcion = resultSet.getString("descripcion");
                 LocalDate fecha = resultSet.getDate("fecha").toLocalDate();
                 int numeroDias = resultSet.getInt("numeroDias");
@@ -86,7 +85,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                String codigo = resultSet.getString("codigo");
+                int codigo = resultSet.getInt("codigo");
                 String descripcion = resultSet.getString("descripcion");
                 LocalDate fecha = resultSet.getDate("fecha").toLocalDate();
                 int numeroDias = resultSet.getInt("numeroDias");
@@ -101,12 +100,12 @@ public class ExcursionDAOImpl implements ExcursionDAO {
     }
 
     @Override
-    public void eliminarExcursion(String codigo) throws Exception {
+    public void eliminarExcursion(int codigo) throws Exception {
         String query = "DELETE FROM Excursion WHERE codigo = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, codigo);
+            statement.setInt(1, codigo);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new Exception("Error al eliminar la excursión: " + e.getMessage());

@@ -51,7 +51,7 @@ public class ControladorExcursion {
     }
 
     private void agregarExcursion() {
-        String codigo;
+        int codigo;
 
         // Muestra excursiones existentes para evitar duplicados de código
         mostrarExcursiones(excursionDAO.mostrarExcursiones());

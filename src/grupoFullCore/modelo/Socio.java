@@ -21,6 +21,15 @@ public abstract class Socio {
         this.tipoSocio = tipoSocio;
     }
 
+    public Socio(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Socio(String nombre, TipoSocio tipoSocio) {
+        this.nombre = nombre;
+        this.tipoSocio = tipoSocio;
+    }
+
     //Getters
     public int getNumeroSocio() {return numeroSocio;}
     public String getNombre() {return nombre;}

@@ -24,6 +24,22 @@ public class SocioInfantil extends Socio {
         }
     }
 
+    public SocioInfantil(String nombre, Socio progenitor) {
+        super(nombre);
+        this.progenitor = progenitor;  // Asigna el objeto progenitor completo
+        if (progenitor != null) {
+            this.numeroSocioProgenitor = progenitor.getNumeroSocio();
+        }
+    }
+
+    public SocioInfantil(String nombre, TipoSocio tipo, Socio progenitor) {
+        super(nombre, tipo);
+        this.progenitor = progenitor;  // Asigna el objeto progenitor completo
+        if (progenitor != null) {
+            this.numeroSocioProgenitor = progenitor.getNumeroSocio();
+        }
+    }
+
     // Getters
     public Socio getProgenitor() {
         return progenitor;

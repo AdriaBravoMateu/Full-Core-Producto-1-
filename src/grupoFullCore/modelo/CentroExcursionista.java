@@ -44,11 +44,11 @@ public class CentroExcursionista {
         return excursionDAO.mostrarExcursionesConFiltro(fechaInicio, fechaFin);
     }
 
-    public boolean buscarExcursionPorCodigo(String codigoExcursion) {
+    public boolean buscarExcursionPorCodigo(int codigoExcursion) {
         return excursionDAO.buscarExcursionPorCodigo(codigoExcursion) != null;
     }
 
-    public void eliminarExcursion(String codigo) throws Exception {
+    public void eliminarExcursion(int codigo) throws Exception {
         excursionDAO.eliminarExcursion(codigo);
     }
 
@@ -147,7 +147,7 @@ public class CentroExcursionista {
         return inscripcionDAO.mostrarInscripcionesPorFecha(fechaInicio, fechaFin);
     }
 
-    public List<Inscripcion> mostrarInscripcionesPorExcursion(String codigoExcursion) {
+    public List<Inscripcion> mostrarInscripcionesPorExcursion(int codigoExcursion) {
         return inscripcionDAO.mostrarInscripcionesPorExcursion(codigoExcursion);
     }
 }

@@ -76,7 +76,7 @@ public class ControladorInscripcion {
         }
 
         controladorExcursion.mostrarExcursiones(excursionDAO.mostrarExcursiones());
-        String codigoExcursion = vista.leerCodigoExcursion();
+        int codigoExcursion = vista.leerCodigoExcursion();
         Excursion excursion = excursionDAO.buscarExcursionPorCodigo(codigoExcursion);
 
         if (excursion != null) {
@@ -100,7 +100,7 @@ public class ControladorInscripcion {
 
     private void eliminarInscripcion() {
         controladorExcursion.mostrarExcursiones(excursionDAO.mostrarExcursiones());
-        String codigoExcursion = vista.leerCodigoExcursion();
+        int codigoExcursion = vista.leerCodigoExcursion();
         Excursion excursion = excursionDAO.buscarExcursionPorCodigo(codigoExcursion);
 
         if (excursion == null) {

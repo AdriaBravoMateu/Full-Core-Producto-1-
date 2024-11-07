@@ -41,8 +41,8 @@ public class CargaDatosIniciales {
                 SocioFederado socio06 = new SocioFederado(6, "Socio Federado 2", TipoSocio.FEDERADO, "22222222F", federacion2);
 
                 // Instancias de Excursión
-                Excursion excursion01 = new Excursion("Exc01", "Excursion 01", LocalDate.of(2024, 10, 25), 5, 250);
-                Excursion excursion02 = new Excursion("Exc02", "Excursion 02", LocalDate.of(2024, 10, 28), 3, 150);
+                Excursion excursion01 = new Excursion(1, "Excursion 01", LocalDate.of(2024, 10, 25), 5, 250);
+                Excursion excursion02 = new Excursion(2, "Excursion 02", LocalDate.of(2024, 10, 28), 3, 150);
                 // ... Añadir más excursiones
 
                 // Instancias de Inscripción
