@@ -13,7 +13,7 @@ public class TestEliminarSocio {
     void eliminarSocio_noDeberiaEliminarSocioConInscripciones() {
         // Arrange
         CentroExcursionista centro = new CentroExcursionista();
-        SocioEstandar socio = new SocioEstandar(1, "Juan Pérez", "12345678A", new Seguro(TipoSeguro.BASICO));
+        SocioEstandar socio = new SocioEstandar(13, "Juan Pérez", "12345678A", new Seguro(TipoSeguro.BASICO));
         Excursion excursion = new Excursion("EX001", "Excursión a la montaña", LocalDate.now().plusDays(10), 2, 100);
         Date fechaInscripcion = Date.valueOf(LocalDate.now());
         Inscripcion inscripcion = new Inscripcion(1, fechaInscripcion.toLocalDate(), socio, excursion);
@@ -24,7 +24,7 @@ public class TestEliminarSocio {
 
         // Act & Assert
         Exception exception = assertThrows(Exception.class, () -> {
-            centro.eliminarSocio(1);
+            centro.eliminarSocio(13);
         });
 
         assertEquals("No se puede eliminar un socio con inscripciones activas.", exception.getMessage());

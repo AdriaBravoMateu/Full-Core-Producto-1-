@@ -36,7 +36,7 @@ public class Main {
         iniciarAplicacion(controladorSocio, controladorExcursion, controladorInscripcion);
     }
 
-    // Método para iniciar la aplicación y mostrar el menú principal
+    // Metodo para iniciar la aplicación y mostrar el menú principal
     private static void iniciarAplicacion(ControladorSocio controladorSocios, ControladorExcursion controladorExcursiones, ControladorInscripcion controladorInscripciones) {
         Scanner scanner = new Scanner(System.in);
         boolean salir = false;

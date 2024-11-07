@@ -157,12 +157,21 @@ public class SocioDAOImpl implements SocioDAO {
     // Método para eliminar un socio
     @Override
     public void eliminarSocio(int numeroSocio) throws Exception {
+        String queryVerificarInscripciones = "SELECT COUNT(*) FROM inscripcion WHERE numeroSocio = ?";
         String queryObtenerTipo = "SELECT tipoSocio FROM socio WHERE numeroSocio = ?";
         String queryEliminarSocio = "DELETE FROM socio WHERE numeroSocio = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statementVerificarInscripciones = connection.prepareStatement(queryVerificarInscripciones);
              PreparedStatement statementObtenerTipo = connection.prepareStatement(queryObtenerTipo);
              PreparedStatement statementEliminarSocio = connection.prepareStatement(queryEliminarSocio)) {
+
+            statementVerificarInscripciones.setInt(1, numeroSocio);
+            ResultSet resultSetInscripciones = statementVerificarInscripciones.executeQuery();
+
+            if (resultSetInscripciones.next() && resultSetInscripciones.getInt(1) > 0) {
+                throw new Exception("No se puede eliminar un socio con inscripciones registradas.");
+            }
 
             //Obtenemos tipo de socio
             statementObtenerTipo.setInt(1, numeroSocio);
