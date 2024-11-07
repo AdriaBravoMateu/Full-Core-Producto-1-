@@ -62,10 +62,12 @@ public class ControladorInscripcion {
     }
 
     private void agregarInscripcion() {
+        // Mostrar todos los socios y seleccionar uno
         controladorSocio.mostrarTodosLosSocios();
         int numeroSocio = vista.leerNumeroSocio();
         Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
 
+        // Verificar si el socio existe; si no, se crea uno nuevo
         if (socio == null) {
             vista.mostrarResultado("Socio no encontrado. Se procederá a añadir un nuevo socio.");
             socio = controladorSocio.agregarSocio();
@@ -75,19 +77,32 @@ public class ControladorInscripcion {
             }
         }
 
+        // Mostrar excursiones y seleccionar una
         controladorExcursion.mostrarExcursiones(excursionDAO.mostrarExcursiones());
         int codigoExcursion = vista.leerCodigoExcursion();
         Excursion excursion = excursionDAO.buscarExcursionPorCodigo(codigoExcursion);
 
-        if (excursion != null) {
-            List<Inscripcion> inscripciones = inscripcionDAO.mostrarInscripcionesPorFecha(LocalDate.MIN, LocalDate.MAX);
-            mostrarListaInscripciones(inscripciones);
+        // Verificar si la excursión existe
+        if (excursion == null) {
+            vista.mostrarResultado("Excursión no encontrada. Se cancelará el proceso de inscripción.");
+            return;
+        }
 
-            Inscripcion inscripcion = new Inscripcion(LocalDate.now(), socio, excursion);
-            inscripcionDAO.agregarInscripcion(inscripcion);
+        // Verificar si ya existen inscripciones para este socio y esta excursión
+        List<Inscripcion> inscripcionesExistentes = inscripcionDAO.mostrarInscripcionesPorSocioYExcursion(numeroSocio, codigoExcursion);
+        if (!inscripcionesExistentes.isEmpty()) {
+            vista.mostrarResultado("Ya existen inscripciones para este socio en la excursión seleccionada:");
+            mostrarListaInscripciones(inscripcionesExistentes);
+            return;
+        }
+
+        // Confirmación y creación de la nueva inscripción
+        Inscripcion nuevaInscripcion = new Inscripcion(LocalDate.now(), socio, excursion);
+        try {
+            inscripcionDAO.agregarInscripcion(nuevaInscripcion);
             vista.mostrarResultado("Inscripción añadida correctamente.");
-        } else {
-            vista.mostrarResultado("Excursión no encontrada.");
+        } catch (Exception e) {
+            vista.mostrarResultado("Error al agregar la inscripción: " + e.getMessage());
         }
     }
 

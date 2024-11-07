@@ -1,5 +1,7 @@
 package grupoFullCore.modelo.ImplementacionDAO;
 
+import grupoFullCore.modelo.DAO.ExcursionDAO;
+import grupoFullCore.modelo.DAO.SocioDAO;
 import grupoFullCore.modelo.Inscripcion;
 import grupoFullCore.modelo.Socio;
 import grupoFullCore.modelo.Excursion;
@@ -14,7 +16,15 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 public class InscripcionDAOImpl implements InscripcionDAO {
+
+    private SocioDAO socioDAO;
+    private ExcursionDAO excursionDAO;
     private static final Logger logger = Logger.getLogger(InscripcionDAOImpl.class.getName());
+
+    public InscripcionDAOImpl() {
+        this.socioDAO = DAOFactory.getSocioDAO();
+        this.excursionDAO = DAOFactory.getExcursionDAO();
+    }
     @Override
     public void agregarInscripcion(Inscripcion inscripcion) {
         String query = "INSERT INTO Inscripcion (fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?)";
@@ -180,4 +190,35 @@ public class InscripcionDAOImpl implements InscripcionDAO {
             throw new Exception("Error al eliminar la inscripción: " + e.getMessage());
         }
     }
+
+    @Override
+    public List<Inscripcion> mostrarInscripcionesPorSocioYExcursion(int numeroSocio, int codigoExcursion) {
+        List<Inscripcion> inscripciones = new ArrayList<>();
+        String query = "SELECT * FROM Inscripcion WHERE numeroSocio = ? AND codigoExcursion = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, numeroSocio);
+            statement.setInt(2, codigoExcursion);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int numeroInscripcion = resultSet.getInt("numeroInscripcion");
+                LocalDate fechaInscripcion = resultSet.getDate("fechaInscripcion").toLocalDate();
+
+                Socio socio = socioDAO.buscarSocioPorNumero(numeroSocio);
+                Excursion excursion = excursionDAO.buscarExcursionPorCodigo(codigoExcursion);
+
+                if (socio != null && excursion != null) {
+                    Inscripcion inscripcion = new Inscripcion(numeroInscripcion, fechaInscripcion, socio, excursion);
+                    inscripciones.add(inscripcion);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al mostrar inscripciones por socio y excursión: " + e.getMessage());
+        }
+        return inscripciones;
+    }
+
 }
