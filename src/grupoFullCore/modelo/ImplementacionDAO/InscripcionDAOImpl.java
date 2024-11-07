@@ -19,13 +19,21 @@ public class InscripcionDAOImpl implements InscripcionDAO {
     public void agregarInscripcion(Inscripcion inscripcion) {
         String query = "INSERT INTO Inscripcion (fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setDate(1, Date.valueOf(inscripcion.getFechaInscripcion()));
             statement.setInt(2, inscripcion.getSocio().getNumeroSocio());
             statement.setInt(3, inscripcion.getExcursion().getCodigo());
 
             statement.executeUpdate();
+
+            // Obtener número de Inscripcion generado Automáticamente para que aparezca en la tabla de SQL
+
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                inscripcion.setNumeroInscripcion(generatedKeys.getInt(1));
+            }
+
         } catch (SQLException e) {
             System.err.println("Error al agregar la inscripción: " + e.getMessage());
         }

@@ -14,7 +14,7 @@ public class ExcursionDAOImpl implements ExcursionDAO {
     public void agregarExcursion(Excursion excursion) {
         String query = "INSERT INTO Excursion (descripcion, fecha, numeroDias, precioInscripcion) VALUES (?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, excursion.getDescripcion());
             statement.setDate(2, Date.valueOf(excursion.getFecha()));
@@ -22,6 +22,14 @@ public class ExcursionDAOImpl implements ExcursionDAO {
             statement.setDouble(4, excursion.getPrecioInscripcion());
 
             statement.executeUpdate();
+
+            // Obtener número de Inscripcion generado Automáticamente para que aparezca en la tabla de SQL
+
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                excursion.setCodigo(generatedKeys.getInt(1));
+            }
+
         } catch (SQLException e) {
             System.err.println("Error al agregar la excursión: " + e.getMessage());
         }

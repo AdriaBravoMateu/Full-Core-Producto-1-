@@ -51,17 +51,9 @@ public class ControladorExcursion {
     }
 
     private void agregarExcursion() {
-        int codigo;
 
         // Muestra excursiones existentes para evitar duplicados de código
         mostrarExcursiones(excursionDAO.mostrarExcursiones());
-
-        do {
-            codigo = vista.leerCodigoExcursion();
-            if (excursionDAO.buscarExcursionPorCodigo(codigo) != null) {
-                vista.mostrarResultado("El código de excursión ya existe. Introduzca otro código.");
-            }
-        } while (excursionDAO.buscarExcursionPorCodigo(codigo) != null);
 
         // Lee los demás datos de la excursión
         String descripcion = vista.leerDescripcionExcursion();
@@ -72,7 +64,7 @@ public class ControladorExcursion {
         double precio = vista.leerPrecioInscripcion();
 
         // Crea la nueva excursión y la agrega a la base de datos
-        Excursion excursion = new Excursion(codigo, descripcion, fecha, dias, precio);
+        Excursion excursion = new Excursion(descripcion, fecha, dias, precio);
         excursionDAO.agregarExcursion(excursion);
         vista.mostrarResultado("Excursión añadida correctamente.");
     }

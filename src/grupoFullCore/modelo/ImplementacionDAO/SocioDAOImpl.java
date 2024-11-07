@@ -14,7 +14,7 @@ public class SocioDAOImpl implements SocioDAO {
         String querySocio = "INSERT INTO socio (nombre, tipoSocio) VALUES (?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statementSocio = connection.prepareStatement(querySocio)) {
+             PreparedStatement statementSocio = connection.prepareStatement(querySocio, Statement.RETURN_GENERATED_KEYS)) {
 
             statementSocio.setString(1, socio.getNombre());
             statementSocio.setString(2, socio.getTipo());

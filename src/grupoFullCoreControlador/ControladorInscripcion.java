@@ -82,15 +82,8 @@ public class ControladorInscripcion {
         if (excursion != null) {
             List<Inscripcion> inscripciones = inscripcionDAO.mostrarInscripcionesPorFecha(LocalDate.MIN, LocalDate.MAX);
             mostrarListaInscripciones(inscripciones);
-            int numeroInscripcion;
-            do {
-                numeroInscripcion = vista.leerNumeroInscripcion();
-                if (inscripcionDAO.buscarInscripcionPorNumero(numeroInscripcion) != null) {
-                    vista.mostrarResultado("El número de inscripción ya existe. Introduzca otro número.");
-                }
-            } while (inscripcionDAO.buscarInscripcionPorNumero(numeroInscripcion) != null);
 
-            Inscripcion inscripcion = new Inscripcion(numeroInscripcion, LocalDate.now(), socio, excursion);
+            Inscripcion inscripcion = new Inscripcion(LocalDate.now(), socio, excursion);
             inscripcionDAO.agregarInscripcion(inscripcion);
             vista.mostrarResultado("Inscripción añadida correctamente.");
         } else {

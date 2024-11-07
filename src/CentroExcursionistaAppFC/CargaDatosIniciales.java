@@ -32,22 +32,22 @@ public class CargaDatosIniciales {
                 federacionDAO.agregarFederacion(federacion3);
 
                 // Instancias de Socio Estandar
-                SocioEstandar socio01 = new SocioEstandar(1, "Socio Estandar 1", TipoSocio.ESTANDAR, "11111111E", seguroBasico);
-                SocioEstandar socio02 = new SocioEstandar(2, "Socio Estandar 2", TipoSocio.ESTANDAR,"22222222E", seguroBasico);
+                SocioEstandar socio01 = new SocioEstandar("Socio Estandar 1", TipoSocio.ESTANDAR, "11111111E", seguroBasico);
+                SocioEstandar socio02 = new SocioEstandar("Socio Estandar 2", TipoSocio.ESTANDAR,"22222222E", seguroBasico);
                 // ... Añadir más socios estándar
 
                 // Instancias de Socio Federado asignando una federación
-                SocioFederado socio05 = new SocioFederado(5, "Socio Federado 1", TipoSocio.FEDERADO, "11111111F", federacion1);
-                SocioFederado socio06 = new SocioFederado(6, "Socio Federado 2", TipoSocio.FEDERADO, "22222222F", federacion2);
+                SocioFederado socio05 = new SocioFederado("Socio Federado 1", TipoSocio.FEDERADO, "11111111F", federacion1);
+                SocioFederado socio06 = new SocioFederado("Socio Federado 2", TipoSocio.FEDERADO, "22222222F", federacion2);
 
                 // Instancias de Excursión
-                Excursion excursion01 = new Excursion(1, "Excursion 01", LocalDate.of(2024, 10, 25), 5, 250);
-                Excursion excursion02 = new Excursion(2, "Excursion 02", LocalDate.of(2024, 10, 28), 3, 150);
+                Excursion excursion01 = new Excursion("Excursion 01", LocalDate.of(2024, 10, 25), 5, 250);
+                Excursion excursion02 = new Excursion("Excursion 02", LocalDate.of(2024, 10, 28), 3, 150);
                 // ... Añadir más excursiones
 
                 // Instancias de Inscripción
-                Inscripcion inscripcion01 = new Inscripcion(1, LocalDate.of(2024, 10, 18), socio01, excursion01);
-                Inscripcion inscripcion02 = new Inscripcion(2, LocalDate.of(2024, 10, 18), socio05, excursion01);
+                Inscripcion inscripcion01 = new Inscripcion(LocalDate.of(2024, 10, 18), socio01, excursion01);
+                Inscripcion inscripcion02 = new Inscripcion(LocalDate.of(2024, 10, 18), socio05, excursion01);
                 // ... Añadir más inscripciones
 
                 // Agregar instancias a la base de datos usando DAOs

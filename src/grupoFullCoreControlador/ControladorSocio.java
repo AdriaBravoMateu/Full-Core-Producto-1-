@@ -105,16 +105,14 @@ public class ControladorSocio {
 
     private Socio agregarSocioEstandar() {
         String nombre = vista.leerNombreSocio();
-        int numeroSocio = solicitarNumeroSocioValido();
         String nif = vista.leerNif();
         TipoSeguro seguroEnum = seleccionarSeguro();
         Seguro seguro = new Seguro(seguroEnum);
-        return new SocioEstandar(numeroSocio, nombre, ESTANDAR, nif, seguro);
+        return new SocioEstandar(nombre, ESTANDAR, nif, seguro);
     }
 
     private Socio agregarSocioFederado() {
         String nombre = vista.leerNombreSocio();
-        int numeroSocio = solicitarNumeroSocioValido();
         String nif = vista.leerNif();
         List<Federacion> federaciones = federacionDAO.mostrarFederaciones(); // Obtener federaciones desde FederacionDAO
 
@@ -123,7 +121,7 @@ public class ControladorSocio {
 
         if (opcionFederacion >= 1 && opcionFederacion <= federaciones.size()) {
             Federacion federacionSeleccionada = federaciones.get(opcionFederacion - 1);
-            socio = new SocioFederado(numeroSocio, nombre, FEDERADO, nif, federacionSeleccionada);
+            socio = new SocioFederado(nombre, FEDERADO, nif, federacionSeleccionada);
         } else {
             vista.mostrarResultado("Opción de federación no válida.");
         }
@@ -133,7 +131,6 @@ public class ControladorSocio {
 
     private Socio agregarSocioInfantil() {
         String nombre = vista.leerNombreSocio();
-        int numeroSocio = solicitarNumeroSocioValido();
         vista.mostrarResultado("Selecciona el número de socio del progenitor.");
         mostrarSociosEstandarYFederados();
 
@@ -141,7 +138,7 @@ public class ControladorSocio {
         Socio progenitor = socioDAO.buscarSocioPorNumero(numeroSocioProgenitor);
 
         if (progenitor != null && (progenitor instanceof SocioEstandar || progenitor instanceof SocioFederado)) {
-            return new SocioInfantil(numeroSocio, nombre, INFANTIL, progenitor);
+            return new SocioInfantil(nombre, INFANTIL, progenitor);
         } else {
             vista.mostrarResultado("Progenitor no encontrado o no válido.");
             return null;
