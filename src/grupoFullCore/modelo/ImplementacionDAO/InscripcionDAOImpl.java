@@ -25,29 +25,55 @@ public class InscripcionDAOImpl implements InscripcionDAO {
         this.socioDAO = DAOFactory.getSocioDAO();
         this.excursionDAO = DAOFactory.getExcursionDAO();
     }
+
+//    @Override
+//    public void agregarInscripcion(Inscripcion inscripcion) {
+//        String query = "INSERT INTO Inscripcion (fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?)";
+//        try (Connection connection = DatabaseConnection.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            statement.setDate(1, Date.valueOf(inscripcion.getFechaInscripcion()));
+//            statement.setInt(2, inscripcion.getSocio().getNumeroSocio());
+//            statement.setInt(3, inscripcion.getExcursion().getCodigo());
+//
+//            statement.executeUpdate();
+//
+//            // Obtener número de Inscripcion generado Automáticamente para que aparezca en la tabla de SQL
+//
+//            ResultSet generatedKeys = statement.getGeneratedKeys();
+//            if (generatedKeys.next()) {
+//                inscripcion.setNumeroInscripcion(generatedKeys.getInt(1));
+//            }
+//
+//        } catch (SQLException e) {
+//            System.err.println("Error al agregar la inscripción: " + e.getMessage());
+//        }
+//    }
+
     @Override
     public void agregarInscripcion(Inscripcion inscripcion) {
-        String query = "INSERT INTO Inscripcion (fechaInscripcion, numeroSocio, codigoExcursion) VALUES (?, ?, ?)";
+        String sql = "{CALL InscribirSocio(?, ?)}";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+             CallableStatement callableStatement = connection.prepareCall(sql)) {
 
-            statement.setDate(1, Date.valueOf(inscripcion.getFechaInscripcion()));
-            statement.setInt(2, inscripcion.getSocio().getNumeroSocio());
-            statement.setInt(3, inscripcion.getExcursion().getCodigo());
+            callableStatement.setInt(1, inscripcion.getSocio().getNumeroSocio());
+            callableStatement.setInt(2, inscripcion.getExcursion().getCodigo());
 
-            statement.executeUpdate();
+            // Ejecutar el procedimiento almacenado
+            callableStatement.execute();
 
-            // Obtener número de Inscripcion generado Automáticamente para que aparezca en la tabla de SQL
-
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                inscripcion.setNumeroInscripcion(generatedKeys.getInt(1));
+            // Obtener el mensaje de éxito si lo necesitas
+            ResultSet rs = callableStatement.getResultSet();
+            if (rs != null && rs.next()) {
+                String mensaje = rs.getString("Mensaje");
+                System.out.println(mensaje);  // Puedes manejar el mensaje como desees
             }
 
         } catch (SQLException e) {
             System.err.println("Error al agregar la inscripción: " + e.getMessage());
         }
     }
+
 
     @Override
     public Inscripcion buscarInscripcionPorNumero(int numeroInscripcion) {
@@ -220,5 +246,4 @@ public class InscripcionDAOImpl implements InscripcionDAO {
         }
         return inscripciones;
     }
-
 }

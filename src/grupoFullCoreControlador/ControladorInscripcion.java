@@ -100,7 +100,7 @@ public class ControladorInscripcion {
         Inscripcion nuevaInscripcion = new Inscripcion(LocalDate.now(), socio, excursion);
         try {
             inscripcionDAO.agregarInscripcion(nuevaInscripcion);
-            vista.mostrarResultado("Inscripción añadida correctamente.");
+            // vista.mostrarResultado("Inscripción añadida correctamente.");
         } catch (Exception e) {
             vista.mostrarResultado("Error al agregar la inscripción: " + e.getMessage());
         }
