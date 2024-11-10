@@ -232,7 +232,7 @@ public class SocioDAOImpl implements SocioDAO {
 
             callableStatement.setInt(1, numeroSocio);  // Establece el número de socio como parámetro
 
-            // Ejecuta el procedimiento almacenado
+            // Ejecuta el procedimiento almacenado.
             boolean hadResults = callableStatement.execute();
 
             // Procesar el mensaje de éxito desde el procedimiento almacenado
