@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SocioDAOImpl implements SocioDAO {
 
-    // Método para agregar un nuevo socio a la base de datos
+    // Metodo para agregar un nuevo socio a la base de datos
     @Override
     public void agregarSocio(Socio socio) {
         String querySocio = "INSERT INTO socio (nombre, tipoSocio) VALUES (?, ?)";
@@ -58,7 +58,7 @@ public class SocioDAOImpl implements SocioDAO {
                     // Verificación para evitar `NullPointerException`
                     if (progenitor == null) {
                         System.err.println("Error: El progenitor con número de socio " + numeroSocioProgenitor + " no existe.");
-                        return;  // Salir del método si el progenitor no existe
+                        return;  // Salir del mtodo si el progenitor no existe
                     }
 
                     // Reasigna el objeto `progenitor` al `socioInfantil`
@@ -80,7 +80,8 @@ public class SocioDAOImpl implements SocioDAO {
         }
     }
 
-    // Método para buscar un socio por su número de socio
+
+    // Metodo para buscar un socio por su número de socio
     @Override
     public Socio buscarSocioPorNumero(int numeroSocio) {
         String query = "SELECT * FROM socio WHERE numeroSocio = ?";
@@ -163,62 +164,89 @@ public class SocioDAOImpl implements SocioDAO {
         return socios;
     }
 
-    // Método para eliminar un socio
+    // Metodo para eliminar un socio
+//    @Override
+//    public void eliminarSocio(int numeroSocio) throws Exception {
+//        String queryVerificarInscripciones = "SELECT COUNT(*) FROM inscripcion WHERE numeroSocio = ?";
+//        String queryObtenerTipo = "SELECT tipoSocio FROM socio WHERE numeroSocio = ?";
+//        String queryEliminarSocio = "DELETE FROM socio WHERE numeroSocio = ?";
+//
+//        try (Connection connection = DatabaseConnection.getConnection();
+//             PreparedStatement statementVerificarInscripciones = connection.prepareStatement(queryVerificarInscripciones);
+//             PreparedStatement statementObtenerTipo = connection.prepareStatement(queryObtenerTipo);
+//             PreparedStatement statementEliminarSocio = connection.prepareStatement(queryEliminarSocio)) {
+//
+//            statementVerificarInscripciones.setInt(1, numeroSocio);
+//            ResultSet resultSetInscripciones = statementVerificarInscripciones.executeQuery();
+//
+//            if (resultSetInscripciones.next() && resultSetInscripciones.getInt(1) > 0) {
+//                throw new Exception("No se puede eliminar un socio con inscripciones registradas.");
+//            }
+//
+//            //Obtenemos tipo de socio
+//            statementObtenerTipo.setInt(1, numeroSocio);
+//            ResultSet resultSet = statementObtenerTipo.executeQuery();
+//
+//            if (resultSet.next()) {
+//                String tipoSocio = resultSet.getString("tipoSocio");
+//
+//                // Eliminamos el socio de la tabla específica de tipo
+//                if ("Estandar".equals(tipoSocio)) {
+//                    String queryEliminarEstandar = "DELETE FROM socio_estandar WHERE numeroSocio = ?";
+//                    try (PreparedStatement statementEliminarEstandar = connection.prepareStatement(queryEliminarEstandar)) {
+//                        statementEliminarEstandar.setInt(1, numeroSocio);
+//                        statementEliminarEstandar.executeUpdate();
+//                    }
+//                } else if ("Federado".equals(tipoSocio)) {
+//                    String queryEliminarFederado = "DELETE FROM socio_federado WHERE numeroSocio = ?";
+//                    try (PreparedStatement statementEliminarFederado = connection.prepareStatement(queryEliminarFederado)) {
+//                        statementEliminarFederado.setInt(1, numeroSocio);
+//                        statementEliminarFederado.executeUpdate();
+//                    }
+//                } else if ("Infantil".equals(tipoSocio)) {
+//                    String queryEliminarInfantil = "DELETE FROM socio_infantil WHERE numeroSocio = ?";
+//                    try (PreparedStatement statementEliminarInfantil = connection.prepareStatement(queryEliminarInfantil)) {
+//                        statementEliminarInfantil.setInt(1, numeroSocio);
+//                        statementEliminarInfantil.executeUpdate();
+//                    }
+//                }
+//
+//                // Eliminamos el socio de la tabla socio
+//                statementEliminarSocio.setInt(1, numeroSocio);
+//                statementEliminarSocio.executeUpdate();
+//            } else {
+//                throw new Exception("No se encontró el socio con número " + numeroSocio);
+//            }
+//
+//        } catch (SQLException e) {
+//            throw new Exception("Error al eliminar el socio: " + e.getMessage());
+//        }
+//    }
+
     @Override
     public void eliminarSocio(int numeroSocio) throws Exception {
-        String queryVerificarInscripciones = "SELECT COUNT(*) FROM inscripcion WHERE numeroSocio = ?";
-        String queryObtenerTipo = "SELECT tipoSocio FROM socio WHERE numeroSocio = ?";
-        String queryEliminarSocio = "DELETE FROM socio WHERE numeroSocio = ?";
+        String sql = "{CALL EliminarSocio(?)}";  // Llamada al procedimiento almacenado
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statementVerificarInscripciones = connection.prepareStatement(queryVerificarInscripciones);
-             PreparedStatement statementObtenerTipo = connection.prepareStatement(queryObtenerTipo);
-             PreparedStatement statementEliminarSocio = connection.prepareStatement(queryEliminarSocio)) {
+             CallableStatement callableStatement = connection.prepareCall(sql)) {
 
-            statementVerificarInscripciones.setInt(1, numeroSocio);
-            ResultSet resultSetInscripciones = statementVerificarInscripciones.executeQuery();
+            callableStatement.setInt(1, numeroSocio);  // Establece el número de socio como parámetro
 
-            if (resultSetInscripciones.next() && resultSetInscripciones.getInt(1) > 0) {
-                throw new Exception("No se puede eliminar un socio con inscripciones registradas.");
-            }
+            // Ejecuta el procedimiento almacenado
+            boolean hadResults = callableStatement.execute();
 
-            //Obtenemos tipo de socio
-            statementObtenerTipo.setInt(1, numeroSocio);
-            ResultSet resultSet = statementObtenerTipo.executeQuery();
-
-            if (resultSet.next()) {
-                String tipoSocio = resultSet.getString("tipoSocio");
-
-                // Eliminamos el socio de la tabla específica de tipo
-                if ("Estandar".equals(tipoSocio)) {
-                    String queryEliminarEstandar = "DELETE FROM socio_estandar WHERE numeroSocio = ?";
-                    try (PreparedStatement statementEliminarEstandar = connection.prepareStatement(queryEliminarEstandar)) {
-                        statementEliminarEstandar.setInt(1, numeroSocio);
-                        statementEliminarEstandar.executeUpdate();
-                    }
-                } else if ("Federado".equals(tipoSocio)) {
-                    String queryEliminarFederado = "DELETE FROM socio_federado WHERE numeroSocio = ?";
-                    try (PreparedStatement statementEliminarFederado = connection.prepareStatement(queryEliminarFederado)) {
-                        statementEliminarFederado.setInt(1, numeroSocio);
-                        statementEliminarFederado.executeUpdate();
-                    }
-                } else if ("Infantil".equals(tipoSocio)) {
-                    String queryEliminarInfantil = "DELETE FROM socio_infantil WHERE numeroSocio = ?";
-                    try (PreparedStatement statementEliminarInfantil = connection.prepareStatement(queryEliminarInfantil)) {
-                        statementEliminarInfantil.setInt(1, numeroSocio);
-                        statementEliminarInfantil.executeUpdate();
-                    }
+            // Procesar el mensaje de éxito desde el procedimiento almacenado
+            if (hadResults) {
+                ResultSet rs = callableStatement.getResultSet();
+                if (rs.next()) {
+                    String message = rs.getString("Mensaje");
+                    System.out.println(message);
                 }
-
-                // Eliminamos el socio de la tabla socio
-                statementEliminarSocio.setInt(1, numeroSocio);
-                statementEliminarSocio.executeUpdate();
-            } else {
-                throw new Exception("No se encontró el socio con número " + numeroSocio);
             }
 
         } catch (SQLException e) {
-            throw new Exception("Error al eliminar el socio: " + e.getMessage());
+            // System.err.println("Error al eliminar el socio: " + e.getMessage());
+            throw new Exception(/*"Error al eliminar el socio: " + */e.getMessage());
         }
     }
 

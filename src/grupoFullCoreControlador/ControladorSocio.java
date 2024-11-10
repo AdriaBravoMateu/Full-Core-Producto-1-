@@ -204,9 +204,9 @@ public class ControladorSocio {
         int numeroSocio = vista.leerNumeroSocio();
         try {
             socioDAO.eliminarSocio(numeroSocio);
-            vista.mostrarResultado("Socio eliminado correctamente.");
+            // vista.mostrarResultado("Socio eliminado correctamente.");
         } catch (Exception e) {
-            vista.mostrarResultado("Error al eliminar el socio: " + e.getMessage());
+            vista.mostrarResultado(/*"Error al eliminar el socio: " + */e.getMessage());
         }
     }
 
