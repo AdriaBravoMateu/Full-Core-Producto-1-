@@ -13,14 +13,19 @@ public class SocioDAOImpl implements SocioDAO {
     public void agregarSocio(Socio socio) {
         String querySocio = "INSERT INTO socio (nombre, tipoSocio) VALUES (?, ?)";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statementSocio = connection.prepareStatement(querySocio, Statement.RETURN_GENERATED_KEYS)) {
+        Connection connection = null;
+        PreparedStatement statementSocio = null;
+        PreparedStatement statementEstandar = null;
+        PreparedStatement statementFederado = null;
+        PreparedStatement statementInfantil = null;
+        try {
+            connection = DatabaseConnection.getConnection();
+            connection.setAutoCommit(false);  // Desactivar auto-commit
 
+            statementSocio = connection.prepareStatement(querySocio, Statement.RETURN_GENERATED_KEYS);
             statementSocio.setString(1, socio.getNombre());
             statementSocio.setString(2, socio.getTipo());
             statementSocio.executeUpdate();
-
-            // Obtener número de socio generado Automáticamente para que aparezca en la tabla de SQL
 
             ResultSet generatedKeys = statementSocio.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -28,57 +33,135 @@ public class SocioDAOImpl implements SocioDAO {
                 socio.setNumeroSocio(socioNumero);
 
                 if (socio instanceof SocioEstandar) {
-                    // Inserción en la tabla `socio_estandar`
-                    SocioEstandar socioEstandar = (SocioEstandar) socio;
-                    String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
-
+                    String tipoSeguro = ((SocioEstandar) socio).getSeguro().getTipo().name();
                     String queryEstandar = "INSERT INTO socio_estandar (numeroSocio, nif, tipoSeguro) VALUES (?, ?, ?)";
-                    try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
-                        statementEstandar.setInt(1, socio.getNumeroSocio());
-                        statementEstandar.setString(2, socioEstandar.getNif());
-                        statementEstandar.setString(3, tipoSeguro);
-                        statementEstandar.executeUpdate();
-                    }
+                    statementEstandar = connection.prepareStatement(queryEstandar);
+                    statementEstandar.setInt(1, socio.getNumeroSocio());
+                    statementEstandar.setString(2, ((SocioEstandar) socio).getNif());
+                    statementEstandar.setString(3, tipoSeguro);
+                    statementEstandar.executeUpdate();
                 } else if (socio instanceof SocioFederado) {
-                    // Inserción en la tabla `socio_federado`
-                    SocioFederado socioFederado = (SocioFederado) socio;
                     String queryFederado = "INSERT INTO socio_federado (numeroSocio, nif, codigoFederacion) VALUES (?, ?, ?)";
-                    try (PreparedStatement statementFederado = connection.prepareStatement(queryFederado)) {
-                        statementFederado.setInt(1, socio.getNumeroSocio());
-                        statementFederado.setString(2, socioFederado.getNif());
-                        statementFederado.setString(3, socioFederado.getFederacion().getCodigo());
-                        statementFederado.executeUpdate();
-                    }
+                    statementFederado = connection.prepareStatement(queryFederado);
+                    statementFederado.setInt(1, socio.getNumeroSocio());
+                    statementFederado.setString(2, ((SocioFederado) socio).getNif());
+                    statementFederado.setString(3, ((SocioFederado) socio).getFederacion().getCodigo());
+                    statementFederado.executeUpdate();
                 } else if (socio instanceof SocioInfantil) {
-                    // Recupera el progenitor desde la base de datos antes de crear el `SocioInfantil`
-                    SocioInfantil socioInfantil = (SocioInfantil) socio;
-                    int numeroSocioProgenitor = socioInfantil.getNumeroSocioProgenitor();
-                    Socio progenitor = buscarSocioPorNumero(numeroSocioProgenitor);  // Busca el progenitor en la base de datos
-
-                    // Verificación para evitar `NullPointerException`
+                    Socio progenitor = buscarSocioPorNumero(((SocioInfantil) socio).getNumeroSocioProgenitor());
                     if (progenitor == null) {
-                        System.err.println("Error: El progenitor con número de socio " + numeroSocioProgenitor + " no existe.");
-                        return;  // Salir del mtodo si el progenitor no existe
+                        System.err.println("Error: El progenitor con número de socio " + ((SocioInfantil) socio).getNumeroSocioProgenitor() + " no existe.");
+                        connection.rollback();
+                        return;
                     }
-
-                    // Reasigna el objeto `progenitor` al `socioInfantil`
-                    socioInfantil = new SocioInfantil(socioInfantil.getNumeroSocio(), socioInfantil.getNombre(), progenitor);
-
                     String queryInfantil = "INSERT INTO socio_infantil (numeroSocio, numeroSocioProgenitor) VALUES (?, ?)";
-                    try (PreparedStatement statementInfantil = connection.prepareStatement(queryInfantil)) {
-                        statementInfantil.setInt(1, socioInfantil.getNumeroSocio());
-                        statementInfantil.setInt(2, socioInfantil.getProgenitor().getNumeroSocio());
-                        statementInfantil.executeUpdate();
-                    }
+                    statementInfantil = connection.prepareStatement(queryInfantil);
+                    statementInfantil.setInt(1, socio.getNumeroSocio());
+                    statementInfantil.setInt(2, ((SocioInfantil) socio).getProgenitor().getNumeroSocio());
+                    statementInfantil.executeUpdate();
                 }
             } else {
                 System.err.println("Error al obtener el numero de socio.");
+                connection.rollback();
+                return;
             }
-
+            connection.commit();  // Commit la transacción
         } catch (SQLException e) {
+            try {
+                if (connection != null) connection.rollback();  // Revertir la transacción en caso de error
+            } catch (SQLException ex) {
+                System.err.println("Error al realizar rollback: " + ex.getMessage());
+            }
             System.err.println("Error al agregar el socio: " + e.getMessage());
+        } finally {
+            try {
+                if (statementSocio != null) statementSocio.close();
+                if (statementEstandar != null) statementEstandar.close();
+                if (statementFederado != null) statementFederado.close();
+                if (statementInfantil != null) statementInfantil.close();
+                if (connection != null) {
+                    connection.setAutoCommit(true);  // Restaurar auto-commit
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error al cerrar recursos: " + ex.getMessage());
+            }
         }
     }
+
+//public class SocioDAOImpl implements SocioDAO {
+//
+//    // Metodo para agregar un nuevo socio a la base de datos
+//    @Override
+//    public void agregarSocio(Socio socio) {
+//        String querySocio = "INSERT INTO socio (nombre, tipoSocio) VALUES (?, ?)";
+//
+//        try (Connection connection = DatabaseConnection.getConnection();
+//             PreparedStatement statementSocio = connection.prepareStatement(querySocio, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            statementSocio.setString(1, socio.getNombre());
+//            statementSocio.setString(2, socio.getTipo());
+//            statementSocio.executeUpdate();
+//
+//            // Obtener número de socio generado Automáticamente para que aparezca en la tabla de SQL
+//
+//            ResultSet generatedKeys = statementSocio.getGeneratedKeys();
+//            if (generatedKeys.next()) {
+//                int socioNumero = generatedKeys.getInt(1);
+//                socio.setNumeroSocio(socioNumero);
+//
+//                if (socio instanceof SocioEstandar) {
+//                    // Inserción en la tabla `socio_estandar`
+//                    SocioEstandar socioEstandar = (SocioEstandar) socio;
+//                    String tipoSeguro = socioEstandar.getSeguro().getTipo().name();
+//
+//                    String queryEstandar = "INSERT INTO socio_estandar (numeroSocio, nif, tipoSeguro) VALUES (?, ?, ?)";
+//                    try (PreparedStatement statementEstandar = connection.prepareStatement(queryEstandar)) {
+//                        statementEstandar.setInt(1, socio.getNumeroSocio());
+//                        statementEstandar.setString(2, socioEstandar.getNif());
+//                        statementEstandar.setString(3, tipoSeguro);
+//                        statementEstandar.executeUpdate();
+//                    }
+//                } else if (socio instanceof SocioFederado) {
+//                    // Inserción en la tabla `socio_federado`
+//                    SocioFederado socioFederado = (SocioFederado) socio;
+//                    String queryFederado = "INSERT INTO socio_federado (numeroSocio, nif, codigoFederacion) VALUES (?, ?, ?)";
+//                    try (PreparedStatement statementFederado = connection.prepareStatement(queryFederado)) {
+//                        statementFederado.setInt(1, socio.getNumeroSocio());
+//                        statementFederado.setString(2, socioFederado.getNif());
+//                        statementFederado.setString(3, socioFederado.getFederacion().getCodigo());
+//                        statementFederado.executeUpdate();
+//                    }
+//                } else if (socio instanceof SocioInfantil) {
+//                    // Recupera el progenitor desde la base de datos antes de crear el `SocioInfantil`
+//                    SocioInfantil socioInfantil = (SocioInfantil) socio;
+//                    int numeroSocioProgenitor = socioInfantil.getNumeroSocioProgenitor();
+//                    Socio progenitor = buscarSocioPorNumero(numeroSocioProgenitor);  // Busca el progenitor en la base de datos
+//
+//                    // Verificación para evitar `NullPointerException`
+//                    if (progenitor == null) {
+//                        System.err.println("Error: El progenitor con número de socio " + numeroSocioProgenitor + " no existe.");
+//                        return;  // Salir del mtodo si el progenitor no existe
+//                    }
+//
+//                    // Reasigna el objeto `progenitor` al `socioInfantil`
+//                    socioInfantil = new SocioInfantil(socioInfantil.getNumeroSocio(), socioInfantil.getNombre(), progenitor);
+//
+//                    String queryInfantil = "INSERT INTO socio_infantil (numeroSocio, numeroSocioProgenitor) VALUES (?, ?)";
+//                    try (PreparedStatement statementInfantil = connection.prepareStatement(queryInfantil)) {
+//                        statementInfantil.setInt(1, socioInfantil.getNumeroSocio());
+//                        statementInfantil.setInt(2, socioInfantil.getProgenitor().getNumeroSocio());
+//                        statementInfantil.executeUpdate();
+//                    }
+//                }
+//            } else {
+//                System.err.println("Error al obtener el numero de socio.");
+//            }
+//
+//        } catch (SQLException e) {
+//            System.err.println("Error al agregar el socio: " + e.getMessage());
+//        }
+//    }
 
 
     // Metodo para buscar un socio por su número de socio
@@ -223,6 +306,33 @@ public class SocioDAOImpl implements SocioDAO {
 //        }
 //    }
 
+//    @Override
+//    public void eliminarSocio(int numeroSocio) throws Exception {
+//        String sql = "{CALL EliminarSocio(?)}";  // Llamada al procedimiento almacenado
+//
+//        try (Connection connection = DatabaseConnection.getConnection();
+//             CallableStatement callableStatement = connection.prepareCall(sql)) {
+//
+//            callableStatement.setInt(1, numeroSocio);  // Establece el número de socio como parámetro
+//
+//            // Ejecuta el procedimiento almacenado.
+//            boolean hadResults = callableStatement.execute();
+//
+//            // Procesar el mensaje de éxito desde el procedimiento almacenado
+//            if (hadResults) {
+//                ResultSet rs = callableStatement.getResultSet();
+//                if (rs.next()) {
+//                    String message = rs.getString("Mensaje");
+//                    System.out.println(message);
+//                }
+//            }
+//
+//        } catch (SQLException e) {
+//            // System.err.println("Error al eliminar el socio: " + e.getMessage());
+//            throw new Exception(/*"Error al eliminar el socio: " + */e.getMessage());
+//        }
+//    }
+
     @Override
     public void eliminarSocio(int numeroSocio) throws Exception {
         String sql = "{CALL EliminarSocio(?)}";  // Llamada al procedimiento almacenado
@@ -232,7 +342,7 @@ public class SocioDAOImpl implements SocioDAO {
 
             callableStatement.setInt(1, numeroSocio);  // Establece el número de socio como parámetro
 
-            // Ejecuta el procedimiento almacenado.
+            // Ejecuta el procedimiento almacenado
             boolean hadResults = callableStatement.execute();
 
             // Procesar el mensaje de éxito desde el procedimiento almacenado
@@ -245,7 +355,6 @@ public class SocioDAOImpl implements SocioDAO {
             }
 
         } catch (SQLException e) {
-            // System.err.println("Error al eliminar el socio: " + e.getMessage());
             throw new Exception(/*"Error al eliminar el socio: " + */e.getMessage());
         }
     }
